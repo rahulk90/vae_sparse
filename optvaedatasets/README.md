@@ -40,7 +40,12 @@ python evaluate_wvecs.py
 ```bash
 #Download and setup dataset:
 python wikicorp.py #Downloads the dataset 
+#Go to <path>/inference_introspection/optvaedatasets/wikicorp/
+#Parses the text and converts it into a BOW representation
+python tokenizer.py #(This step requires gensim)
 ipython trust *.ipynb
+#Uses the BOW representation and limits the vocabulary (change parameters to get different variants of this dataset)
 ipython notebook ProcessWikicorp.ipynb
-python wikicorp.py #Make sure the data can be loaded from python
+#Final check to ensure the data can be loaded from python
+python wikicorp.py 
 ```
