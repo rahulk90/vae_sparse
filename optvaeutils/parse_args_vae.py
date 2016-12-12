@@ -55,7 +55,7 @@ parser.add_argument('-rspec','--reg_spec', action='store',default = '_', help='S
 
 #Type of model being learned
 parser.add_argument('-itype','--input_type', action='store',default = 'normalize', help='For BOW: ',choices=['normalize','counts','tfidf'])
-parser.add_argument('-etype','--emission_type', action='store',default = 'mlp',choices=['mlp','res','conv'])
+parser.add_argument('-etype','--emission_type', action='store',default = 'mlp',choices=['mlp','res'])
 params = vars(parser.parse_args())
 
 hmap       = OrderedDict() 

@@ -1,3 +1,4 @@
+#Imports
 import six.moves.cPickle as pickle
 from collections import OrderedDict
 import sys, time, os
@@ -18,39 +19,13 @@ from utils.misc import readPickle
 
 class VAE(BaseModel, object):
     def __init__(self, params, paramFile=None, reloadFile=None, **kwargs):
-        if params['data_type']=='image':
-            assert params['emission_type']=='conv','Expecting convolutional emission'
         super(VAE,self).__init__(params, paramFile=paramFile, reloadFile=reloadFile, **kwargs)
         self.p_names = [k.name for k in self._getModelParams(restrict='p_')] 
     def _createParams(self):
-        """
-                    _createParams: create weights for model
-        """
+        """ _createParams: create weights for model """
         npWeights = OrderedDict()
         DIM_HIDDEN = self.params['q_dim_hidden']
-
-        #Parameters for the prior
-        if self.params['prior']   =='loggamma': #p(z) = Log-Gamma(z;\alpha_fixed, \beta_fixed)
-            npWeights['p_alpha']   = np.array([self.params['alpha']]*self.params['dim_stochastic']).astype(config.floatX)
-        elif self.params['prior'] =='loggamma_learn': #p(z) = Log-Gamma(z;\alpha_learned, \beta_fixed)
-            npWeights['p_alpha_W'] = self._getWeight((self.params['dim_stochastic'],))
-        elif self.params['prior'] =='abs_gamma': #p(z) = Gamma(|z|;\alpha, \beta)
-            npWeights['p_alpha']   = np.array([self.params['alpha']]*self.params['dim_stochastic']).astype(config.floatX)
-        elif self.params['prior'] =='abs_gamma_learn': #p(z) = Gamma(|z|;\alpha, \beta)
-            npWeights['p_alpha_W'] = self._getWeight((self.params['dim_stochastic'],))
-        elif self.params['prior'] =='logit':     #p(z) = Softmax(Normal(O,I))
-            pass
-        elif self.params['prior'] =='logit_learn':#p(z) = Softmax(Normal(mu_learned,logcov_learned))
-            npWeights['p_prior_mu_W']        = self._getWeight((self.params['dim_stochastic'],))
-            npWeights['p_prior_logcov_W']    = self._getWeight((self.params['dim_stochastic'],))
-        elif self.params['prior'] =='normal':
-            pass
-        elif self.params['prior'] =='normal_learn':
-            npWeights['p_prior_mu_W']        = self._getWeight((self.params['dim_stochastic'],))
-            npWeights['p_prior_logcov_W']    = self._getWeight((self.params['dim_stochastic'],))
-        else:
-            assert False,'Invalid prior specified'
-        #Weights in recognition network model
+        #Inference Network
         if self.params['emission_type'] in ['mlp','res']:
             for q_l in range(self.params['q_layers']):
                 dim_input     = DIM_HIDDEN
@@ -61,18 +36,12 @@ class VAE(BaseModel, object):
                 npWeights['q_'+str(q_l)+'_b'] = self._getWeight((dim_output, ))
             if self.params['q_layers']==0:
                 DIM_HIDDEN    = self.params['dim_observations']
-        elif self.params['emission_type'] in ['conv']:    
-            npWeights['q_filter_W_0'] = self._getWeight((64, 3, 5, 5)) 
-            npWeights['q_filter_W_1'] = self._getWeight((128, 64, 5, 5))
-            npWeights['q_2_W']        = self._getWeight((128*6*6,DIM_HIDDEN))
-            npWeights['q_2_b']        = self._getWeight((DIM_HIDDEN))
         else:
             assert False,'Shouldnt be here'
         npWeights['q_mu_W']  = self._getWeight((DIM_HIDDEN, self.params['dim_stochastic']))
         npWeights['q_logcov_W'] = self._getWeight((DIM_HIDDEN, self.params['dim_stochastic']))
         npWeights['q_mu_b']  = self._getWeight((self.params['dim_stochastic'],))
         npWeights['q_logcov_b'] = self._getWeight((self.params['dim_stochastic'],))
-        
         #Generative Model
         if self.params['emission_type'] in ['res','mlp']:
             for p_l in range(self.params['p_layers']):
@@ -89,14 +58,6 @@ class VAE(BaseModel, object):
                 DIM_HIDDEN = self.params['dim_stochastic']
             npWeights['p_mean_W']     = self._getWeight((DIM_HIDDEN, self.params['dim_observations']))
             npWeights['p_mean_b']     = self._getWeight((self.params['dim_observations'],))
-        elif self.params['emission_type'] in ['conv']:
-            npWeights['p_1_W']  = self._getWeight((self.params['dim_stochastic'],128*8*8)) 
-            npWeights['p_1_b']  = self._getWeight((128*8*8,)) 
-            #Convolutional filters
-            npWeights['p_filter_W_2']   = self._getWeight((64,128,5,5))
-            npWeights['p_filter_W_3']   = self._getWeight((3,64,5,5))
-            #Final convolution filter to predict
-            npWeights['p_filter_W_out'] = self._getWeight((256*3,3,1,1))
         else:
             assert False,'Shouldnt be here'
         return npWeights
@@ -109,8 +70,6 @@ class VAE(BaseModel, object):
         if self.params['data_type']=='bow':
             X[m0]=0
             X[m1]=400
-        elif self.params['data_type']=='image':
-            X = np.random.random_integers(0,255,(2,3,32,32)).astype(config.floatX)
         else:
             X[m0]=0
             X[m1]=1
@@ -121,37 +80,6 @@ class VAE(BaseModel, object):
         """  KL divergence between N(mu,logcov)||N(0,log I) """
         if self.params['prior']=='normal':
             KL      = 0.5*(-logcov-1+T.exp(logcov)+mu**2)
-        elif self.params['prior'] in ['loggamma','loggamma_learn']:
-            #KL     = -(N/2.)*np.log(2*np.pi) - N/2. - 0.5*logcov.sum() 
-            KL     = -0.5* (T.log(2*np.pi) + 1. + logcov) 
-            if 'p_alpha_W' in self.tWeights: #(ds,)
-                alpha  = T.nnet.softplus(self.tWeights['p_alpha_W'])
-                beta   = T.ones_like(alpha)
-            else:
-                #expecting positivity of shared variables
-                alpha  = self.tWeights['p_alpha']
-                beta   = T.ones_like(alpha)
-                assert np.all(alpha.eval()>=0.),'Checking positivity'
-            KL     = KL - alpha*T.log(beta) +T.gammaln(alpha)-alpha*mu +beta*T.exp(mu+T.exp(logcov)/2.) 
-        elif self.params['prior'] in ['abs_gamma','abs_gamma_learn']:
-            KL = -0.5* (T.log(2*np.pi) + 1. + logcov) 
-            if 'p_alpha_W' in self.tWeights: #(ds,)
-                alpha  = T.nnet.softplus(self.tWeights['p_alpha_W'])
-                beta   = T.ones_like(alpha)
-            else:
-                assert np.all(self.tWeights['p_alpha'].eval()>=0.),'Checking positivity'
-                alpha  = self.tWeights['p_alpha']
-                beta   = T.ones_like(alpha)
-            KL = KL- (alpha*T.log(beta) -T.gammaln(alpha) + (alpha-1)*T.log(abs(z)) -beta*abs(z)-T.log(2)) 
-        elif self.params['prior'] in ['logit','logit_learn','normal_learn']:
-            if 'p_prior_mu_W' in self.tWeights:
-                mu_p       = self.tWeights['p_prior_mu_W']
-                logcov_p   = self.tWeights['p_prior_logcov_W']
-            else:
-                mu_p       = T.zeros((self.params['dim_stochastic'],))
-                logcov_p   = T.zeros((self.params['dim_stochastic'],))
-            diff = (mu-mu_p)**2
-            KL   = 0.5*(logcov_p-logcov -1 + T.exp(logcov-logcov_p) + diff*T.exp(-logcov_p)) 
         else:
             assert False,'Shouldnt be here. invalid prior model'
         if keepmat:
@@ -160,6 +88,7 @@ class VAE(BaseModel, object):
             return KL.sum(1,keepdims=True)
 
     def logsoftmax(self, mat):
+        "Logsoftmax along dimension 1 (unless vector)"
         if mat.ndim==1:
             maxval  = mat.max()
             result  = mat-(maxval+T.log(T.sum(T.exp(mat-maxval))+1e-6))
@@ -168,89 +97,29 @@ class VAE(BaseModel, object):
             result  = mat-(maxval+T.log(T.sum(T.exp(mat-maxval),axis=1,keepdims=True)+1e-6))
         return result
 
-    """
-        My conv ops
-    """
-    def deconv(self,X, w, b=None):
-        s = int(np.floor(w.get_value().shape[-1]/2.))
-        img   = gpu_contiguous(X)
-        kerns = gpu_contiguous(w)
-        z = conv2d(img, kerns, border_mode='full')[:, :, s:-s, s:-s]
-        if b is not None:
-            z += b.dimshuffle('x', 0, 'x', 'x')
-        return z
-    def depool(self,X, factor=2):
-        output_shape = [
-            X.shape[1],
-            X.shape[2]*factor,
-            X.shape[3]*factor
-        ]
-        stride = X.shape[2]
-        offset = X.shape[3]
-        in_dim = stride * offset
-        out_dim = in_dim * factor * factor
-        upsamp_matrix = T.zeros((in_dim, out_dim))
-        rows = T.arange(in_dim)
-        cols = rows*factor + (rows//stride * factor * offset)
-        upsamp_matrix = T.set_subtensor(upsamp_matrix[rows, cols], 1.)
-        flat = T.reshape(X, (X.shape[0], output_shape[0], X.shape[2] * X.shape[3]))
-        up_flat = T.dot(flat, upsamp_matrix)
-        upsamp = T.reshape(up_flat, (X.shape[0], output_shape[0],
-                                     output_shape[1], output_shape[2]))
-        return upsamp
-    def deconv_and_depool(self, X, w, b=None, activation=T.nnet.relu):
-        return activation(self.deconv(self.depool(X), w, b))
-
-    def conv_and_pool(self, X, W ):
-        #Drops spatial dimensions by half
-        res = T.nnet.abstract_conv.conv2d(X, W, border_mode='valid', subsample=(1, 1), filter_flip=True)
-        return pool_2d(T.nnet.relu(res),(2,2),padding=(1,1), mode='average_inc_pad', ignore_border=True)
-
-    def deconv2(self, hin, W_t): 
-        inpshape= hin.shape
-        W_shape = self.npWeights[W_t.name].shape
-        outpshp = (None, W_shape[1], inpshape[-2]+1, inpshape[-1]+1)
-        res = T.nnet.abstract_conv.conv2d_grad_wrt_inputs(hin, W_t, outpshp, 
-                                                  filter_shape=None, border_mode='valid', 
-                                                  subsample=(1, 1), filter_flip=True)
-        return res
-    def hard_tanh(self, x):
-        return T.clip(x, -1., 1.)
-    def _conditionalXgivenZ(self, z, validation = False, additional = {}):
-        """
-                                Mean Probabilities under p_theta(x|z) 
-        """
-        assert self.params['data_type'] in ['real','binary','bow','image'],'Only binary data/bow'
-        if self.params['prior'] in ['loggamma','loggamma_learn']:
-            inp_p   = T.exp(z)
-        elif self.params['prior'] in ['abs_gamma','abs_gamma_learn']:
-            inp_p   = abs(z)
-        elif self.params['prior'] in ['logit','logit_learn']:
-            inp_p   = T.nnet.softmax(z)
-        elif self.params['prior'] in ['normal','normal_learn']:
-            inp_p   = z
-        else:
-            assert False,'Invalid prior'
+    def _conditionalXgivenZ(self, z, additional = {}):
+        """ Mean Probabilities under p_theta(x|z) """
+        assert self.params['data_type'] in ['real','binary','bow'],'Only binary data/bow'
+        inp_p   = z
         if self.params['emission_type'] in ['res','mlp']:
             for p_l in range(self.params['p_layers']):
                 inp_p= self._LinearNL(self.tWeights['p_'+str(p_l)+'_W'], self.tWeights['p_'+str(p_l)+'_b'], inp_p)
             paramMat = T.dot(inp_p,self.tWeights['p_mean_W'])
             if self.params['emission_type']=='res':
                 paramMat += T.dot(z,self.tWeights['p_linz_W'])
-            #Data types
+            #Different kinds of data to model
             if self.params['data_type']=='binary':
-                E = paramMat+self.tWeights['p_mean_b']
+                E               = paramMat + self.tWeights['p_mean_b']
                 additional['E'] = E
-                mean_p        = T.nnet.sigmoid(E)
+                mean_p          = T.nnet.sigmoid(E)
                 return mean_p
             elif self.params['data_type'] == 'bow':
-                E = paramMat+self.tWeights['p_mean_b']
+                E = paramMat + self.tWeights['p_mean_b']
                 additional['E'] = E
                 if self.params['likelihood']=='mult':
                     emb    = self.logsoftmax(E)
                     return emb
                 elif self.params['likelihood']=='poisson':
-                    #Positive real valued parameter
                     loglambda_p=E
                     return loglambda_p
                 else:
@@ -260,23 +129,9 @@ class VAE(BaseModel, object):
                 additional['E'] = E
                 return (E,T.zeros_like(E))
             else:
-                assert False,'shouldnt be here'
-        elif self.params['emission_type'] in ['conv']:
-            assert False,'not implemented'
-            assert self.params['data_type'] == 'image','expecting image'
-            #Convolutional decoder
-            h2 = T.nnet.relu(T.dot(inp_p, self.tWeights['p_1_W']) + self.tWeights['p_1_b'])
-            h2 = h2.reshape((h2.shape[0], 128,8,8))
-            h3 = self.deconv_and_depool(h2, self.tWeights['p_filter_W_2'])
-            h4 = self.deconv_and_depool(h3, self.tWeights['p_filter_W_3'])
-            #h3 = T.nnet.relu(self.deconv(h2, self.tWeights['p_filter_W_2']))
-            #h4 = T.nnet.relu(self.deconv(h3, self.tWeights['p_filter_W_3']))
-            outp  = self.hard_tanh(conv2d(h4, self.tWeights['p_filter_W_out']))
-            outp = outp.reshape((outp.shape[0],256,3*32*32))
-            emb= self.logsoftmax(outp)
-            return emb
+                assert False,'Bad data_type:' + str(self.params['data_type'])
         else:
-            assert False,'Shouldnt be here'
+            assert False,'Bad emission_type: '+str(self.params['emission_type'])
     
     def _negCLL(self, z, X, validation = False):
         """Estimate -log p[x|z]"""
@@ -300,29 +155,17 @@ class VAE(BaseModel, object):
             mu,logvar= params[0], params[1]
             p_x_z    = mu  
             negCLL_m = 0.5 * np.log(2 * np.pi) + 0.5*logvar + 0.5 * ((X - mu_p)**2)/T.exp(logvar)
-        elif self.params['data_type']=='image':
-            emb      = self._conditionalXgivenZ(z)
-            p_x_z    = T.argmax(T.exp(emb),1).reshape((emb.shape[0],3,32,32))
-            #emb should be bs x 256 x (3x32x32)
-            idx_t    = X.ravel()
-            shuf     = emb.dimshuffle(0,2,1).reshape((-1,256))
-            negCLL_m = -1*shuf[T.arange(shuf.shape[0]), T.cast(idx_t,'int64')].reshape((emb.shape[0],emb.shape[2]))
         else:
-            assert False,'Shouldnt be here'
+            assert False,'Bad data_type: '+str(self.params['data_type'])
         return p_x_z, negCLL_m.sum(1,keepdims=True)
     
     def _inference(self, X, dropout_prob = 0.):
-        """
-                          Build subgraph to do inference 
-        """
+        """ Subgraph to do inference """
         self._p(('Inference with dropout :%.4f')%(dropout_prob))
         if self.params['data_type']=='bow':
-            #inp = X/float(self.params['max_word_count']) 
             if self.params['input_type']=='counts':
-                #inp  = X #Counts
                 inp = X/float(self.params['max_word_count']) 
             elif self.params['input_type']=='normalize':
-                #Normalized
                 inp  = (X/X.sum(1,keepdims=True))#*float(self.params['max_word_count'])#T.cast(X.shape[1],'float32')
             elif self.params['input_type']=='tfidf':
                 #TF-IDF
@@ -331,22 +174,14 @@ class VAE(BaseModel, object):
                 inp  = tfidf/T.sqrt((tfidf**2).sum(1,keepdims=True)) 
             else:
                 assert False,'Invalid input type'
-        elif self.params['data_type']=='image':
-            inp  = X/X.max()
         else:
             inp = self._dropout(X,dropout_prob)
 
         if self.params['emission_type'] in ['mlp','res']:
             for q_l in range(self.params['q_layers']):
                 inp = self._LinearNL(self.tWeights['q_'+str(q_l)+'_W'], self.tWeights['q_'+str(q_l)+'_b'], inp)
-        elif self.params['emission_type'] in ['conv']:
-            #Convolutional Encoder
-            h1  = self.conv_and_pool(inp, self.tWeights['q_filter_W_0'])
-            h2  = self.conv_and_pool(h1, self.tWeights['q_filter_W_1'])
-            h2  = h2.reshape((h2.shape[0], -1))
-            inp = T.nnet.relu(T.dot(h2,self.tWeights['q_2_W']) + self.tWeights['q_2_b'])
         else:
-            assert False,'invalid setup'
+            assert False,'Bad emission_type:'+str(self.params['emission_type'])
         mu      = T.dot(inp,self.tWeights['q_mu_W'])    +self.tWeights['q_mu_b']
         logcov  = T.dot(inp,self.tWeights['q_logcov_W'])+self.tWeights['q_logcov_b']
         return mu, logcov
@@ -354,15 +189,12 @@ class VAE(BaseModel, object):
     ################################    Building Objective Functions #####################
     def _ELBO(self, X, eps = None, mu_q=None, logcov_q=None, anneal = 1., 
               dropout_prob = 0., savedict = None, batch_vec = False):
-        """
-                          Wrapper for ELBO
-        """
+        """ Wrapper for ELBO """
         if mu_q is None and logcov_q is None:
             mu_q, logcov_q = self._inference(X, dropout_prob)
         if eps is None:
-            #use in scan operator we need to take eps as arg
             eps = self.srng.normal(size=mu_q.shape,dtype=config.floatX)
-        z = mu_q+eps*T.exp(logcov_q*0.5)
+        z              = mu_q+eps*T.exp(logcov_q*0.5)
         mean_p, negCLL = self._negCLL(z, X, validation=dropout_prob==0.)
         KL             = self._KL(mu_q, logcov_q, z, keepmat=True)
         #Collect statistics
@@ -379,6 +211,7 @@ class VAE(BaseModel, object):
         return bound
     
     def adamUpdates(self, it_k, paramlist, gradlist, m_list, v_list, plr):
+        """Adam for local variational parameters"""
         m_new_list, v_new_list, param_new_list = [], [], []
         b1,b2  = 0.9, 0.001
         fix1   = 1. - (1. - b1)**it_k
@@ -393,8 +226,9 @@ class VAE(BaseModel, object):
             v_new_list.append(v_t)
             param_new_list.append(p_t)
         return param_new_list, m_new_list, v_new_list
+
     def _optimizeVariationalParams(self, X, mu0, logcov0, n_steps, plr, savedict = {}, force_resample = False):
-        """  Wrapper to optimize variational parameters
+        """             Wrapper to optimize variational parameters
                         mu0,logcov0 - initial variational parameters
                         n_steps     - number of steps to perform optimization
                         plr         - learning rate for variational parameters
@@ -528,16 +362,9 @@ class VAE(BaseModel, object):
 
     ################################    Building Model #####################
     def _buildModel(self):
-        """
-                                       ******BUILD VAE GRAPH******
-        """
-        #Update optimizer
+        """ Build VAE Graph """
         self.optimizer = adam
-        
-        if self.params['data_type']=='image':
-            X   = T.tensor4('X',   dtype=config.floatX)
-        else:
-            X   = T.matrix('X',   dtype=config.floatX)
+        X   = T.matrix('X',   dtype=config.floatX)
         X.tag.test_value, mu_tag  = self._fakeData()
                                        
         #Learning rates and annealing objective function
@@ -647,52 +474,13 @@ class VAE(BaseModel, object):
                                                dictopt['n_steps'], dictopt['gradnorm_mu_its'][-1], 
                                                dictopt['gradnorm_logcov_its'][-1],diff_elbo, diff_ent],#+gdiffs, 
                                               updates = optimizer_p, name = 'Train P')
-            
             ##################                UPDATE Q           ######################
             q_params                 = self._getModelParams(restrict='q_')
-            if self.params['q_strategy']=='standard':
-                elbo                     = self._ELBO(X,  dropout_prob = self.params['input_dropout'], anneal = anneal)
-                optimizer_q, norm_list_q = self._setupOptimizer(elbo, q_params,
-                                                            lr = lr, 
+            elbo                     = self._ELBO(X,  dropout_prob = self.params['input_dropout'], anneal = anneal)
+            optimizer_q, norm_list_q = self._setupOptimizer(elbo, q_params,lr = lr, 
                                                         grad_noise = self.params['grad_noise'],
                                                         rng = self.srng)
-                self.update_q   = theano.function([X], elbo,
-                                                  updates = optimizer_q, name = 'Train Q')
-            elif self.params['q_strategy']=='bhatt':
-                cost_bhatt = BhattacharryaGaussian(mu_q_0, logcov_q_0, mu_f_dgrad, logcov_f_dgrad, logCov = True)
-                updates_q_bhatt, _ = self._setupOptimizer(cost_bhatt, q_params,
-                                                            lr = lr,  
-                                                        grad_noise = self.params['grad_noise'],
-                                                        rng = self.srng)
-                self.update_q_bhatt = theano.function([X,theano.In(n_steps, value=self.params['n_steps'], name='n_steps'),theano.In(plr, value=self.params['param_lr'], name='plr')], cost_bhatt,
-                                                      updates = updates_q_bhatt, name = 'Train Q Bhatt')
-            elif self.params['q_strategy']=='kl_f_0':
-                cost_kl_f_0 = KLGaussian(mu_f_dgrad, logcov_f_dgrad, mu_q_0, logcov_q_0, logCov = True)
-                updates_q_f_0, _ = self._setupOptimizer(cost_kl_f_0, q_params,
-                                                        lr = lr,  
-                                                        grad_noise = self.params['grad_noise'],
-                                                        rng = self.srng)
-                self.update_q_kl_f_0= theano.function([X,theano.In(n_steps, value=self.params['n_steps'], name='n_steps'),theano.In(plr, value=self.params['param_lr'], name='plr')], cost_kl_f_0,
-                                                      updates = updates_q_f_0, name = 'Train Q f-0')
-            elif self.params['q_strategy']=='kl_0_f':
-                cost_kl_0_f= KLGaussian(mu_q_0, logcov_q_0, mu_f_dgrad, logcov_f_dgrad, logCov = True)
-                updates_q_0_f, _ = self._setupOptimizer(cost_kl_0_f, q_params,
-                                                        lr = lr,  
-                                                        grad_noise = self.params['grad_noise'],
-                                                        rng = self.srng)
-                self.update_q_kl_0_f= theano.function([X,theano.In(n_steps, value=self.params['n_steps'], name='n_steps'),theano.In(plr, value=self.params['param_lr'], name='plr')], cost_kl_0_f,
-                                                      updates = updates_q_0_f, name = 'Train Q 0-f')
-            elif self.params['q_strategy']=='symmetric_kl':
-                cost_symkl = KLGaussian(mu_q_0, logcov_q_0, mu_f_dgrad, logcov_f_dgrad, logCov = True)+KLGaussian(mu_f_dgrad, logcov_f_dgrad,mu_q_0, logcov_q_0, logCov = True)
-                updates_q_symkl, _ = self._setupOptimizer(cost_symkl, q_params,
-                                                        lr = lr, 
-                                                        grad_noise = self.params['grad_noise'],
-                                                        rng = self.srng)#,
-                self.update_q_symkl = theano.function([X,theano.In(n_steps, value=self.params['n_steps'], 
-                    name='n_steps'),theano.In(plr, value=self.params['param_lr'], name='plr')], cost_symkl,
-                                                      updates = updates_q_symkl, name = 'Train Q SKL')
-            else:
-                assert False,'Invalid q_strategy'
+            self.update_q   = theano.function([X], elbo, updates = optimizer_q, name = 'Train Q')
         else:
             assert False,'Invalid optimization type: '+self.params['opt_type']
         self._p('Done creating functions for training')
