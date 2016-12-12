@@ -66,3 +66,10 @@ ipython notebook ProcessWikicorp.ipynb
 ```bash
 python wikicorp.py 
 ```
+
+### Synthetic
+* Synthetic datasets obtained from scikit-learn's page on [Dimensionality Reduction](http://scikit-learn.org/stable/auto_examples/manifold/plot_compare_methods.html) 
+```bash
+#Setup by running
+python synthetic.py
+```

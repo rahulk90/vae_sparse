@@ -3,10 +3,7 @@ import numpy as np
 from sklearn import manifold, datasets
 from sklearn.utils import check_random_state
 
-"""
-Synthetic datasets 
-
-"""
+""" Synthetic datasets """
 def fitReductions(dataset):
     X = dataset['train']
     n_neighbors = 10
