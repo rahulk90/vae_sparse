@@ -1,4 +1,4 @@
-# Pre-Optimizing VAEs
+# Inference \& Introspection in Deep Generative Models of Sparse Data
 
 Rahul G. Krishnan (rahul@cs.nyu.edu)
 
