@@ -48,8 +48,33 @@ def _loadWikicorp():
         dataset['vocabulary_singular'] = objs[2]
         return dataset
 
-
+def _loadWikicorpSubset(kval):
+    assert kval in [2000,5000,10000],'Bad value: '+str(kval) 
+    DIR = os.path.dirname(os.path.realpath(__file__)).split('opt-vae')[0]+'opt-vae/optvaedatasets/wikicorp'
+    assert type(kval) is int,'Expecting kval as int'
+    h5file = DIR+'/data.h5'
+    pklfile= DIR+'/misc.pkl'
+    assert os.path.exists(h5file) and os.path.exists(pklfile),'Please run _loadWikicorp to generate data.h5'
+    #Load Wikicorp raw data
+    train= loadSparseHDF5('train',h5file).tocsc()
+    valid= loadSparseHDF5('valid',h5file).tocsc()
+    test = loadSparseHDF5('test',h5file).tocsc()
+    objs = readPickle(DIR+'/misc.pkl',nobjects=3)
+    vocabulary          = objs[1]
+    
+    sumfeats = np.array(train.sum(0)).squeeze()
+    idx_sort = np.argsort(sumfeats)
+    idx_to_keep = idx_sort[-kval:]
+    dset = {}
+    dset['vocabulary'] = [vocabulary[idx] for idx in idx_to_keep.squeeze().tolist()]
+    dset['train']      = train[:,idx_to_keep].tocsr()
+    dset['valid']      = valid[:,idx_to_keep].tocsr()
+    dset['test']       = test[:,idx_to_keep].tocsr()
+    dset['dim_observations'] = dset['train'].shape[1]
+    dset['data_type']  = 'bow'
+    return dset
 
 if __name__=='__main__':
     dataset = _loadWikicorp()
+    dataset = _loadWikicorpSubset(2000)
     import ipdb;ipdb.set_trace()
