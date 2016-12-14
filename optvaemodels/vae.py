@@ -22,44 +22,41 @@ class VAE(BaseModel, object):
         super(VAE,self).__init__(params, paramFile=paramFile, reloadFile=reloadFile, **kwargs)
         self.p_names = [k.name for k in self._getModelParams(restrict='p_')] 
     def _createParams(self):
-        """ _createParams: create weights for model """
+        """ _createParams: create weights learned and used in model """
         npWeights = OrderedDict()
         DIM_HIDDEN = self.params['q_dim_hidden']
         #Inference Network
-        if self.params['emission_type'] in ['mlp','res']:
-            for q_l in range(self.params['q_layers']):
-                dim_input     = DIM_HIDDEN
-                dim_output    = DIM_HIDDEN
-                if q_l==0:
-                    dim_input     = self.params['dim_observations']
-                npWeights['q_'+str(q_l)+'_W'] = self._getWeight((dim_input, dim_output))
-                npWeights['q_'+str(q_l)+'_b'] = self._getWeight((dim_output, ))
-            if self.params['q_layers']==0:
-                DIM_HIDDEN    = self.params['dim_observations']
-        else:
-            assert False,'Shouldnt be here'
+        if self.params['emission_type'] not in ['mlp','res']:
+            raise ValueError('emission_type :'+str(self.params['emission_type'])+' not recognized')
+        for q_l in range(self.params['q_layers']):
+            dim_input     = DIM_HIDDEN
+            dim_output    = DIM_HIDDEN
+            if q_l==0:
+                dim_input     = self.params['dim_observations']
+            npWeights['q_'+str(q_l)+'_W'] = self._getWeight((dim_input, dim_output))
+            npWeights['q_'+str(q_l)+'_b'] = self._getWeight((dim_output, ))
+        if self.params['q_layers']==0:
+            DIM_HIDDEN    = self.params['dim_observations']
+
         npWeights['q_mu_W']  = self._getWeight((DIM_HIDDEN, self.params['dim_stochastic']))
         npWeights['q_logcov_W'] = self._getWeight((DIM_HIDDEN, self.params['dim_stochastic']))
         npWeights['q_mu_b']  = self._getWeight((self.params['dim_stochastic'],))
         npWeights['q_logcov_b'] = self._getWeight((self.params['dim_stochastic'],))
         #Generative Model
-        if self.params['emission_type'] in ['res','mlp']:
-            for p_l in range(self.params['p_layers']):
-                dim_input     = self.params['p_dim_hidden']
-                dim_output    = dim_input
-                if p_l==0:
-                    dim_input     = self.params['dim_stochastic']
-                npWeights['p_'+str(p_l)+'_W'] = self._getWeight((dim_input, dim_output))
-                npWeights['p_'+str(p_l)+'_b'] = self._getWeight((dim_output, ))
-            if self.params['emission_type']=='res':
-                npWeights['p_linz_W'] = self._getWeight((self.params['dim_stochastic'],self.params['dim_observations']))
-            DIM_HIDDEN     = self.params['p_dim_hidden']
-            if self.params['p_layers']==0:
-                DIM_HIDDEN = self.params['dim_stochastic']
-            npWeights['p_mean_W']     = self._getWeight((DIM_HIDDEN, self.params['dim_observations']))
-            npWeights['p_mean_b']     = self._getWeight((self.params['dim_observations'],))
-        else:
-            assert False,'Shouldnt be here'
+        for p_l in range(self.params['p_layers']):
+            dim_input     = self.params['p_dim_hidden']
+            dim_output    = dim_input
+            if p_l==0:
+                dim_input     = self.params['dim_stochastic']
+            npWeights['p_'+str(p_l)+'_W'] = self._getWeight((dim_input, dim_output))
+            npWeights['p_'+str(p_l)+'_b'] = self._getWeight((dim_output, ))
+        if self.params['emission_type']=='res':
+            npWeights['p_linz_W'] = self._getWeight((self.params['dim_stochastic'],self.params['dim_observations']))
+        DIM_HIDDEN     = self.params['p_dim_hidden']
+        if self.params['p_layers']==0:
+            DIM_HIDDEN = self.params['dim_stochastic']
+        npWeights['p_mean_W']     = self._getWeight((DIM_HIDDEN, self.params['dim_observations']))
+        npWeights['p_mean_b']     = self._getWeight((self.params['dim_observations'],))
         return npWeights
     
     def _fakeData(self):
@@ -300,8 +297,7 @@ class VAE(BaseModel, object):
 
     ##################                EVALUATION        ######################
     def _buildEvaluationFunctions(self, X,n_steps,plr):
-        """
-            Build functions for evaluation. X: input,evaluation_bound: bound for evaluation
+        """ Build functions for evaluation. X: input,evaluation_bound: bound for evaluation
             evaldict: dictionary containing z/mu/logcov and other arrays that might need inspection
             additional_inputs: used to support finopt where you need to have n_steps etc
         """
@@ -332,9 +328,12 @@ class VAE(BaseModel, object):
         self.inferencef = theano.function(fxn_inputs, [evaldictf['z'], 
                                                        evaldictf['mu_q'], evaldictf['logcov_q'] ,evaldictf['KL']], 
                                           name = 'Posterior Inference F ')
+        #Create a theano input to estimate the Jacobian with respect to
         z0       = T.vector('z')
         z0.tag.test_value = np.random.randn(self.params['dim_stochastic']).astype(config.floatX)
-        #m0,_        = self._negCLL(z0, X) #This computes Jacobian wrt probabilities
+        """
+        Estimating Jacobian Vectors
+        """
         additional   = {}
         lsf          = self._conditionalXgivenZ(z0,additional=additional) #This computes Jacobian wrt log-probabilities, For poisson models this is the logmean
         if self.params['data_type']=='real':
@@ -344,20 +343,14 @@ class VAE(BaseModel, object):
         jacob_logprobs = theano.gradient.jacobian(lsf,wrt=z0)
         jacob_probs    = theano.gradient.jacobian(T.exp(lsf),wrt=z0)
         jacob_logprobs_mnist = theano.gradient.jacobian(T.log(lsf),wrt=z0) #For use w/ binarized mnist only
-
         self.jacobian_logprobs = theano.function([z0],jacob_logprobs,name='Jacobian wrt Log-Probs')   
         self.jacobian_probs    = theano.function([z0],jacob_probs,name='Jacobian')   
         self.jacobian_energy   = theano.function([z0],jacob_energy,name='Jacobian wrt energy')   
-
+        #Evaluating perplexity
         if self.params['data_type']=='bow':
             X_count     = X.sum(1,keepdims=True)
             self.evaluatePerp = theano.function(fxn_inputs, [(elbo_init_batch/X_count).sum(), 
                 (elbo_final_batch/X_count).sum(), evaldictopt['n_steps'], diff_elbo, diff_ent])
-        elif self.params['data_type']=='image':
-            #X: bs x 3 x 32 x 32
-            prod_of_dim = T.cast(X.shape[1:].prod(),config.floatX)*T.log(2.)
-            self.evaluateBitsDim = theano.function(fxn_inputs, [elbo_init_batch.sum()/prod_of_dim, 
-                elbo_final_batch.sum()/prod_of_dim, evaldictopt['n_steps'], diff_elbo, diff_ent])
         self.debugModel  = theano.function([X], [evaldict0['elbo_batch'].sum(), evaldict0['negCLL'].sum(),evaldict0['KLmat'].sum()])
 
     ################################    Building Model #####################
@@ -392,9 +385,7 @@ class VAE(BaseModel, object):
             self._p('Not building training functions...')
             return
         if self.params['opt_type']=='none':
-            """
-            none: simple vae optimization.
-            """
+            """ none: simple vae optimization """
             traindict = {}
             upperbound_train         = self._ELBO(X, anneal = anneal, 
                                         dropout_prob = self.params['input_dropout'], savedict=traindict)
@@ -422,24 +413,7 @@ class VAE(BaseModel, object):
             self.train      = theano.function(fxn_inputs, [upperbound_train, norm_list[0], norm_list[1], norm_list[2],
                                                            anneal.sum(), lr.sum()],
                                               updates = optimizer_up, name = 'Train')
-        elif self.params['opt_type'] in ['miao','miao_ascent']:
-            dictf              = {}
-            elbo               = self._ELBO(X, dropout_prob = self.params['input_dropout'], anneal=anneal, savedict=dictf)
-            p_params                 = self._getModelParams(restrict='p_')
-            optimizer_p, norm_list_p = self._setupOptimizer(elbo, p_params,
-                                                        lr = lr, grad_noise = self.params['grad_noise'], rng = self.srng)
-            self._p('# additional updates: '+str(len(self.updates)))
-            self.updates_ack     = True
-            optimizer_p         += self.updates+anneal_update
-            self.update_p        = theano.function([X],
-                                              [elbo, norm_list_p[0], norm_list_p[1], norm_list_p[2],
-                                               anneal.sum(), lr.sum()], 
-                                              updates = optimizer_p, name = 'Train P')
-            q_params                 = self._getModelParams(restrict='q_')
-            optimizer_q, norm_list_q = self._setupOptimizer(elbo, q_params,
-                                                            lr = lr, grad_noise = self.params['grad_noise'], rng = self.srng)
-            self.update_q   = theano.function([X], elbo, updates = optimizer_q, name = 'Train Q')
-        elif self.params['opt_type'] in ['finopt','finopt_mult']:
+        elif self.params['opt_type'] in ['finopt']:
             ##################                UPDATE  P         ######################
             dict0,dictopt,dictf = {},{},{}
             mu_q_0, logcov_q_0 = self._inference(X)
