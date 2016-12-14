@@ -1,3 +1,19 @@
+""" Download text from wikipedia """
+import urllib2,re
+def getResponse(url):
+    response = urllib2.urlopen(url)
+    html = response.read()
+    return html
+
+def parseWiki(word):
+    URL = ('https://en.wikipedia.org/w/index.php?title=%s&action=raw'%(word))
+    result = getResponse(URL)
+    sentence = re.sub('[^A-Za-z ]+', ' ', result)
+    result = ' '.join([word.strip().lower() for word in sentence.split(' ') if len(word.strip())>=1])
+    return result
+#result = parseWiki('bird')
+#import ipdb;ipdb.set_trace()
+
 """ List of polysemous words, and context words """
 polysemous_words = {}
 
