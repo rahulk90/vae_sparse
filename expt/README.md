@@ -1,6 +1,4 @@
 ## Experimental Setup
-Contact: Rahul G. Krishnan (rahul@cs.nyu.edu)
-
 
 ## Code for setting up experiments
 * [`setupExperiments.py`](setupExperiments.py) 

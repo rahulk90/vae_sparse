@@ -1,5 +1,4 @@
 ## Model Setup
-Contact: Rahul G. Krishnan (rahul@cs.nyu.edu)
 
 ## Setup
 * Run `python polysemous_words.py` to setup a folder to evaluate conditional Jacobians

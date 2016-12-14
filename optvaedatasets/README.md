@@ -1,5 +1,4 @@
 ## Datasets
-Contact: Rahul G. Krishnan (rahul@cs.nyu.edu)
 
 ## Setup instructions:
 For each dataset below, follow the provided instructions to setup each one. 
