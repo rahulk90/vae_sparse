@@ -7,6 +7,7 @@
 ## Code for setting up experiments
 * [`setupExperiments.py`](setupExperiments.py) 
 	* Use this with different options (see inside file) for setting up different experiments on different datasets 
+	* The pre-specified options here detail settings used in the paper
 * [`getTestResults.py`](getTestResults.py) 
 	* Use this to obtain all the saved test time accuracies from the checkpoint files
 * [`compileTiming.py`](compileTiming.py) 
