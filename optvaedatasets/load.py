@@ -28,7 +28,7 @@ def loadDataset(dsetname):
         return wikicorp._loadWikicorp()
     elif dsetname in ['synthetic_ball','synthetic_s']:
         return synthetic._loadSynthetic(dsetname)
-    elif dsetname in ['wikicorp_2000','wikicorp_5000','wikicorp_10000']:
+    elif dsetname in ['wikicorp_1000','wikicorp_5000','wikicorp_10000']:
         return wikicorp._loadWikicorpSubset(int(dsetname.split('_')[1]))
     else:
         assert False,'Invalid dataset name: '+str(dsetname)

@@ -49,7 +49,7 @@ def _loadWikicorp():
         return dataset
 
 def _loadWikicorpSubset(kval):
-    assert kval in [2000,5000,10000],'Bad value: '+str(kval) 
+    assert kval in [1000,5000,10000],'Bad value: '+str(kval) 
     DIR = os.path.dirname(os.path.realpath(__file__)).split('opt-vae')[0]+'opt-vae/optvaedatasets/wikicorp'
     assert type(kval) is int,'Expecting kval as int'
     h5file = DIR+'/data.h5'
