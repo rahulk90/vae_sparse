@@ -4,11 +4,9 @@
 
 ## Requirements
 
-python2.7
-
-[theano](http://deeplearning.net/software/theano/)
-
-[theanomodels](https://github.com/clinicalml/theanomodels)
+* python2.7
+* [theano](http://deeplearning.net/software/theano/)
+* [theanomodels](https://github.com/clinicalml/theanomodels)
 
 ## Overview
 * This contains code to learn DLGMs/VAEs on sparse-non negative data (though it may be easily modified for other data types) while optimizing the variational 
