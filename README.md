@@ -16,3 +16,12 @@ parameters predicted by the inference network during learning
 * python2.7
 * [theano](http://deeplearning.net/software/theano/)
 * [theanomodels](https://github.com/clinicalml/theanomodels)
+
+
+## Reference
+The code here implements the models and techniques detailed in the paper:  
+```
+Inference & Introspection in Deep Generative Models of Sparse Data
+Rahul G. Krishnan, Matthew Hoffman
+(pdf coming soon)
+```
