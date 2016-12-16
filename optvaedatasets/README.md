@@ -32,12 +32,6 @@ python rcv2.py
 python newsgroups.py 
 ```
 
-```bash
-#Download and setup RCV2 dataset:
-python rcv2.py 
-```
-
-
 ### WordSim353/SCWS
 * Datasets that contain pairs of words along with human annotated metric of similarity 
 ```bash
