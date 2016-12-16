@@ -1,6 +1,6 @@
 # Inference \& Introspection in Deep Generative Models of Sparse Data
 
-#### [Rahul G. Krishnan](mailto:rahul@cs.nyu.edu)
+#### [Rahul G. Krishnan](mailto:rahul@cs.nyu.edu), [Matthew Hoffman](mailto:matt@matthewdhoffman.com)
 
 ## Overview
 * This contains code to learn DLGMs/VAEs on sparse-non negative data (though it may be easily modified for other data types) while optimizing the variational 
