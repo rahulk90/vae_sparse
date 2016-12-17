@@ -1,5 +1,5 @@
 """ Download text from wikipedia """
-import urllib2,re
+import urllib2,re,os
 def getResponse(url):
     response = urllib2.urlopen(url)
     html = response.read()
@@ -54,17 +54,16 @@ polysemous_words['crane']['c1'] = 'construction'
 polysemous_words['crane']['c2'] = 'bird'
 
 
-from wiki import parseWiki
-for word in polysemous_words:
-    w0 = polysemous_words[word]['c1']
-    w1 = polysemous_words[word]['c2']
-    polysemous_words[word]['c1_doc'] = parseWiki(w0)
-    polysemous_words[word]['c2_doc'] = parseWiki(w1)
-    print 'Downloading wikipedia entry for: ',w0,' ',w1
-import os
-fname = 'wordinfo.pkl'
-from utils.misc import savePickle  
-if os.path.exists(fname):
-    os.remove(fname)
-savePickle([polysemous_words],fname)
-print 'Saved: ',fname
+DIR  = os.path.dirname(os.path.realpath(__file__)).split('inference_introspection')[0]+'inference_introspection/optvaemodels'
+fname = DIR+'/'+'wordinfo.pkl'
+if not os.path.exists(fname):
+    for word in polysemous_words:
+        w0 = polysemous_words[word]['c1']
+        w1 = polysemous_words[word]['c2']
+        polysemous_words[word]['c1_doc'] = parseWiki(w0)
+        polysemous_words[word]['c2_doc'] = parseWiki(w1)
+    from utils.misc import savePickle  
+    if os.path.exists(fname):
+        os.remove(fname)
+    savePickle([polysemous_words],fname)
+    print 'Saved: ',fname

@@ -1,8 +1,9 @@
-import os,time
+import os,time,sys
+sys.path.append('../')
 import numpy as np
 from datasets.load import loadDataset
-from ..optvaedatasets.load import loadDataset as loadDataset_OVAE
-from ..optvaeutils.parse_args import params 
+from optvaedatasets.load import loadDataset as loadDataset_OVAE
+from optvaeutils.parse_args import params 
 from utils.misc import removeIfExists,createIfAbsent,mapPrint,saveHDF5,displayTime,getLowestError
 from sklearn.feature_extraction.text import TfidfTransformer
 
@@ -25,13 +26,10 @@ if params['data_type']=='bow':
 mapPrint('Options: ',params)
 #Setup VAE Model (or reload from existing savefile)
 start_time = time.time()
-if params['model']=='vae':
-    from ..optvaemodels.vae import VAE as Model
-else:
-    assert False,'invalid model'
-import ..optvaemodels.vae_learn as Learn
-import ..optvaemodels.vae_evaluate as Evaluate
-import ..optvaemodels.evaluate_vecs as EVECS
+from optvaemodels.vae import VAE as Model
+import optvaemodels.vae_learn as Learn
+import optvaemodels.vae_evaluate as Evaluate
+import optvaemodels.evaluate_vecs as EVECS
 
 additional_attrs = {}
 if params['data_type']=='bow':
@@ -110,5 +108,5 @@ if 'synthetic' in params['dataset']:
     evaluate['jacob_energy']   = EVECS.expectedJacobianEnergy(bestModel, nsamples = 200)
 
 saveHDF5(savef+'-evaluate.h5',evaluate)
-if 'synthetic' not in params['dataset']:
+if 'synthetic' not in params['dataset'] or 'newsgroups' not in params['dataset']:
     import ipdb; ipdb.set_trace()

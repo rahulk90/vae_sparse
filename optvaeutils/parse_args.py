@@ -36,6 +36,7 @@ parser.add_argument('-ar','--anneal_rate', action = 'store', default=0, help='Nu
 parser.add_argument('-otype','--opt_type', action='store', default='none', choices=['none','finopt'], 
         help='none-standard training,\n finopt-optimize theta w/ optimized mu/logcov')
 parser.add_argument('-ns','--n_steps', action='store', default=200, help='Number of steps of optimization to perform', type=int)
+parser.add_argument('-om','--opt_method', action='store', default='adam', help='Optimization',choices=['adam'])
 
 #Setup 
 parser.add_argument('-uid','--unique_id', action='store',default = 'uid',help='Unique Identifier',type=str)

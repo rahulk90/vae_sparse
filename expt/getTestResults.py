@@ -3,8 +3,8 @@ from utils.misc import loadHDF5,getConfigFile, readPickle
 #DIR = './results-sept6/'
 DIR = './'
 
-dataset = '20newsgroups_miao'
-dataset = 'rcv2_miao'
+dataset = '20newsgroups'
+#dataset = 'rcv2'
 
 for f in glob.glob(DIR+'/chkpt-'+dataset+'_*/*evaluate.h5'):
     if 'mnist' in f:

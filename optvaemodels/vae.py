@@ -75,10 +75,7 @@ class VAE(BaseModel, object):
     
     def _KL(self, mu, logcov, z, keepmat=False):
         """  KL divergence between N(mu,logcov)||N(0,log I) """
-        if self.params['prior']=='normal':
-            KL      = 0.5*(-logcov-1+T.exp(logcov)+mu**2)
-        else:
-            assert False,'Shouldnt be here. invalid prior model'
+        KL      = 0.5*(-logcov-1+T.exp(logcov)+mu**2)
         if keepmat:
             return KL
         else:
@@ -233,18 +230,18 @@ class VAE(BaseModel, object):
         epslist = self.srng.normal(size = (n_steps,X.shape[0],self.params['dim_stochastic']),dtype=config.floatX)
         assert self.params['opt_method']=='adam','expecting adam'
         def optAdam(it_k, eps_k, mu, logcov, m_mu, v_mu, m_logcov, v_logcov, X, plr):
-            if self.params['anneal_finopt_rate']>0:
-                anneal   = T.switch(T.gt(it_k/float(self.params['anneal_finopt_rate']),1.), 
-                        1., it_k/float(self.params['anneal_finopt_rate']))
-            else:
-                anneal   = 1.
+            #if self.params['anneal_finopt_rate']>0:
+            #    anneal   = T.switch(T.gt(it_k/float(self.params['anneal_finopt_rate']),1.), 
+            #            1., it_k/float(self.params['anneal_finopt_rate']))
+            #else:
+            anneal   = 1.
             L_prev       = self._ELBO(X, eps = eps_k, mu_q = mu, logcov_q = logcov, anneal = anneal)
             gradlist     = T.grad(L_prev,wrt = [mu,logcov])
             paramlist, mlist, vlist = self.adamUpdates(it_k, [mu,logcov], gradlist, [m_mu, m_logcov], [v_mu, v_logcov], plr)
 
             L_out        = L_prev
-            if self.params['anneal_finopt_rate']>0:
-                L_out    = self._ELBO(X, eps = eps_k, mu_q = mu, logcov_q = logcov)
+            #if self.params['anneal_finopt_rate']>0:
+            #    L_out    = self._ELBO(X, eps = eps_k, mu_q = mu, logcov_q = logcov)
             mu_k, logcov_k     = paramlist[0], paramlist[1]
             m_mu_k, v_mu_k         = mlist[0], vlist[0]
             m_logcov_k, v_logcov_k = mlist[1], vlist[1]

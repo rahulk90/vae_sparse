@@ -28,34 +28,34 @@ gpu_3_full = 'THEANO_FLAGS="compiledir_format=gpu3,lib.cnmem=0.95,scan.allow_gc=
 Experiments on 20newsgroups
 """
 expt_runs['20newsgroups_norm'] = OrderedDict()
-expt_runs['20newsgroups_norm']['2_none']   = gpu_0_full+' '+'python2.7 train.py -dset 20newsgroups_miao -ds 100 -nl relu -otype none -qs standard -pl 2 -ns 100 -ep 200'
-expt_runs['20newsgroups_norm']['2_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset 20newsgroups_miao -ds 100 -nl relu -otype finopt -qs standard -pl 2 -ns 100 -ep 200'
-expt_runs['20newsgroups_norm']['0_none']   = gpu_0_full+' '+'python2.7 train.py -dset 20newsgroups_miao -ds 100 -nl relu -otype none -qs standard -pl 0 -ns 100 -ep 200'
-expt_runs['20newsgroups_norm']['0_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset 20newsgroups_miao -ds 100 -nl relu -otype finopt -qs standard -pl 0 -ns 100 -ep 200'
+expt_runs['20newsgroups_norm']['2_none']   = gpu_0_full+' '+'python2.7 train.py -dset 20newsgroups_miao -ds 100 -nl relu -otype none -pl 2 -ns 100 -ep 200'
+expt_runs['20newsgroups_norm']['2_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset 20newsgroups_miao -ds 100 -nl relu -otype finopt -pl 2 -ns 100 -ep 200'
+expt_runs['20newsgroups_norm']['0_none']   = gpu_0_full+' '+'python2.7 train.py -dset 20newsgroups_miao -ds 100 -nl relu -otype none -pl 0 -ns 100 -ep 200'
+expt_runs['20newsgroups_norm']['0_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset 20newsgroups_miao -ds 100 -nl relu -otype finopt -pl 0 -ns 100 -ep 200'
 
 
 expt_runs['20newsgroups_tfidf'] = OrderedDict()
-expt_runs['20newsgroups_tfidf']['2_none']   = gpu_0_full+' '+'python2.7 train.py -dset 20newsgroups_miao -ds 100 -itype tfidf -nl relu -otype none -qs standard -pl 2 -ns 100 -ep 200'
-expt_runs['20newsgroups_tfidf']['2_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset 20newsgroups_miao -ds 100 -itype tfidf -nl relu -otype finopt -qs standard -pl 2 -ns 100 -ep 200'
-expt_runs['20newsgroups_tfidf']['0_none']   = gpu_0_full+' '+'python2.7 train.py -dset 20newsgroups_miao -ds 100 -itype tfidf -nl relu -otype none -qs standard -pl 0 -ns 100 -ep 200' 
-expt_runs['20newsgroups_tfidf']['0_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset 20newsgroups_miao -ds 100 -itype tfidf -nl relu -otype finopt -qs standard -pl 0 -ns 100 -ep 200'
+expt_runs['20newsgroups_tfidf']['2_none']   = gpu_0_full+' '+'python2.7 train.py -dset 20newsgroups_miao -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 200'
+expt_runs['20newsgroups_tfidf']['2_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset 20newsgroups_miao -ds 100 -itype tfidf -nl relu -otype finopt -pl 2 -ns 100 -ep 200'
+expt_runs['20newsgroups_tfidf']['0_none']   = gpu_0_full+' '+'python2.7 train.py -dset 20newsgroups_miao -ds 100 -itype tfidf -nl relu -otype none -pl 0 -ns 100 -ep 200' 
+expt_runs['20newsgroups_tfidf']['0_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset 20newsgroups_miao -ds 100 -itype tfidf -nl relu -otype finopt -pl 0 -ns 100 -ep 200'
 
 
 """
 Experiments on RCV2
 """
 expt_runs['rcv2_norm'] = OrderedDict()
-expt_runs['rcv2_norm']['2_none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -nl relu -otype none -qs standard -pl 2 -ns 100 -ep 200'
-expt_runs['rcv2_norm']['2_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -nl relu -otype finopt -qs standard -pl 2 -ns 100 -ep 200'
-expt_runs['rcv2_norm']['0_none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -nl relu -otype none -qs standard -pl 0 -ns 100 -ep 200'
-expt_runs['rcv2_norm']['0_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -nl relu -otype finopt -qs standard -pl 0 -ns 100 -ep 200'
+expt_runs['rcv2_norm']['2_none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -nl relu -otype none -pl 2 -ns 100 -ep 200'
+expt_runs['rcv2_norm']['2_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -nl relu -otype finopt -pl 2 -ns 100 -ep 200'
+expt_runs['rcv2_norm']['0_none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -nl relu -otype none -pl 0 -ns 100 -ep 200'
+expt_runs['rcv2_norm']['0_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -nl relu -otype finopt -pl 0 -ns 100 -ep 200'
 
 
 expt_runs['rcv2_tfidf'] = OrderedDict()
-expt_runs['rcv2_tfidf']['2_none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype none -qs standard -pl 2 -ns 100 -ep 200'
-expt_runs['rcv2_tfidf']['2_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype finopt -qs standard -pl 2 -ns 100 -ep 200'
-expt_runs['rcv2_tfidf']['0_none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype none -qs standard -pl 0 -ns 100 -ep 200' 
-expt_runs['rcv2_tfidf']['0_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype finopt -qs standard -pl 0 -ns 100 -ep 200'
+expt_runs['rcv2_tfidf']['2_none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 200'
+expt_runs['rcv2_tfidf']['2_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype finopt -pl 2 -ns 100 -ep 200'
+expt_runs['rcv2_tfidf']['0_none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype none -pl 0 -ns 100 -ep 200' 
+expt_runs['rcv2_tfidf']['0_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype finopt -pl 0 -ns 100 -ep 200'
 
 """
 Experiments on the WikiCorpus Dataset
@@ -69,18 +69,18 @@ MSR dataset
 Those three explore various axes and provide numbers to estimate the quality of the learned word embeddings. 
 """
 expt_runs['wikicorp'] = OrderedDict() 
-expt_runs['wikicorp']['2-none']   = gpu_0_full+' '+'python2.7 train.py -dset wikicorp -ds 100 -itype tfidf -nl relu -otype none -qs standard -pl 2 -ns 100 -ep 20'
-expt_runs['wikicorp']['2-finopt'] = gpu_1_full+' '+'python2.7 train.py -dset wikicorp -ds 100 -itype tfidf -nl relu -otype finopt -qs standard -pl 2 -ns 100 -ep 20'
-expt_runs['wikicorp']['0-none']   = gpu_0_full+' '+'python2.7 train.py -dset wikicorp -ds 100 -itype tfidf -nl relu -otype none -qs standard -pl 0 -ns 100 -ep 20'
-expt_runs['wikicorp']['0-finopt'] = gpu_1_full+' '+'python2.7 train.py -dset wikicorp -ds 100 -itype tfidf -nl relu -otype finopt -qs standard -pl 0 -ns 100 -ep 20'
+expt_runs['wikicorp']['2-none']   = gpu_0_full+' '+'python2.7 train.py -dset wikicorp -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 20'
+expt_runs['wikicorp']['2-finopt'] = gpu_1_full+' '+'python2.7 train.py -dset wikicorp -ds 100 -itype tfidf -nl relu -otype finopt -pl 2 -ns 100 -ep 20'
+expt_runs['wikicorp']['0-none']   = gpu_0_full+' '+'python2.7 train.py -dset wikicorp -ds 100 -itype tfidf -nl relu -otype none -pl 0 -ns 100 -ep 20'
+expt_runs['wikicorp']['0-finopt'] = gpu_1_full+' '+'python2.7 train.py -dset wikicorp -ds 100 -itype tfidf -nl relu -otype finopt -pl 0 -ns 100 -ep 20'
 
 expt_runs['wikicorp_sparsity'] = OrderedDict() 
-expt_runs['wikicorp_sparsity']['1000-2-finopt'] = gpu_0_full+' '+'python2.7 train.py -dset wikicorp_1000 -ds 100 -itype tfidf -nl relu -otype finopt -qs standard -pl 2 -ns 100 -ep 20'
-expt_runs['wikicorp_sparsity']['5000-2-finopt'] = gpu_1_full+' '+'python2.7 train.py -dset wikicorp_5000 -ds 100 -itype tfidf -nl relu -otype finopt -qs standard -pl 2 -ns 100 -ep 20'
-expt_runs['wikicorp_sparsity']['10000-2-finopt'] = gpu_0_full+' '+'python2.7 train.py -dset wikicorp_10000 -ds 100 -itype tfidf -nl relu -otype finopt -qs standard -pl 2 -ns 100 -ep 20'
-expt_runs['wikicorp_sparsity']['1000-2-none'] = gpu_0_full+' '+'python2.7 train.py -dset wikicorp_1000 -ds 100 -itype tfidf -nl relu -otype none -qs standard -pl 2 -ns 100 -ep 20'
-expt_runs['wikicorp_sparsity']['5000-2-none'] = gpu_1_full+' '+'python2.7 train.py -dset wikicorp_5000 -ds 100 -itype tfidf -nl relu -otype none -qs standard -pl 2 -ns 100 -ep 20'
-expt_runs['wikicorp_sparsity']['10000-2-none'] = gpu_0_full+' '+'python2.7 train.py -dset wikicorp_10000 -ds 100 -itype tfidf -nl relu -otype none -qs standard -pl 2 -ns 100 -ep 20'
+expt_runs['wikicorp_sparsity']['1000-2-finopt'] = gpu_0_full+' '+'python2.7 train.py -dset wikicorp_1000 -ds 100 -itype tfidf -nl relu -otype finopt -pl 2 -ns 100 -ep 20'
+expt_runs['wikicorp_sparsity']['5000-2-finopt'] = gpu_1_full+' '+'python2.7 train.py -dset wikicorp_5000 -ds 100 -itype tfidf -nl relu -otype finopt -pl 2 -ns 100 -ep 20'
+expt_runs['wikicorp_sparsity']['10000-2-finopt'] = gpu_0_full+' '+'python2.7 train.py -dset wikicorp_10000 -ds 100 -itype tfidf -nl relu -otype finopt -pl 2 -ns 100 -ep 20'
+expt_runs['wikicorp_sparsity']['1000-2-none'] = gpu_0_full+' '+'python2.7 train.py -dset wikicorp_1000 -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 20'
+expt_runs['wikicorp_sparsity']['5000-2-none'] = gpu_1_full+' '+'python2.7 train.py -dset wikicorp_5000 -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 20'
+expt_runs['wikicorp_sparsity']['10000-2-none'] = gpu_0_full+' '+'python2.7 train.py -dset wikicorp_10000 -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 20'
 
 """
 * Evaluating different models: comprise evaluating and saving Ejacob and/or CJacob
