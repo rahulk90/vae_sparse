@@ -48,7 +48,7 @@ python evaluate_wvecs.py
 python wikicorp.py #Downloads the dataset into wikicorp/ 
 #Navigate to <path>/inference_introspection/optvaedatasets/wikicorp/
 #Parses the text and converts it into a BOW representation
-python tokenizer.py #(This step requires gensim)
+python tokenizer.py #(This step requires gensim and nltk)
 ```
 * Limits the vocabulary (change parameters to get different variants of this dataset)
 ```bash

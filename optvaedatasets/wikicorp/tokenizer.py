@@ -1,6 +1,6 @@
 from sklearn.feature_extraction.text import CountVectorizer
 import numpy as np
-import re,time
+import re,time,os
 from nltk.corpus import wordnet as wn
 from nltk.corpus import stopwords
 import inflect
@@ -10,7 +10,13 @@ with open('stop_words.txt') as f:
 stopWords = set(stopwords.words('english')+sw)
 nouns     = set({x.name().split('.', 1)[0] for x in wn.all_synsets('n')})
 
-#DOCNAME    = 'small.txt'; NDOCS=216
+if not os.path.exists('WestburyLab.wikicorp.201004.txt'):
+    if not os.path.exists('WestburyLab.wikicorp.201004.txt.bz2'):
+        raise ValueError('run ../wikicorp.py to download the .txt.bz2 file to the wikicorp directory')
+    print 'Unzipping .bz2 file....'
+    os.system('bzip2 -d WestburyLab.wikicorp.201004.txt')
+
+#DOCNAME    = 'small.txt'; NDOCS=216 #Create small.txt as a subset of the bigger corpus and restrict #docs
 DOCNAME    = 'WestburyLab.wikicorp.201004.txt';NDOCS      = 3035070
 
 doclist    = []

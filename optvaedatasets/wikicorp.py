@@ -23,7 +23,7 @@ def _getData(DIR,locations):
         os.system('bunzip '+DIR+'/'+f)
 
 def _loadWikicorp():
-    DIR = os.path.dirname(os.path.realpath(__file__)).split('opt-vae')[0]+'opt-vae/optvaedatasets/wikicorp'
+    DIR = os.path.dirname(os.path.realpath(__file__)).split('inference_introspection')[0]+'inference_introspection/optvaedatasets/wikicorp'
     if not os.path.exists(DIR):
         os.mkdir(DIR)
     locations = {}
@@ -50,7 +50,7 @@ def _loadWikicorp():
 
 def _loadWikicorpSubset(kval):
     assert kval in [1000,5000,10000],'Bad value: '+str(kval) 
-    DIR = os.path.dirname(os.path.realpath(__file__)).split('opt-vae')[0]+'opt-vae/optvaedatasets/wikicorp'
+    DIR = os.path.dirname(os.path.realpath(__file__)).split('inference_introspection')[0]+'inference_introspection/optvaedatasets/wikicorp'
     assert type(kval) is int,'Expecting kval as int'
     h5file = DIR+'/data.h5'
     pklfile= DIR+'/misc.pkl'

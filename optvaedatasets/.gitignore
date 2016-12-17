@@ -1,3 +1,8 @@
 20news_miao/miao.h5
 *.dat.gz
-train.txt
+*.txt.bz2
+*.txt
+*.h5
+evaluate/
+*.feat
+*.new
