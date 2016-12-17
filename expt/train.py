@@ -2,8 +2,8 @@ import os,time,sys
 sys.path.append('../')
 import numpy as np
 from datasets.load import loadDataset
-from optvaedatasets.load import loadDataset as loadDataset_OVAE
-from optvaeutils.parse_args_vae import params 
+from ..optvaedatasets.load import loadDataset as loadDataset_OVAE
+from ..optvaeutils.parse_args import params 
 from utils.misc import removeIfExists,createIfAbsent,mapPrint,saveHDF5,displayTime,getLowestError
 from sklearn.feature_extraction.text import TfidfTransformer
 
@@ -27,12 +27,12 @@ mapPrint('Options: ',params)
 #Setup VAE Model (or reload from existing savefile)
 start_time = time.time()
 if params['model']=='vae':
-    from optvaemodels.vae import VAE as Model
+    from ..optvaemodels.vae import VAE as Model
 else:
     assert False,'invalid model'
-import optvaemodels.vae_learn as Learn
-import optvaemodels.vae_evaluate as Evaluate
-import optvaemodels.evaluate_vecs as EVECS
+import ..optvaemodels.vae_learn as Learn
+import ..optvaemodels.vae_evaluate as Evaluate
+import ..optvaemodels.evaluate_vecs as EVECS
 
 additional_attrs = {}
 if params['data_type']=='bow':

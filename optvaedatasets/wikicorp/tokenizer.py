@@ -14,7 +14,7 @@ if not os.path.exists('WestburyLab.wikicorp.201004.txt'):
     if not os.path.exists('WestburyLab.wikicorp.201004.txt.bz2'):
         raise ValueError('run ../wikicorp.py to download the .txt.bz2 file to the wikicorp directory')
     print 'Unzipping .bz2 file....'
-    os.system('bzip2 -d WestburyLab.wikicorp.201004.txt')
+    os.system('bzip2 -d WestburyLab.wikicorp.201004.txt.bz2')
 
 #DOCNAME    = 'small.txt'; NDOCS=216 #Create small.txt as a subset of the bigger corpus and restrict #docs
 DOCNAME    = 'WestburyLab.wikicorp.201004.txt';NDOCS      = 3035070
