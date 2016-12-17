@@ -1,5 +1,4 @@
-import os,time,sys
-sys.path.append('../')
+import os,time
 import numpy as np
 from datasets.load import loadDataset
 from ..optvaedatasets.load import loadDataset as loadDataset_OVAE
@@ -92,7 +91,6 @@ savedata['test_klmat']  = test_results['klmat']
 #Save file log file
 saveHDF5(savef+'-final.h5',savedata)
 
-
 # Work w/ the best model thus far
 epochMin, valMin, idxMin = getLowestError(savedata[kname])
 reloadFile               = pfile.replace('-config.pkl','')+'-EP'+str(int(epochMin))+'-params.npz'
@@ -100,10 +98,7 @@ print 'Loading from : ',reloadFile
 params['validate_only']  = True
 bestModel                = Model(params, paramFile = pfile, reloadFile = reloadFile, additional_attrs = additional_attrs)
 
-if params['data_type']=='bow':
-    evaluate     = Evaluate.visualizeBOWModel(bestModel,dataset['test'])
-else:
-    evaluate     = {}
+evaluate     = {}
 test_results = Evaluate.evaluateBound(bestModel, dataset['test'], batch_size = params['batch_size'])
 for k in test_results:
     evaluate[k+'_eb'] = test_results[k]
