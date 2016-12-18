@@ -108,5 +108,7 @@ if 'synthetic' in params['dataset']:
     evaluate['jacob_energy']   = EVECS.expectedJacobianEnergy(bestModel, nsamples = 200)
 
 saveHDF5(savef+'-evaluate.h5',evaluate)
-if 'synthetic' not in params['dataset'] or 'newsgroups' not in params['dataset']:
+if np.any([k in params['dataset'] for k in ['synthetic','newsgroups']]):
+    pass
+else:
     import ipdb; ipdb.set_trace()

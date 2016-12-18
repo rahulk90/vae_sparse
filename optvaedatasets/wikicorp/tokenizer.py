@@ -85,7 +85,7 @@ end_time   = time.time()
 printTime('Finding smallest frequency: ',start_time, end_time)
 
 start_time = time.time()
-doclist = [[word for word in doc if (frequency[word] > 50 and len(word)>2)] for doc in doclist]
+doclist = [[word for word in doc if (frequency[word] > 1 and len(word)>2)] for doc in doclist]
 end_time = time.time()
 printTime('Restricting words in documents: ',start_time, end_time)
 
