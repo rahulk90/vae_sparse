@@ -32,6 +32,9 @@ def _optNone(vae, bnum, Nbatch, X, replicate_K = None, retVals = {}, calcELBOfin
     assert replicate_K is None,'Expecting None'
     start_time = time.time()
     elbo_0, pnorm, gnorm, optnorm, anneal, lr = vae.train(X=X)
+    if np.isnan(elbo_0):
+        print 'NAN warning'
+        import ipdb;ipdb.set_trace()
     elbo_f = np.nan
     n_steps    = 0
     gmu, glcov, diff_elbo, diff_ent = np.nan, np.nan, np.nan, np.nan
@@ -65,6 +68,9 @@ def _optFinopt(vae, bnum, Nbatch, X,  replicate_K = None, retVals = {},calcELBOf
     results = vae.update_p(X=X)
     elbo_0, elbo_f, anneal, pnorm, gnorm, optnorm   = results[0], results[1], results[2], results[3], results[4],results[5]
     n_steps, gmu,glcov, diff_elbo, diff_ent         = results[6], results[7], results[8], results[9], results[10]
+    if np.isnan(elbo_0):
+        print 'NAN warning'
+        import ipdb;ipdb.set_trace()
     freq = 100
     time_taken = time.time()-start_time
     if bnum%freq==0:

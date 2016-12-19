@@ -67,9 +67,16 @@ def _loadWikicorpSubset(kval):
     idx_to_keep = idx_sort[-kval:]
     dset = {}
     dset['vocabulary'] = [vocabulary[idx] for idx in idx_to_keep.squeeze().tolist()]
-    dset['train']      = train[:,idx_to_keep].tocsr()
-    dset['valid']      = valid[:,idx_to_keep].tocsr()
-    dset['test']       = test[:,idx_to_keep].tocsr()
+    train_tmp          = train[:,idx_to_keep].tocsr()
+    valid_tmp          = valid[:,idx_to_keep].tocsr()
+    test_tmp           = test[:,idx_to_keep].tocsr()
+    #Use documents w/ atleast five words in it
+    train_cts_idx = np.where(np.array(train_tmp.sum(1)).squeeze()>5)[0]
+    valid_cts_idx = np.where(np.array(valid_tmp.sum(1)).squeeze()>5)[0]
+    test_cts_idx  = np.where(np.array(test_tmp.sum(1)).squeeze()>5)[0]
+    dset['train']      = train_tmp[train_cts_idx] 
+    dset['valid']      = valid_tmp[valid_cts_idx]
+    dset['test']       = test_tmp[test_cts_idx]
     dset['dim_observations'] = dset['train'].shape[1]
     dset['data_type']  = 'bow'
     return dset
