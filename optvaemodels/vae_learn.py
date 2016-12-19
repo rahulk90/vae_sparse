@@ -29,16 +29,9 @@ def _optNone(vae, bnum, Nbatch, X, replicate_K = None, retVals = {}, calcELBOfin
     retVals:Map to return values from 
     calcELBOfinal: Whether or not calculate final evidence lower bound
     """
+    assert replicate_K is None,'Expecting None'
     start_time = time.time()
-    if vae.params['opt_type']=='none':
-        elbo_0, pnorm, gnorm, optnorm, anneal, lr = vae.train(X=X)
-    elif vae.params['opt_type']=='miao':
-        for k in range(vae.params['q_updates']):
-            elbo_q = vae.update_q(X=X)
-        for k in range(vae.params['p_updates']):
-            elbo_0, pnorm, gnorm, optnorm, anneal, lr = vae.update_p(X=X)
-    else:
-        assert False,'Should not be here'
+    elbo_0, pnorm, gnorm, optnorm, anneal, lr = vae.train(X=X)
     elbo_f = np.nan
     n_steps    = 0
     gmu, glcov, diff_elbo, diff_ent = np.nan, np.nan, np.nan, np.nan
@@ -47,10 +40,7 @@ def _optNone(vae, bnum, Nbatch, X, replicate_K = None, retVals = {}, calcELBOfin
     if replicate_K is not None:
         elbo_0 /= float(replicate_K)
         elbo_f/=float(replicate_K)
-    #n_active   = numActive(KLmat.mean(0))
     freq  = 100
-    if vae.params['data_type']=='image':
-        freq = 1
     time_taken = time.time()-start_time
     if bnum%freq==0:
         vae._p(('--Batch: %d, ELBO[0]: %.4f, ELBO[f]: %.4f, Anneal : %.4f, lr : %.4f, Time(s): %.2f--')%

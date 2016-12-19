@@ -412,7 +412,7 @@ class VAE(BaseModel, object):
                                               updates = optimizer_up, name = 'Train')
         elif self.params['opt_type'] in ['finopt']:
             ##################                UPDATE  P         ######################
-            dict0,dictopt,dictf = {},{},{}
+            dictopt,dictf = {},{}
             mu_q_0, logcov_q_0 = self._inference(X)
             mu_q_f, logcov_q_f, _ = self._optimizeVariationalParams(X, mu_q_0, logcov_q_0, 
                                                                           n_steps, plr, savedict=dictopt)
