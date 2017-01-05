@@ -57,6 +57,18 @@ expt_runs['rcv2_tfidf']['2_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset r
 expt_runs['rcv2_tfidf']['0_none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype none -pl 0 -ns 100 -ep 200' 
 expt_runs['rcv2_tfidf']['0_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype finopt -pl 0 -ns 100 -ep 200'
 
+expt_runs['rcv2_q_vary']= {}
+expt_runs['rcv2_q_vary']['3-400-none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 200 -qh 400 -ql 3'
+expt_runs['rcv2_q_vary']['3-400-finopt']   = gpu_1_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype finopt -pl 2 -ns 100 -ep 200 -qh 400 -ql 3'
+expt_runs['rcv2_q_vary']['1-400-none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 200 -ql 1'
+expt_runs['rcv2_q_vary']['1-400-finopt']   = gpu_1_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype finopt -pl 2 -ns 100 -ep 200 -ql 1'
+expt_runs['rcv2_q_vary']['3-100-none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 200 -qh 100 -ql 3'
+expt_runs['rcv2_q_vary']['3-100-finopt']   = gpu_1_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype finopt -pl 2 -ns 100 -ep 200 -qh 100 -ql 3'
+expt_runs['rcv2_q_vary']['2-100-none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 200 -qh 100 -ql 2'
+expt_runs['rcv2_q_vary']['2-100-finopt']   = gpu_1_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype finopt -pl 2 -ns 100 -ep 200 -qh 100 -ql 2'
+expt_runs['rcv2_q_vary']['1-100-none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 200 -qh 100 -ql 1'
+expt_runs['rcv2_q_vary']['1-100-finopt']   = gpu_1_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype finopt -pl 2 -ns 100 -ep 200 -qh 100 -ql 1'
+
 """
 Experiments on the WikiCorpus Dataset
 Modified to include the vocabulary from: 
