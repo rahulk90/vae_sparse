@@ -2,8 +2,8 @@
 from collections import OrderedDict
 import sys
 
-expt_type = 'wikicorp'
-valid_expts= set(['20newsgroups_norm','20newsgroups_tfidf','rcv2_norm','rcv2_tfidf',
+expt_type = 'rcv2_tfidf'
+valid_expts= set(['20newsgroups_norm','20newsgroups_tfidf','rcv2_norm','rcv2_tfidf','rcv2_q_vary',
     'wikicorp','wikicorp_sparsity','wikicorp_evaluate','wikicorp_evaluate'])
 
 print 'Valid Expts: ',','.join(list(valid_expts))
@@ -57,11 +57,11 @@ expt_runs['rcv2_tfidf']['2_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset r
 expt_runs['rcv2_tfidf']['0_none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype none -pl 0 -ns 100 -ep 200' 
 expt_runs['rcv2_tfidf']['0_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype finopt -pl 0 -ns 100 -ep 200'
 
-expt_runs['rcv2_q_vary']= {}
+expt_runs['rcv2_q_vary']= OrderedDict() 
 expt_runs['rcv2_q_vary']['3-400-none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 200 -qh 400 -ql 3'
 expt_runs['rcv2_q_vary']['3-400-finopt']   = gpu_1_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype finopt -pl 2 -ns 100 -ep 200 -qh 400 -ql 3'
-expt_runs['rcv2_q_vary']['1-400-none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 200 -ql 1'
-expt_runs['rcv2_q_vary']['1-400-finopt']   = gpu_1_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype finopt -pl 2 -ns 100 -ep 200 -ql 1'
+expt_runs['rcv2_q_vary']['1-400-none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 200 -qh 400 -ql 1'
+expt_runs['rcv2_q_vary']['1-400-finopt']   = gpu_1_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype finopt -pl 2 -ns 100 -ep 200 -qh 400 -ql 1'
 expt_runs['rcv2_q_vary']['3-100-none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 200 -qh 100 -ql 3'
 expt_runs['rcv2_q_vary']['3-100-finopt']   = gpu_1_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype finopt -pl 2 -ns 100 -ep 200 -qh 100 -ql 3'
 expt_runs['rcv2_q_vary']['2-100-none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 200 -qh 100 -ql 2'

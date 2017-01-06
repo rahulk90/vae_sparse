@@ -62,6 +62,7 @@ params = vars(parser.parse_args())
 hmap       = OrderedDict() 
 hmap['lr']           ='lr'
 hmap['p_dim_hidden'] ='ph'
+hmap['q_dim_hidden'] ='qh'
 hmap['dim_stochastic']='ds'
 hmap['p_layers']     ='pl'
 hmap['q_layers']     ='ql'
