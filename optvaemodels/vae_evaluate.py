@@ -21,7 +21,7 @@ def infer(vae, data):
     assert data.shape[1]==vae.params['dim_observations'],'Wrong dimensions for observations'
     return vae.inference(X=data.astype(config.floatX))
 
-def evaluateBound(vae, dataset, batch_size, retVals = {}):
+def evaluateBound(vae, dataset, batch_size):
     """ Evaluate bound on dataset  """
     N = dataset.shape[0]
     bd_0,bd_f = 0,0
@@ -49,6 +49,7 @@ def evaluateBound(vae, dataset, batch_size, retVals = {}):
     bd_f /= float(N)
     diff_elbo /= float(N)
     diff_ent /= float(N)
+    retVals = {}
     if vae.params['data_type']=='bow':
         retVals['perp_0']= np.exp(bd_0)
         retVals['perp_f']= np.exp(bd_f)
