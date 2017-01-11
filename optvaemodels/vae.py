@@ -376,7 +376,7 @@ class VAE(BaseModel, object):
         
         self._buildOptimizationFunction(X, n_steps, plr)
         self._buildEvaluationFunctions(X,n_steps,plr)
-        if 'EVALUATION' in self.params:
+        if 'validate_only' in self.params or 'EVALUATE' in self.params:
             self.updates_ack = True
             self.tOptWeights = []
             self._p('Not building training functions...')

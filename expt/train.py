@@ -72,7 +72,6 @@ savedata   = Learn.learn( model,
                                 replicate_K = params['replicate_K'],
                                 )
 
-
 displayTime('Running Model',start_time, time.time())
 test_results = Evaluate.evaluateBound(model, dataset['test'], batch_size = params['batch_size'])
 if model.params['data_type']=='bow':
