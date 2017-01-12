@@ -34,16 +34,16 @@ additional_attrs['idf'] = tfidf.idf_
     
 models, epochval        = OrderedDict(), OrderedDict()
 
-models['pl-2-none']     = './chkpt-wikicorp-none/VAE_lr-8_0e-04-ph-400-ds-100-pl-2-ql-2-nl-relu-bs-500-ep-250-plr-1_0e-02-ar-0-otype-none-ns-100-om-adam-qs-standard-etype-mlp-p_up-10-q_up-10-pr-normal-ll-mult-itype-tfidfl20_01_-uid'
-epochval['pl-2-none']   = '30'
+models['pl-2-none']     = './results_dec19/chkpt-wikicorp-none/VAE_lr-8_0e-04-ph-400-ds-100-pl-2-ql-2-nl-relu-bs-500-ep-20-plr-1_0e-02-ar-0-otype-none-ns-100-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
+epochval['pl-2-none']   = '20'
 
-models['pl-2-finopt']   = './chkpt-wikicorp-finopt/VAE_lr-8_0e-04-ph-400-ds-100-pl-2-ql-2-nl-relu-bs-500-ep-250-plr-1_0e-02-ar-0-otype-finopt-ns-100-om-adam-qs-standard-etype-mlp-p_up-10-q_up-10-pr-normal-ll-mult-itype-tfidfl20_01_-uid'
-epochval['pl-2-finopt'] = '30'
+models['pl-2-finopt']   = './results_dec19/chkpt-wikicorp-finopt/VAE_lr-8_0e-04-ph-400-ds-100-pl-2-ql-2-nl-relu-bs-500-ep-20-plr-1_0e-02-ar-0-otype-finopt-ns-100-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
+epochval['pl-2-finopt'] = '20'
 
-models['pl-0-none']   = './chkpt-wikicorp-none/VAE_lr-8_0e-04-ph-400-ds-100-pl-0-ql-2-nl-relu-bs-500-ep-100-plr-1_0e-02-ar-0-otype-none-ns-100-om-adam-qs-standard-etype-mlp-p_up-10-q_up-10-pr-normal-ll-mult-itype-tfidfl20_01_-uid'
-epochval['pl-0-none'] = '30'
+models['pl-0-none']   = './results_dec19/chkpt-wikicorp-none/VAE_lr-8_0e-04-ph-400-ds-100-pl-0-ql-2-nl-relu-bs-500-ep-20-plr-1_0e-02-ar-0-otype-none-ns-100-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
+epochval['pl-0-none'] = '20'
 
-models['pl-0-finopt']   = './chkpt-wikicorp-finopt/VAE_lr-8_0e-04-ph-400-ds-100-pl-0-ql-2-nl-relu-bs-500-ep-100-plr-1_0e-02-ar-0-otype-finopt-ns-100-om-adam-qs-standard-etype-mlp-p_up-10-q_up-10-pr-normal-ll-mult-itype-tfidfl20_01_-uid'
+models['pl-0-finopt']   = './results_dec19/chkpt-wikicorp-finopt/VAE_lr-8_0e-04-ph-400-ds-100-pl-0-ql-2-nl-relu-bs-500-ep-20-plr-1_0e-02-ar-0-otype-finopt-ns-100-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
 epochval['pl-0-finopt'] = '20'
 if MODEL_TO_USE not in models:
     raise ValueError, MODEL_TO_USE+' not found'
@@ -140,11 +140,7 @@ for mname in [MODEL_TO_USE]:
     saveHDF5(fname,{'wsim':np.array(results['wsim']), 'wsim_probs':np.array(results['wsim_probs']), 
         'wsim_energy':np.array(results['wsim_energy'])})
     results['scws_ejacob'] = []
-    #results['scws_cjacob'] = []
-    #results['scws_combined'] = []
     results['scws_ejacob_probs'] = []
-    #results['scws_cjacob_probs'] = []
-    #results['scws_combined_probs'] = []
     results['scws_ejacob_energy'] = []
     for iidx, item in enumerate(scws):
         if scws[item]['w1_idx'] is None or scws[item]['w2_idx'] is None:
@@ -159,29 +155,6 @@ for mname in [MODEL_TO_USE]:
             v1 = ejacob_energy[[scws[item]['w1_idx']],:]
             v2 = ejacob_energy[[scws[item]['w2_idx']],:]
             results['scws_ejacob_energy'].append((cdist(v1,v2,metric='cosine').ravel()[0], float(scws[item]['avgrat']))) 
-            #Maybe speed this up by only evaluating the jacobians for the words you need
-            #and not all the words?
-            #mu1=runInference(vae, scws[item]['ctex1_vec'])
-            #mu2=runInference(vae, scws[item]['ctex2_vec'])
-            #cjacob_ctex1 = conditionalJacobian(vae, mu1)
-            #cjacob_ctex2 = conditionalJacobian(vae, mu2)
-            #v1 = cjacob_ctex1[[scws[item]['w1_idx']],:]
-            #v2 = cjacob_ctex2[[scws[item]['w2_idx']],:]
-            #results['scws_cjacob'].append((cdist(v1,v2,metric='cosine').ravel()[0], float(scws[item]['avgrat']))) 
-            #Same for probs
-            #cjacob_ctex1_probs= conditionalJacobianProbs(vae, mu1)
-            #cjacob_ctex2_probs = conditionalJacobianProbs(vae, mu2)
-            #v1 = cjacob_ctex1_probs[[scws[item]['w1_idx']],:]
-            #v2 = cjacob_ctex2_probs[[scws[item]['w2_idx']],:]
-            #results['scws_cjacob_probs'].append((cdist(v1,v2,metric='cosine').ravel()[0], float(scws[item]['avgrat']))) 
-            #Combined
-            #v1 = (0.5*ejacob+0.5*cjacob_ctex1)[[scws[item]['w1_idx']],:]
-            #v2 = (0.5*ejacob+0.5*cjacob_ctex2)[[scws[item]['w2_idx']],:]
-            #results['scws_combined'].append((cdist(v1,v2,metric='cosine').ravel()[0], float(scws[item]['avgrat']))) 
-            #Combined probs
-            #v1 = (0.5*ejacob_probs+0.5*cjacob_ctex1_probs)[[scws[item]['w1_idx']],:]
-            #v2 = (0.5*ejacob_probs+0.5*cjacob_ctex2_probs)[[scws[item]['w2_idx']],:]
-            #results['scws_combined_probs'].append((cdist(v1,v2,metric='cosine').ravel()[0], float(scws[item]['avgrat']))) 
         if iidx % 10 == 0: 
             print '(',iidx,')'
             fname = SAVEDIR+mname+'-scws-intermediate.h5'
@@ -190,22 +163,14 @@ for mname in [MODEL_TO_USE]:
             spman_wsim_probs= computeSpearman(np.array(results['wsim_probs']).astype(float)) 
             spman_wsim_energy= computeSpearman(np.array(results['wsim_energy']).astype(float)) 
             spmanscws_e= computeSpearman(np.array(results['scws_ejacob']).astype(float)) 
-            #spmanscws_c= computeSpearman(np.array(results['scws_cjacob']).astype(float)) 
-            #spmanscws_e_c= computeSpearman(np.array(results['scws_combined']).astype(float)) 
             spmanscws_e_probs= computeSpearman(np.array(results['scws_ejacob_probs']).astype(float)) 
-            #spmanscws_c_probs= computeSpearman(np.array(results['scws_cjacob_probs']).astype(float)) 
-            #spmanscws_e_c_probs= computeSpearman(np.array(results['scws_combined_probs']).astype(float)) 
             spmanscws_e_energy= computeSpearman(np.array(results['scws_ejacob_energy']).astype(float)) 
             print mname
             print 'WSIM: ',np.array(spman_wsim)
             print 'WSIM (Probs): ',np.array(spman_wsim_probs)
             print 'WSIM (Energy): ',np.array(spman_wsim_energy)
             print 'SCWS (E): ',np.array(spmanscws_e)
-            #print 'SCWS (C): ',np.array(spmanscws_c)
-            #print 'SCWS (E+C): ',np.array(spmanscws_e_c)
             print 'SCWS (E) Probs: ',np.array(spmanscws_e_probs)
-            #print 'SCWS (C) Probs: ',np.array(spmanscws_c_probs)
-            #print 'SCWS (E+C) Probs: ',np.array(spmanscws_e_c_probs)
             print 'SCWS (E) Energy: ',np.array(spmanscws_e_energy)
             if os.path.exists(fname):
                 os.remove(fname)
@@ -218,22 +183,14 @@ for mname in [MODEL_TO_USE]:
     spman_wsim_probs= computeSpearman(np.array(results['wsim_probs']).astype(float)) 
     spman_wsim_energy= computeSpearman(np.array(results['wsim_energy']).astype(float)) 
     spmanscws_e= computeSpearman(np.array(results['scws_ejacob']).astype(float)) 
-    #spmanscws_c= computeSpearman(np.array(results['scws_cjacob']).astype(float)) 
-    #spmanscws_e_c= computeSpearman(np.array(results['scws_combined']).astype(float)) 
     spmanscws_e_probs= computeSpearman(np.array(results['scws_ejacob_probs']).astype(float)) 
-    #spmanscws_c_probs= computeSpearman(np.array(results['scws_cjacob_probs']).astype(float)) 
-    #spmanscws_e_c_probs= computeSpearman(np.array(results['scws_combined_probs']).astype(float)) 
     spmanscws_e_energy= computeSpearman(np.array(results['scws_ejacob_energy']).astype(float)) 
     print mname
     print 'WSIM: ',np.array(spman_wsim)
     print 'WSIM (Probs): ',np.array(spman_wsim_probs)
     print 'WSIM (Energy): ',np.array(spman_wsim_energy)
     print 'SCWS (E): ',np.array(spmanscws_e)
-    #print 'SCWS (C): ',np.array(spmanscws_c)
-    #print 'SCWS (E+C): ',np.array(spmanscws_e_c)
     print 'SCWS (E) Probs: ',np.array(spmanscws_e_probs)
-    #print 'SCWS (C) Probs: ',np.array(spmanscws_c_probs)
-    #print 'SCWS (E+C) Probs: ',np.array(spmanscws_e_c_probs)
     print 'SCWS (E) Energy: ',np.array(spmanscws_e_energy)
     results_int = {}
     for k in results:

@@ -14,7 +14,7 @@ from utils.sparse_utils import loadSparseHDF5, saveSparseHDF5
 from optvaeutils.viz import getName,stitchMNISTSamples
 from sklearn.feature_extraction.text import TfidfTransformer
 from scipy.spatial.distance import cdist
-from optvaemodels.evaluate_vecs import expectedJacobian, expectedJacobianProbs,expectedJacobianEnergy
+from optvaemodels.evaluate_vecs import expectedJacobian, expectedJacobianProbs, expectedJacobianEnergy
 from optvaemodels.evaluate_vecs import conditionalJacobianProbs, conditionalJacobian, conditionalJacobianEnergy
 from scipy.sparse import csr_matrix,csc_matrix,dok_matrix
 from   optvaemodels.vae import VAE
@@ -35,16 +35,16 @@ additional_attrs['idf'] = tfidf.idf_
     
 models, epochval        = OrderedDict(), OrderedDict()
 
-models['pl-2-none']     = './chkpt-wikicorp-none/VAE_lr-8_0e-04-ph-400-ds-100-pl-2-ql-2-nl-relu-bs-500-ep-250-plr-1_0e-02-ar-0-otype-none-ns-100-om-adam-qs-standard-etype-mlp-p_up-10-q_up-10-pr-normal-ll-mult-itype-tfidfl20_01_-uid'
-epochval['pl-2-none']   = '30'
+models['pl-2-none']     = './results_dec19/chkpt-wikicorp-none/VAE_lr-8_0e-04-ph-400-ds-100-pl-2-ql-2-nl-relu-bs-500-ep-20-plr-1_0e-02-ar-0-otype-none-ns-100-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
+epochval['pl-2-none']   = '20'
 
-models['pl-2-finopt']   = './chkpt-wikicorp-finopt/VAE_lr-8_0e-04-ph-400-ds-100-pl-2-ql-2-nl-relu-bs-500-ep-250-plr-1_0e-02-ar-0-otype-finopt-ns-100-om-adam-qs-standard-etype-mlp-p_up-10-q_up-10-pr-normal-ll-mult-itype-tfidfl20_01_-uid'
-epochval['pl-2-finopt'] = '30'
+models['pl-2-finopt']   = './results_dec19/chkpt-wikicorp-finopt/VAE_lr-8_0e-04-ph-400-ds-100-pl-2-ql-2-nl-relu-bs-500-ep-20-plr-1_0e-02-ar-0-otype-finopt-ns-100-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
+epochval['pl-2-finopt'] = '20'
 
-models['pl-0-none']   = './chkpt-wikicorp-none/VAE_lr-8_0e-04-ph-400-ds-100-pl-0-ql-2-nl-relu-bs-500-ep-100-plr-1_0e-02-ar-0-otype-none-ns-100-om-adam-qs-standard-etype-mlp-p_up-10-q_up-10-pr-normal-ll-mult-itype-tfidfl20_01_-uid'
-epochval['pl-0-none'] = '30'
+models['pl-0-none']   = './results_dec19/chkpt-wikicorp-none/VAE_lr-8_0e-04-ph-400-ds-100-pl-0-ql-2-nl-relu-bs-500-ep-20-plr-1_0e-02-ar-0-otype-none-ns-100-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
+epochval['pl-0-none'] = '20'
 
-models['pl-0-finopt']   = './chkpt-wikicorp-finopt/VAE_lr-8_0e-04-ph-400-ds-100-pl-0-ql-2-nl-relu-bs-500-ep-100-plr-1_0e-02-ar-0-otype-finopt-ns-100-om-adam-qs-standard-etype-mlp-p_up-10-q_up-10-pr-normal-ll-mult-itype-tfidfl20_01_-uid'
+models['pl-0-finopt']   = './results_dec19/chkpt-wikicorp-finopt/VAE_lr-8_0e-04-ph-400-ds-100-pl-0-ql-2-nl-relu-bs-500-ep-20-plr-1_0e-02-ar-0-otype-finopt-ns-100-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
 epochval['pl-0-finopt'] = '20'
 if MODEL_TO_USE not in models:
     raise ValueError, MODEL_TO_USE+' not found'
@@ -68,6 +68,7 @@ def setupDocs(polydocs, vocabulary, vocabulary_singular):
                     result[word][context][0,word2IdxSingular[w]]+=1
             print word, context,result[word][context].min(), result[word][context].max(), result[word][context].sum()
     return result
+
 polydocs = {}
 polydocs['fire']  = {}
 polydocs['fire']['burn']   = open('./docs_context/fire_burn.txt').read()
@@ -79,6 +80,7 @@ polydocs['crane'] = {}
 polydocs['crane']['bird'] = open('./docs_context/crane_bird.txt').read()
 polydocs['crane']['construction'] = open('./docs_context/crane_construction.txt').read()
 polydocs_x        = setupDocs(polydocs, dataset['vocabulary'], dataset['vocabulary_singular'])
+
 def runInference(vae, X):
     if params['opt_type']=='none':
         _,mu,logvar,_   = vae.inference0(X=X.astype(config.floatX))
