@@ -28,17 +28,17 @@ gpu_3_full = 'THEANO_FLAGS="compiledir_format=gpu3,lib.cnmem=0.95,scan.allow_gc=
 Experiments on 20newsgroups
 """
 expt_runs['20newsgroups_norm'] = OrderedDict()
-expt_runs['20newsgroups_norm']['2_none']   = gpu_0_full+' '+'python2.7 train.py -dset 20newsgroups_miao -ds 100 -nl relu -otype none -pl 2 -ns 100 -ep 200'
-expt_runs['20newsgroups_norm']['2_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset 20newsgroups_miao -ds 100 -nl relu -otype finopt -pl 2 -ns 100 -ep 200'
-expt_runs['20newsgroups_norm']['0_none']   = gpu_0_full+' '+'python2.7 train.py -dset 20newsgroups_miao -ds 100 -nl relu -otype none -pl 0 -ns 100 -ep 200'
-expt_runs['20newsgroups_norm']['0_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset 20newsgroups_miao -ds 100 -nl relu -otype finopt -pl 0 -ns 100 -ep 200'
+expt_runs['20newsgroups_norm']['2_none']   = gpu_0_full+' '+'python2.7 train.py -dset 20newsgroups_miao -ds 100 -nl relu -otype none -pl 2 -ns 100 -ep 400'
+expt_runs['20newsgroups_norm']['2_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset 20newsgroups_miao -ds 100 -nl relu -otype finopt -pl 2 -ns 100 -ep 400'
+expt_runs['20newsgroups_norm']['0_none']   = gpu_0_full+' '+'python2.7 train.py -dset 20newsgroups_miao -ds 100 -nl relu -otype none -pl 0 -ns 100 -ep 400'
+expt_runs['20newsgroups_norm']['0_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset 20newsgroups_miao -ds 100 -nl relu -otype finopt -pl 0 -ns 100 -ep 400'
 
 
 expt_runs['20newsgroups_tfidf'] = OrderedDict()
-expt_runs['20newsgroups_tfidf']['2_none']   = gpu_0_full+' '+'python2.7 train.py -dset 20newsgroups_miao -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 200'
-expt_runs['20newsgroups_tfidf']['2_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset 20newsgroups_miao -ds 100 -itype tfidf -nl relu -otype finopt -pl 2 -ns 100 -ep 200'
-expt_runs['20newsgroups_tfidf']['0_none']   = gpu_0_full+' '+'python2.7 train.py -dset 20newsgroups_miao -ds 100 -itype tfidf -nl relu -otype none -pl 0 -ns 100 -ep 200' 
-expt_runs['20newsgroups_tfidf']['0_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset 20newsgroups_miao -ds 100 -itype tfidf -nl relu -otype finopt -pl 0 -ns 100 -ep 200'
+expt_runs['20newsgroups_tfidf']['2_none']   = gpu_0_full+' '+'python2.7 train.py -dset 20newsgroups_miao -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 400'
+expt_runs['20newsgroups_tfidf']['2_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset 20newsgroups_miao -ds 100 -itype tfidf -nl relu -otype finopt -pl 2 -ns 100 -ep 400'
+expt_runs['20newsgroups_tfidf']['0_none']   = gpu_0_full+' '+'python2.7 train.py -dset 20newsgroups_miao -ds 100 -itype tfidf -nl relu -otype none -pl 0 -ns 100 -ep 400' 
+expt_runs['20newsgroups_tfidf']['0_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset 20newsgroups_miao -ds 100 -itype tfidf -nl relu -otype finopt -pl 0 -ns 100 -ep 400'
 
 
 """
