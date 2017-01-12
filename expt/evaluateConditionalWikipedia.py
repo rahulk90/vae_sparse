@@ -123,7 +123,7 @@ for mname in [MODEL_TO_USE]:
                 cjacob_energy  +=conditionalJacobianEnergy(vae, z)
             cjacob_energy/=float(nsamples)
 
-            fname = SAVEDIR+word+'-'+polydocs[word][context]+'-jacob.h5'
+            fname = SAVEDIR+word+'-'+context+'-jacob.h5'
             saveHDF5(fname,{'cjacob':cjacob,'cjacob_probs':cjacob_probs,'cjacob_energy':cjacob_energy})
             print 'saved...',word,context
     print 'Saved'
