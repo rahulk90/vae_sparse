@@ -11,7 +11,7 @@ import itertools,time
 from utils.misc import readPickle,savePickle
 from utils.misc import getConfigFile, loadHDF5, saveHDF5, createIfAbsent
 from utils.sparse_utils import loadSparseHDF5, saveSparseHDF5
-from optvaeutils.viz import getName,stitchMNISTSamples
+from optvaeutils.viz import getName
 from sklearn.feature_extraction.text import TfidfTransformer
 from scipy.spatial.distance import cdist
 from optvaemodels.evaluate_vecs import expectedJacobian, expectedJacobianProbs, expectedJacobianEnergy
@@ -56,9 +56,10 @@ def setupDocs(polydocs, vocabulary, vocabulary_singular):
     result           = {}
     for word in polydocs:
         result[word] = {}
-        for context in polydocs[word]:
+        for ctex in ['c1','c2']:
+            context  = polydocs[word][ctex]
             result[word][context] = {}
-            context_doc = re.sub('\W+',' ',polydocs[word][context].lower())
+            context_doc = re.sub('\W+',' ',polydocs[word][ctex+'_doc'].lower())
             words_ctex = [w.strip() for w in context_doc.split()]
             result[word][context] = np.zeros((1,V)) 
             for w in words_ctex:
@@ -69,18 +70,10 @@ def setupDocs(polydocs, vocabulary, vocabulary_singular):
             print word, context,result[word][context].min(), result[word][context].max(), result[word][context].sum()
     return result
 
-polydocs = {}
-polydocs['fire']  = {}
-polydocs['fire']['burn']   = open('./docs_context/fire_burn.txt').read()
-polydocs['fire']['layoff'] = open('./docs_context/fire_layoff.txt').read()
-polydocs['bank']  = {}
-polydocs['bank']['money']  = open('./docs_context/bank_money.txt').read() 
-polydocs['bank']['river']  = open('./docs_context/bank_river.txt').read() 
-polydocs['crane'] = {}
-polydocs['crane']['bird'] = open('./docs_context/crane_bird.txt').read()
-polydocs['crane']['construction'] = open('./docs_context/crane_construction.txt').read()
+if not os.path.exists('../optvaemodels/wordinfo.pkl'):
+    assert False,'run ../optvaemodels/polysemous_words.py'
+polydocs          = readPickle('../optvaemodels/wordinfo.pkl')[0]
 polydocs_x        = setupDocs(polydocs, dataset['vocabulary'], dataset['vocabulary_singular'])
-
 def runInference(vae, X):
     if params['opt_type']=='none':
         _,mu,logvar,_   = vae.inference0(X=X.astype(config.floatX))
@@ -130,7 +123,7 @@ for mname in [MODEL_TO_USE]:
                 cjacob_energy  +=conditionalJacobianEnergy(vae, z)
             cjacob_energy/=float(nsamples)
 
-            fname = SAVEDIR+word+'-'+context+'-jacob.h5'
+            fname = SAVEDIR+word+'-'+polydocs[word][context]+'-jacob.h5'
             saveHDF5(fname,{'cjacob':cjacob,'cjacob_probs':cjacob_probs,'cjacob_energy':cjacob_energy})
             print 'saved...',word,context
     print 'Saved'

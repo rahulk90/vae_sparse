@@ -44,7 +44,7 @@ polysemous_words['bar']['c2']   = 'lawyer'
 """court"""
 polysemous_words['court']    = {}
 polysemous_words['court']['control'] = 'bottle'
-polysemous_words['court']['c1'] = 'sports'
+polysemous_words['court']['c1'] = 'tennis'
 polysemous_words['court']['c2'] = 'lawyer'
 
 """crane"""

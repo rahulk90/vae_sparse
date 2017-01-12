@@ -9,7 +9,7 @@ import itertools,time
 from utils.misc import readPickle,savePickle
 from utils.misc import getConfigFile, loadHDF5, saveHDF5, createIfAbsent
 from utils.sparse_utils import loadSparseHDF5, saveSparseHDF5
-from optvaeutils.viz import getName,stitchMNISTSamples
+from optvaeutils.viz import getName
 from sklearn.feature_extraction.text import TfidfTransformer
 from scipy.spatial.distance import cdist
 from optvaemodels.evaluate_vecs import expectedJacobian, conditionalJacobian,expectedJacobianProbs,conditionalJacobianProbs,expectedJacobianEnergy
