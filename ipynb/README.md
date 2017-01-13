@@ -8,3 +8,6 @@ notebook, its purpose is listed below:
 * [`WordEmbeddings.ipynb`](./bow_text/WordEmbeddings.ipynb)
     * This reads the saved Jacobians created by the files `../expt/evaluateWikipedia.py` and `../expt/evaluateConditionalWikipedia` and analyses them (nearest neighbors etc.) 
     * This also creates plots of the log-singular values of the Jacobian matrix
+* [`GridSearch_Q.ipynb`](./bow_text/GridSearch_Q.ipynb)
+    * This reads the *.outf files saved in `../expt` from running the template python evaluation scripts 
+    created by `../expt/getTable_parallel_qvary.py` and creates the relevant latex table
