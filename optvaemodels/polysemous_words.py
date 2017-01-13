@@ -11,6 +11,14 @@ def parseWiki(word):
     sentence = re.sub('[^A-Za-z ]+', ' ', result)
     result = ' '.join([word.strip().lower() for word in sentence.split(' ') if len(word.strip())>=1])
     return result
+
+def parseWiki(word):
+    URL = ('https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exchars=5000&explaintext=&titles=%s'%(word))
+    result = getResponse(URL)
+    result = ''.join(result.split('extract')[1])
+    sentence = re.sub('[^A-Za-z ]+', ' ', result)
+    result = ' '.join([word.strip().lower() for word in sentence.split(' ') if len(word.strip())>=1])
+    return result
 #result = parseWiki('bird')
 #import ipdb;ipdb.set_trace()
 

@@ -101,7 +101,7 @@ def runInference(vae, X):
     else:
         raise ValueError,'Bad value'+params['opt_type']
     return mu
-SAVEDIR = './evalWikicorp-exponly/'
+SAVEDIR = './evalWikicorp/'
 createIfAbsent(SAVEDIR)
 for mname in [MODEL_TO_USE]:
     print 'Model: ',mname
