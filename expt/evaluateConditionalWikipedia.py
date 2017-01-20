@@ -35,17 +35,17 @@ additional_attrs['idf'] = tfidf.idf_
     
 models, epochval        = OrderedDict(), OrderedDict()
 
-models['pl-2-none']     = './results_dec19/chkpt-wikicorp-none/VAE_lr-8_0e-04-ph-400-ds-100-pl-2-ql-2-nl-relu-bs-500-ep-20-plr-1_0e-02-ar-0-otype-none-ns-100-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
-epochval['pl-2-none']   = '20'
+models['pl-2-none']     = './chkpt-wikicorp-none/VAE_lr-8_0e-04-ph-400-qh-400-ds-100-pl-2-ql-2-nl-relu-bs-500-ep-50-plr-1_0e-02-ar-0-otype-none-ns-200-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
+epochval['pl-2-none']   = '50'
 
-models['pl-2-finopt']   = './results_dec19/chkpt-wikicorp-finopt/VAE_lr-8_0e-04-ph-400-ds-100-pl-2-ql-2-nl-relu-bs-500-ep-20-plr-1_0e-02-ar-0-otype-finopt-ns-100-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
-epochval['pl-2-finopt'] = '20'
+models['pl-2-finopt']   = './chkpt-wikicorp-finopt/VAE_lr-8_0e-04-ph-400-qh-400-ds-100-pl-2-ql-2-nl-relu-bs-500-ep-50-plr-1_0e-02-ar-0-otype-finopt-ns-200-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
+epochval['pl-2-finopt'] = '50'
 
-models['pl-0-none']   = './results_dec19/chkpt-wikicorp-none/VAE_lr-8_0e-04-ph-400-ds-100-pl-0-ql-2-nl-relu-bs-500-ep-20-plr-1_0e-02-ar-0-otype-none-ns-100-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
-epochval['pl-0-none'] = '20'
+models['pl-0-none']   = './chkpt-wikicorp-none/VAE_lr-8_0e-04-ph-400-qh-400-ds-100-pl-0-ql-2-nl-relu-bs-500-ep-50-plr-1_0e-02-ar-0-otype-none-ns-200-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
+epochval['pl-0-none'] = '50'
 
-models['pl-0-finopt']   = './results_dec19/chkpt-wikicorp-finopt/VAE_lr-8_0e-04-ph-400-ds-100-pl-0-ql-2-nl-relu-bs-500-ep-20-plr-1_0e-02-ar-0-otype-finopt-ns-100-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
-epochval['pl-0-finopt'] = '20'
+models['pl-0-finopt']   = './chkpt-wikicorp-finopt/VAE_lr-8_0e-04-ph-400-qh-400-ds-100-pl-0-ql-2-nl-relu-bs-500-ep-50-plr-1_0e-02-ar-0-otype-finopt-ns-200-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
+epochval['pl-0-finopt'] = '50'
 if MODEL_TO_USE not in models:
     raise ValueError, MODEL_TO_USE+' not found'
 

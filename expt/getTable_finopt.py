@@ -1,7 +1,8 @@
 import glob
 from utils.misc import loadHDF5,getConfigFile, readPickle
 DIR     = './results_dec19'
-datasets= ['20newsgroups_miao','rcv2_miao']
+#datasets= ['20newsgroups_miao','rcv2_miao']
+DIR='./';datasets= ['wikicorp']
 result  = {}
 for dataset in datasets:
     print 'Dataset: ',dataset
@@ -17,7 +18,7 @@ for dataset in datasets:
         else:
             name = str(params['p_layers'])+'-M1-'+params['input_type']
         result[params['dataset']+'-'+name] = (dset['perp_0_eb'],dset['perp_f_eb'])
-
+        print name, (dset['perp_0_eb'],dset['perp_f_eb'])
 for dataset in datasets:
     for itype in ['normalize','tfidf']:
         for layer in ['0','2']: 
