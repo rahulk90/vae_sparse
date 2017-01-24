@@ -49,7 +49,8 @@ def _loadIMDB():
 Setup Rotten Tomatoes dataset
 """
 def _setupRT(DIR):
-    print 'Download and place train.tsv.zip and test.tsv.zip in sentiment/rotten_tomatoes/ from Kaggle(https://www.kaggle.com/c/sentiment-analysis-on-movie-reviews/data?test.tsv.zip)'
+    if not (os.path.exists(DIR+'/train.tsv.zip') and os.path.exists(DIR+'/test.tsv.zip')):
+        raise ValueError('Download and place train.tsv.zip and test.tsv.zip in sentiment/rotten_tomatoes/ from Kaggle(https://www.kaggle.com/c/sentiment-analysis-on-movie-reviews/data?test.tsv.zip)')
     locations = {}
     locations['train.tsv.zip'] = 'None'
     locations['test.tsv.zip'] = 'None'
