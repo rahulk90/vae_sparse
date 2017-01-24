@@ -14,6 +14,7 @@ import rcv2
 import evaluate_wvecs
 import wikicorp
 import synthetic
+import sentiment
 
 def loadDataset(dsetname):
     if dsetname in ['20newsgroups_miao']: #Code provided by Miao et. al 
@@ -30,6 +31,12 @@ def loadDataset(dsetname):
         return synthetic._loadSynthetic(dsetname)
     elif dsetname in ['wikicorp_1000','wikicorp_5000','wikicorp_10000']:
         return wikicorp._loadWikicorpSubset(int(dsetname.split('_')[1]))
+    elif dsetname in ['imdb']:
+        return sentiment._loadIMDB()
+    elif dsetname in ['rotten_tomatoes']:
+        return sentiment._loadRT()
+    elif dsetname in ['sst_fine','sst_binary']:
+        return sentiment._loadStanford(dsetname)
     else:
         assert False,'Invalid dataset name: '+str(dsetname)
 
