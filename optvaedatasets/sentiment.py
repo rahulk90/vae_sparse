@@ -31,7 +31,10 @@ def _processStanford(DIR, dset):
                     pass
                 else:
                     data.append(elem[0])
-                    labels.append(elem[1])
+                    if binary:
+                        labels.append((elem[1]>2)*1)
+                    else:
+                        labels.append(elem[1])
                 assert len(elem)==2,'Bad element'
             return data, np.array(labels)
         dataset_fine = {}
