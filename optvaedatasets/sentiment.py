@@ -79,7 +79,7 @@ def _setupIMDB(DIR):
 
 def _processIMDB(DIR):
     if not os.path.exists(DIR+'/aclImdb/imdb_splits'):
-        raise ValueError('Run preprocess_imdb.py')
+        raise ValueError('Run code in sentiment/preprocess_imdb.py')
     elif os.path.exists(DIR+'/imdb.pkl'):
         print 'Loading...'
         return readPickle(DIR+'/imdb.pkl')[0]
@@ -189,7 +189,7 @@ def _loadRT():
 
 if __name__=='__main__':
     dataset = _loadStanford('sst_fine')
-    #dataset = _loadStanford('sst_binary')
-    #dataset = _loadIMDB()
-    #dataset = _loadRT()
+    dataset = _loadStanford('sst_binary')
+    dataset = _loadIMDB()
+    dataset = _loadRT()
     import ipdb;ipdb.set_trace()
