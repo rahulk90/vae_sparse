@@ -69,3 +69,9 @@ python wikicorp.py
 #Setup by running
 python synthetic.py
 ```
+
+### Sentiment Analysis
+* There are three datasets to setup using `python sentiment.py`
+* The script will have to be re-run several times interspersed with preprocessing steps
+* Two files must be run from the `sentiment` directory : `preprocess_imdb.py` and `sentiment_trees.py`. You will be prompted about when these must be run
+* When all the instructions have been followed, you should be able to load the four datasets successfully and will halt at the command `import ipdb;ipdb.set_trace()` when running the file `sentiment.py`
