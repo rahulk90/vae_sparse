@@ -4,6 +4,7 @@ import numpy as np
 from datasets.load import loadDataset
 from optvaedatasets.load import loadDataset as loadDataset_OVAE
 from optvaeutils.parse_args_dan import params 
+from optvaeutils.vocab_utils import reformatDataset
 from utils.misc import removeIfExists,createIfAbsent,mapPrint,saveHDF5,displayTime,getLowestError, loadHDF5
 from sklearn.feature_extraction.text import TfidfTransformer
 
@@ -17,6 +18,8 @@ dataset = loadDataset_OVAE(dataset)
 dataset_wvecs = params['dataset_wvecs']
 print 'Loading: ',dataset_wvecs 
 dataset_wvecs = loadDataset_OVAE(dataset_wvecs)
+
+reformatDataset(dataset, dataset_wvecs)
 
 #Load Jacobian vectors
 print 'Loading Jacobian'

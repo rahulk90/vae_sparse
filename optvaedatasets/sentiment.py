@@ -4,19 +4,6 @@ from utils.misc import readPickle, savePickle
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 
-def setupDataset(dataset):
-    """
-    Input format: list of lists. each element in the list is a list of indices corresponding to works in 
-        the vocabulary
-    Output format: matrix of indices, masks denoting which indices are valid for each datapoint
-    """
-    MAX     = np.max([len(elem) for elem in dataset])
-    indices = np.zeros((len(dataset), MAX))
-    mask    = np.zeros((len(dataset), MAX))
-    for idx, elem in enumerate(dataset): 
-        indices[idx,:len(elem)] = np.sort(np.array(elem)) 
-        mask[idx,:len(elem)]    = 1. 
-    return indices, mask
 
 """
 Setup Stanford Sentiment Analysis Dataset
