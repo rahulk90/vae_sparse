@@ -21,15 +21,16 @@ dataset_wvecs = loadDataset_OVAE(dataset_wvecs)
 #Load Jacobian vectors
 print 'Loading Jacobian'
 saved_jacob   = loadHDF5(params['jacobian_location'])
-jacobian      = saved_jacob[params['jacob_type']]
+jacobian      = saved_jacob[params['jacobian_type']]
+attrs         = {}
+attrs['jacobian_th'] = jacobian
 
 assert jacobian.shape[0] == len(dataset_wvecs['vocabulary']),'shapes dont match up'
 params['dim_input']      = jacobian.shape[1]
-params['dim_output']     = jacobian.shape[1]
+params['dim_output']     = len(np.unique(dataset['train_y']))
 
 #Store dataset parameters into params 
 mapPrint('Options: ',params)
-import ipdb;ipdb.set_trace()
 #Setup VAE DAN (or reload from existing savefile)
 start_time = time.time()
 from optvaemodels.dan import DAN 
@@ -47,15 +48,17 @@ if os.path.exists(reloadFile):
     assert os.path.exists(pfile),pfile+' not found. Need paramfile'
     print 'Reloading trained model from : ',reloadFile
     print 'Assuming ',pfile,' corresponds to model'
-    model = DAN(params, paramFile = pfile, reloadFile = reloadFile)
+    model = DAN(params, paramFile = pfile, reloadFile = reloadFile, additional_attrs = attrs)
 else:
     pfile= params['savedir']+'/'+params['unique_id']+'-config.pkl'
     print 'Training model from scratch. Parameters in: ',pfile
-    model = DAN(params, paramFile = pfile)
+    model = DAN(params, paramFile = pfile, additional_attrs = attrs)
 displayTime('Building vae',start_time, time.time())
 
 savef      = os.path.join(params['savedir'],params['unique_id']) 
 start_time = time.time()
+
+#Setup jacobian
 savedata   = learn( model,  dataset     = dataset['train_x'],
                             mask        = dataset['train_mask'],
                             labels      = dataset['train_y'],
@@ -75,7 +78,8 @@ reloadFile               = pfile.replace('-config.pkl','')+'-EP'+str(int(epochMi
 print 'Loading from : ',reloadFile
 params['validate_only']  = True
 bestDAN                  = DAN(params, paramFile = pfile, reloadFile = reloadFile)
-test_results             = evaluateAcc(bestDAN, dataset['test_x'], dataset['test_mask'], dataset['test_y'], batch_size = params['batch_size'])
-savedata['test_results'] = test_results
+test_acc, test_confusion_mat   = evaluateAcc(bestDAN, dataset['test_x'], dataset['test_mask'], dataset['test_y'], batch_size = params['batch_size'])
+savedata['test_acc']           = test_acc
+savedata['test_confusion_mat'] = test_confusion_mat
 saveHDF5(savef+'-final.h5', savedata)
 import ipdb; ipdb.set_trace()

@@ -59,12 +59,12 @@ def _processStanford(DIR, dset):
         dataset_fine['train_x'], dataset_fine['train_y'] = split(train) 
         dataset_fine['valid_x'], dataset_fine['valid_y'] = split(valid) 
         dataset_fine['test_x'],  dataset_fine['test_y']  = split(test) 
-        dataset_fine['train_x'], dataset_fine['mask_train']   = setupDataset(dataset_fine['train_x'])
-        dataset_fine['valid_x'], dataset_fine['mask_valid']   = setupDataset(dataset_fine['valid_x'])
-        dataset_fine['test_x'],  dataset_fine['mask_test']    = setupDataset(dataset_fine['test_x'])
-        print 'sst_fine train:' , dataset_fine['train_x'].shape, dataset_fine['train_y'].shape, dataset_fine['mask_train'].shape
-        print 'sst_fine valid:' , dataset_fine['valid_x'].shape, dataset_fine['valid_y'].shape, dataset_fine['mask_valid'].shape
-        print 'sst_fine test :' , dataset_fine['test_x'].shape,  dataset_fine['test_y'].shape,  dataset_fine['mask_test'].shape
+        dataset_fine['train_x'], dataset_fine['train_mask']   = setupDataset(dataset_fine['train_x'])
+        dataset_fine['valid_x'], dataset_fine['valid_mask']   = setupDataset(dataset_fine['valid_x'])
+        dataset_fine['test_x'],  dataset_fine['test_mask']    = setupDataset(dataset_fine['test_x'])
+        print 'sst_fine train:' , dataset_fine['train_x'].shape, dataset_fine['train_y'].shape, dataset_fine['train_mask'].shape
+        print 'sst_fine valid:' , dataset_fine['valid_x'].shape, dataset_fine['valid_y'].shape, dataset_fine['valid_mask'].shape
+        print 'sst_fine test :' , dataset_fine['test_x'].shape,  dataset_fine['test_y'].shape,  dataset_fine['test_mask'].shape
         saveHDF5(DIR+'/sst_fine.h5', dataset_fine)
         dataset_fine = {}
         dataset_fine['word2idx'] = word2idx
@@ -78,12 +78,12 @@ def _processStanford(DIR, dset):
         dataset_binary['train_x'], dataset_binary['train_y'] = split(train, binary=True) 
         dataset_binary['valid_x'], dataset_binary['valid_y'] = split(valid, binary=True) 
         dataset_binary['test_x'],  dataset_binary['test_y']  = split(test,  binary=True) 
-        dataset_binary['train_x'], dataset_binary['mask_train']   = setupDataset(dataset_binary['train_x'])
-        dataset_binary['valid_x'], dataset_binary['mask_valid']   = setupDataset(dataset_binary['valid_x'])
-        dataset_binary['test_x'],  dataset_binary['mask_test']    = setupDataset(dataset_binary['test_x'])
-        print 'sst_bin train:' , dataset_binary['train_x'].shape, dataset_binary['train_y'].shape, dataset_binary['mask_train'].shape
-        print 'sst_bin valid:' , dataset_binary['valid_x'].shape, dataset_binary['valid_y'].shape, dataset_binary['mask_valid'].shape
-        print 'sst_bin test :' , dataset_binary['test_x'].shape,  dataset_binary['test_y'].shape,  dataset_binary['mask_test'].shape
+        dataset_binary['train_x'], dataset_binary['train_mask']   = setupDataset(dataset_binary['train_x'])
+        dataset_binary['valid_x'], dataset_binary['valid_mask']   = setupDataset(dataset_binary['valid_x'])
+        dataset_binary['test_x'],  dataset_binary['test_mask']    = setupDataset(dataset_binary['test_x'])
+        print 'sst_bin train:' , dataset_binary['train_x'].shape, dataset_binary['train_y'].shape, dataset_binary['train_mask'].shape
+        print 'sst_bin valid:' , dataset_binary['valid_x'].shape, dataset_binary['valid_y'].shape, dataset_binary['valid_mask'].shape
+        print 'sst_bin test :' , dataset_binary['test_x'].shape,  dataset_binary['test_y'].shape,  dataset_binary['test_mask'].shape
         saveHDF5(DIR+'/sst_binary.h5', dataset_binary)
         dataset_binary  = {}
         dataset_binary['word2idx'] = word2idx
@@ -144,12 +144,12 @@ def _processIMDB(DIR):
         dataset['train_x'], dataset['train_y'] = split(train_tup) 
         dataset['valid_x'], dataset['valid_y'] = split(valid_tup) 
         dataset['test_x'], dataset['test_y']   = split(test_tup) 
-        dataset['train_x'], dataset['mask_train'] = setupDataset(dataset['train_x'])
-        dataset['valid_x'], dataset['mask_valid'] = setupDataset(dataset['valid_x'])
-        dataset['test_x'], dataset['mask_test']   = setupDataset(dataset['test_x'])
-        print 'IMDB train:' , dataset['train_x'].shape, dataset['train_y'].shape, dataset['mask_train'].shape
-        print 'IMDB valid:' , dataset['valid_x'].shape, dataset['valid_y'].shape, dataset['mask_valid'].shape
-        print 'IMDB test :' , dataset['test_x'].shape,  dataset['test_y'].shape,  dataset['mask_test'].shape
+        dataset['train_x'], dataset['train_mask'] = setupDataset(dataset['train_x'])
+        dataset['valid_x'], dataset['valid_mask'] = setupDataset(dataset['valid_x'])
+        dataset['test_x'], dataset['test_mask']   = setupDataset(dataset['test_x'])
+        print 'IMDB train:' , dataset['train_x'].shape, dataset['train_y'].shape, dataset['train_mask'].shape
+        print 'IMDB valid:' , dataset['valid_x'].shape, dataset['valid_y'].shape, dataset['valid_mask'].shape
+        print 'IMDB test :' , dataset['test_x'].shape,  dataset['test_y'].shape,  dataset['test_mask'].shape
         saveHDF5( DIR+'/imdb.h5', dataset)
         dataset = {}
         dataset['word2idx']=word2idx
@@ -225,15 +225,15 @@ def _setupRT(DIR):
     for w in vocab:
         idx2word[word2idx[w]] = w
     dataset = {}
-    dataset['train_x'], dataset['mask_train'] = setupDataset([data[idx] for idx in train_idx.tolist()])
-    dataset['valid_x'], dataset['mask_valid'] = setupDataset([data[idx] for idx in valid_idx.tolist()])
-    dataset['test_x'], dataset['mask_test']   = setupDataset([data[idx] for idx in test_idx.tolist()])
+    dataset['train_x'], dataset['train_mask'] = setupDataset([data[idx] for idx in train_idx.tolist()])
+    dataset['valid_x'], dataset['valid_mask'] = setupDataset([data[idx] for idx in valid_idx.tolist()])
+    dataset['test_x'], dataset['test_mask']   = setupDataset([data[idx] for idx in test_idx.tolist()])
     dataset['train_y']    = labels[train_idx] 
     dataset['valid_y']    = labels[valid_idx] 
     dataset['test_y']     = labels[test_idx] 
-    print 'RT train:' , dataset['train_x'].shape, dataset['train_y'].shape, dataset['mask_train'].shape
-    print 'RT valid:' , dataset['valid_x'].shape, dataset['valid_y'].shape, dataset['mask_valid'].shape
-    print 'RT test :' , dataset['test_x'].shape,  dataset['test_y'].shape,  dataset['mask_test'].shape
+    print 'RT train:' , dataset['train_x'].shape, dataset['train_y'].shape, dataset['train_mask'].shape
+    print 'RT valid:' , dataset['valid_x'].shape, dataset['valid_y'].shape, dataset['valid_mask'].shape
+    print 'RT test :' , dataset['test_x'].shape,  dataset['test_y'].shape,  dataset['test_mask'].shape
     saveHDF5( DIR+'/rt.h5', dataset)
     dataset = {}
     dataset['idx2word'] = idx2word

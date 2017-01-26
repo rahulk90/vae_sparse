@@ -2,7 +2,7 @@
 from collections import OrderedDict
 import sys
 
-expt_type = 'sst_full'
+expt_type = 'sst_fine'
 valid_expts= set(['sse_full','sst_binary','rotten_tomatoes','imdb'])
 
 print 'Valid Expts: ',','.join(list(valid_expts))
@@ -26,35 +26,35 @@ gpu_3_full = 'THEANO_FLAGS="compiledir_format=gpu3,lib.cnmem=0.95,scan.allow_gc=
 """
 Experiments on Stanford Sentiment
 """
-expt_runs['sst_full'] = OrderedDict()
-expt_runs['sst_full']['2_fixed']   = gpu_0_full+' '+'python2.7 train.py -dset sst_full -otype fixed -numl 2 -ep 400'
-expt_runs['sst_full']['2_learn']   = gpu_1_full+' '+'python2.7 train.py -dset sst_full -otype learn -numl 2 -ep 400'
-expt_runs['sst_full']['0_fixed']   = gpu_0_full+' '+'python2.7 train.py -dset sst_full -otype fixed -numl 0 -ep 400'
-expt_runs['sst_full']['0_learn']   = gpu_1_full+' '+'python2.7 train.py -dset sst_full -otype learn -numl 0 -ep 400'
+expt_runs['sst_fine'] = OrderedDict()
+expt_runs['sst_fine']['2_fixed']   = gpu_0_full+' '+'python2.7 train_dan.py -dset sst_fine -otype fixed -numl 2 -ep 400'
+expt_runs['sst_fine']['2_learn']   = gpu_1_full+' '+'python2.7 train_dan.py -dset sst_fine -otype learn -numl 2 -ep 400'
+expt_runs['sst_fine']['0_fixed']   = gpu_0_full+' '+'python2.7 train_dan.py -dset sst_fine -otype fixed -numl 0 -ep 400'
+expt_runs['sst_fine']['0_learn']   = gpu_1_full+' '+'python2.7 train_dan.py -dset sst_fine -otype learn -numl 0 -ep 400'
 
 expt_runs['sst_binary'] = OrderedDict()
-expt_runs['sst_binary']['2_fixed']   = gpu_0_full+' '+'python2.7 train.py -dset sst_binary -otype fixed -numl 2 -ep 400'
-expt_runs['sst_binary']['2_learn']   = gpu_1_full+' '+'python2.7 train.py -dset sst_binary -otype learn -numl 2 -ep 400'
-expt_runs['sst_binary']['0_fixed']   = gpu_0_full+' '+'python2.7 train.py -dset sst_binary -otype fixed -numl 0 -ep 400'
-expt_runs['sst_binary']['0_learn']   = gpu_1_full+' '+'python2.7 train.py -dset sst_binary -otype learn -numl 0 -ep 400'
+expt_runs['sst_binary']['2_fixed']   = gpu_0_full+' '+'python2.7 train_dan.py -dset sst_binary -otype fixed -numl 2 -ep 400'
+expt_runs['sst_binary']['2_learn']   = gpu_1_full+' '+'python2.7 train_dan.py -dset sst_binary -otype learn -numl 2 -ep 400'
+expt_runs['sst_binary']['0_fixed']   = gpu_0_full+' '+'python2.7 train_dan.py -dset sst_binary -otype fixed -numl 0 -ep 400'
+expt_runs['sst_binary']['0_learn']   = gpu_1_full+' '+'python2.7 train_dan.py -dset sst_binary -otype learn -numl 0 -ep 400'
 
 """
 Experiments on RT 
 """
 expt_runs['rotten_tomatoes'] = OrderedDict()
-expt_runs['rotten_tomatoes']['2_fixed']   = gpu_0_full+' '+'python2.7 train.py -dset rotten_tomatoes -otype fixed -numl 2 -ep 400'
-expt_runs['rotten_tomatoes']['2_learn']   = gpu_1_full+' '+'python2.7 train.py -dset rotten_tomatoes -otype learn -numl 2 -ep 400'
-expt_runs['rotten_tomatoes']['0_fixed']   = gpu_0_full+' '+'python2.7 train.py -dset rotten_tomatoes -otype fixed -numl 0 -ep 400'
-expt_runs['rotten_tomatoes']['0_learn']   = gpu_1_full+' '+'python2.7 train.py -dset rotten_tomatoes -otype learn -numl 0 -ep 400'
+expt_runs['rotten_tomatoes']['2_fixed']   = gpu_0_full+' '+'python2.7 train_dan.py -dset rotten_tomatoes -otype fixed -numl 2 -ep 400'
+expt_runs['rotten_tomatoes']['2_learn']   = gpu_1_full+' '+'python2.7 train_dan.py -dset rotten_tomatoes -otype learn -numl 2 -ep 400'
+expt_runs['rotten_tomatoes']['0_fixed']   = gpu_0_full+' '+'python2.7 train_dan.py -dset rotten_tomatoes -otype fixed -numl 0 -ep 400'
+expt_runs['rotten_tomatoes']['0_learn']   = gpu_1_full+' '+'python2.7 train_dan.py -dset rotten_tomatoes -otype learn -numl 0 -ep 400'
 
 """
 Experiments on IMDB 
 """
 expt_runs['imdb'] = OrderedDict()
-expt_runs['imdb']['2_fixed']   = gpu_0_full+' '+'python2.7 train.py -dset imdb -otype fixed -numl 2 -ep 400'
-expt_runs['imdb']['2_learn']   = gpu_1_full+' '+'python2.7 train.py -dset imdb -otype learn -numl 2 -ep 400'
-expt_runs['imdb']['0_fixed']   = gpu_0_full+' '+'python2.7 train.py -dset imdb -otype fixed -numl 0 -ep 400'
-expt_runs['imdb']['0_learn']   = gpu_1_full+' '+'python2.7 train.py -dset imdb -otype learn -numl 0 -ep 400'
+expt_runs['imdb']['2_fixed']   = gpu_0_full+' '+'python2.7 train_dan.py -dset imdb -otype fixed -numl 2 -ep 400'
+expt_runs['imdb']['2_learn']   = gpu_1_full+' '+'python2.7 train_dan.py -dset imdb -otype learn -numl 2 -ep 400'
+expt_runs['imdb']['0_fixed']   = gpu_0_full+' '+'python2.7 train_dan.py -dset imdb -otype fixed -numl 0 -ep 400'
+expt_runs['imdb']['0_learn']   = gpu_1_full+' '+'python2.7 train_dan.py -dset imdb -otype learn -numl 0 -ep 400'
 
 for expt in expt_runs[expt_type]:
     print 'screen -S '+expt

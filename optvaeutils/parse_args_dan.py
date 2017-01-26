@@ -9,7 +9,7 @@ parser = argparse.ArgumentParser()
 #Model specification
 parser.add_argument('-dh','--dim_hidden', action='store', default = 400, help='Hidden dimensions (in p)', type=int)
 parser.add_argument('-numl','--layers', action='store',default = 2, help='#Layers in Generative Model', type=int)
-parser.add_argument('-idrop','--input_dropout', action='store',default = 0.5, help='Dropout words at input',type=float)
+parser.add_argument('-idrop','--input_dropout', action='store',default = 0.2, help='Dropout words at input',type=float)
 parser.add_argument('-etype','--emission_type', action='store',default = 'mlp', help='Dropout words at input',type=str,choices=['mlp','res'])
 parser.add_argument('-nl','--nonlinearity', action='store',default = 'relu', help='Nonlinarity',type=str, choices=['relu','tanh','softplus'])
 
