@@ -47,11 +47,11 @@ if os.path.exists(reloadFile):
     assert os.path.exists(pfile),pfile+' not found. Need paramfile'
     print 'Reloading trained model from : ',reloadFile
     print 'Assuming ',pfile,' corresponds to model'
-    model = DAN(params, paramFile = pfile, reloadFile = reloadFile, additional_attrs = additional_attrs)
+    model = DAN(params, paramFile = pfile, reloadFile = reloadFile)
 else:
     pfile= params['savedir']+'/'+params['unique_id']+'-config.pkl'
     print 'Training model from scratch. Parameters in: ',pfile
-    model = DAN(params, paramFile = pfile, additional_attrs = additional_attrs)
+    model = DAN(params, paramFile = pfile)
 displayTime('Building vae',start_time, time.time())
 
 savef      = os.path.join(params['savedir'],params['unique_id']) 
@@ -74,7 +74,7 @@ epochMin, valMin, idxMin = getLowestError(savedata['valid_acc'])
 reloadFile               = pfile.replace('-config.pkl','')+'-EP'+str(int(epochMin))+'-params.npz'
 print 'Loading from : ',reloadFile
 params['validate_only']  = True
-bestDAN                  = DAN(params, paramFile = pfile, reloadFile = reloadFile, additional_attrs = additional_attrs)
+bestDAN                  = DAN(params, paramFile = pfile, reloadFile = reloadFile)
 test_results             = evaluateAcc(bestDAN, dataset['test_x'], dataset['test_mask'], dataset['test_y'], batch_size = params['batch_size'])
 savedata['test_results'] = test_results
 saveHDF5(savef+'-final.h5', savedata)
