@@ -13,12 +13,11 @@ from theano.compile.debugmode import DebugMode
 from models import BaseModel
 from utils.divergences import KLGaussian,BhattacharryaGaussian
 from utils.misc import readPickle, saveHDF5
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix, accuracy_score
 
 class DAN(BaseModel, object):
     def __init__(self, params, paramFile=None, reloadFile=None, **kwargs):
         super(DAN,self).__init__(params, paramFile=paramFile, reloadFile=reloadFile, **kwargs)
-        self.p_names = [k.name for k in self._getModelParams(restrict='p_')] 
     def _createParams(self):
         """ _createParams: create weights learned and used in model """
         npWeights = OrderedDict()
@@ -61,20 +60,23 @@ class DAN(BaseModel, object):
         return lsf
     
     ################################    Building Objective Functions #####################
-    def _cost(self, idx, mask, labels, input_dropout = 0.): 
+    def _cost(self, idx, mask, labels, input_dropout = 0., additional_output=None): 
         """ Wrapper for training/evaluation cost"""
         # pull out relevant vectors
-        if input_dropout>0.:
-            assert input_dropout<1.,'bad input dropout value'
-            rand_th      = self.srng.binomial(p=input_dropout, size=mask.shape)
-            mask_dropout = (mask*rand_th) 
-        else:
-            mask_dropout = mask
-        input_rep        = self.jacobian_th[idx]*mask_dropout[:,:,None]
-        input            = input_rep.sum(1)/mask_dropout.sum(1,keepdims=True)
+        #if input_dropout>0.:
+        #    assert input_dropout<1.,'bad input dropout value'
+        #    rand_th      = self.srng.binomial(p=input_dropout, size=mask.shape)
+        #    mask_dropout = (mask*rand_th) 
+        #else:
+        #    mask_dropout = mask
+        input_rep        = (self.jacobian_th)[idx]*mask[:,:,None]
+        input            = input_rep.sum(1)/mask.sum(1,keepdims=True)
         logprob          = self._YgivenX(input)
-        y_pred           = T.argmax(logprob, axis=1)
         nll              = -(logprob[T.arange(labels.shape[0]), labels]).sum()
+        if type(additional_output) is dict:
+            additional_output['input_rep'] = input_rep 
+            additional_output['input']     = input
+            additional_output['logprob']   = logprob
         return nll, T.exp(logprob)
     
     def setJacobian(self, newJacobian, quiet=False):
@@ -105,14 +107,15 @@ class DAN(BaseModel, object):
         #Used in optimizer.py
         self._addWeights('lr',   np.asarray(self.params['lr'],dtype=config.floatX),  borrow=False)
         lr                 = self.tWeights['lr']
-        cost_eval,y_probs  = self._cost(idx, mask, labels, input_dropout = 0.)
-        self.accuracy      = theano.function([idx, mask, labels], [cost_eval,y_probs],name = 'Evaluate', allow_input_downcast = True)
+        cost_eval, y_probs  = self._cost(idx, mask, labels, input_dropout = 0.)
+        self.accuracy      = theano.function([idx, mask, labels], [cost_eval, y_probs],name = 'Evaluate', allow_input_downcast = True)
         if 'validate_only' in self.params or 'EVALUATE' in self.params:
             self.updates_ack = True
             self.tOptWeights = []
             self._p('Not building training functions...')
             return
-        cost_train,y_probs_train = self._cost(idx, mask, labels, input_dropout = self.params['input_dropout'])
+        additional = {}
+        cost_train, y_probs_train = self._cost(idx, mask, labels, input_dropout = self.params['input_dropout'], additional_output = additional)
         self.updates_ack = True
         model_params             = self._getModelParams()
         if self.params['opt_type']=='learn':
@@ -130,25 +133,27 @@ class DAN(BaseModel, object):
                                                         #grad_norm = 1.,
                                                         #divide_grad = T.cast(X.shape[0],config.floatX))
         self._p('# additional updates: '+str(len(self.updates)))
-        self.train      = theano.function([idx, mask, labels], [cost_train, y_probs_train], updates = optimizer_up, name = 'Train', allow_input_downcast=True)
+        self.train      = theano.function([idx, mask, labels], [cost_train, y_probs_train], 
+                updates = optimizer_up, name = 'Train', allow_input_downcast=True)
+            #additional['input_rep'], additional['input'], additional['logprob']], 
         self._p('Done creating functions for training')
 """
 Evaluate accuracy
 """
 def evaluateAcc(dan, data_x, mask, data_y, batch_size):
     N   = len(data_x)
-    acc = 0. 
+    nll = 0. 
     pred_y = []
     for bnum, st_idx in enumerate(range(0,N,batch_size)):
         end_idx = min(st_idx+batch_size, N)
         X    = data_x[st_idx:end_idx]
         M    = mask[st_idx:end_idx]
         Y    = data_y[st_idx:end_idx]
-        batch_acc, y_probs = dan.accuracy(X, M, Y)
-        acc += batch_acc
+        batch_nll, y_probs = dan.accuracy(X, M, Y)
+        nll += batch_nll
         pred_y += np.argmax(y_probs,1).tolist()
     cmat     = confusion_matrix(data_y, np.array(pred_y))
-    return acc/float(N), cmat
+    return nll/float(N), accuracy_score(data_y, pred_y), cmat
 
 """
 Learn DANs
@@ -159,44 +164,57 @@ def learn(dan, dataset = None, mask= None, labels = None,
         savefreq = None, dataset_eval = None, mask_eval = None, labels_eval = None):
     N = dataset.shape[0]
     idxlist = range(N)
-    trainacclist, traintimelist, validconflist, validacclist = [], [], None, []
+    trainnlllist, trainacclist, traintimelist = [], [], []
+    validnlllist, validconflist, validacclist = [], None, []
     for epoch in range(epoch_start, epoch_end+1):
         np.random.shuffle(idxlist)
         start_time  = time.time()
-        ep_acc,ep_pred = 0.,[]
+        ep_nll, ep_pred = 0.,[]
         for bnum,st_idx in enumerate(range(0,N,batch_size)):
             end_idx = min(st_idx+batch_size, N)
             idx_X   = dataset[idxlist[st_idx:end_idx]]
             mask_X  = mask[idxlist[st_idx:end_idx]] 
             labels_Y= labels[idxlist[st_idx:end_idx]]
-            batch_acc, batch_probs = dan.train(idx_X, mask_X, labels_Y)
-            ep_acc += batch_acc
+            results = dan.train(idx_X, mask_X, labels_Y)
+            batch_nll, batch_probs = results[0], results[1]
+            ep_nll += batch_nll
             ep_pred+= np.argmax(batch_probs,axis=1).tolist()
-        train_acc = ep_acc/float(N)
+        train_nll = ep_nll/float(N)
+        train_acc = accuracy_score(labels, np.array(ep_pred))
         ep_time   = (time.time()-start_time)/60.
+        trainnlllist.append((epoch,train_nll))
         trainacclist.append((epoch,train_acc))
         traintimelist.append((epoch,ep_time))
         print '\n'
         jacob_norm= dan.jacobNorm()
-        dan._p(('Ep(%d) Accuracy: %.4f, jacobian(%s)(%.4f), [%.4f mins]')%(epoch, train_acc, dan.params['opt_type'], jacob_norm, ep_time))
+        dan._p(('Ep(%d) NLL: %.4f, Acc: %.4f, jacobian(%s)(%.4f), [%.4f mins]')%(epoch, train_nll, train_acc, dan.params['opt_type'], jacob_norm, ep_time))
         train_cmat= confusion_matrix(labels[idxlist], np.array(ep_pred)) 
         print 'Confusion_Matrix\n',train_cmat 
         if savefreq is not None and epoch%savefreq==0:
             dan ._p(('Saving at epoch %d'%epoch))
             dan._saveModel(fname=savefile+'-EP'+str(epoch))
-            valid_acc, valid_conf_mat     = evaluateAcc(dan, dataset_eval, mask_eval, labels_eval, batch_size)
+            start_time = time.time()
+            valid_nll, valid_acc, valid_conf_mat     = evaluateAcc(dan, dataset_eval, mask_eval, labels_eval, batch_size)
+            eval_time  = (time.time()-start_time)/60.
+            dan._p(('\t Validation NLL: %.4f, Acc: %.4f [%.4f mins]')%(valid_nll, valid_acc, eval_time))
+            print '\t Validation Confusion Matrix:\n', valid_conf_mat
+
+            validnlllist.append((epoch, valid_nll))
             validacclist.append((epoch, valid_acc))
             if validconflist is None:
                 validconflist  = valid_conf_mat[:,:,None] 
             else:
                 validconflist  = np.concatenate([validconflist, valid_conf_mat[:,:,None]],axis=2) 
             intermediate = {}
+            intermediate['train_nll']      = np.array(trainnlllist)
             intermediate['train_acc']      = np.array(trainacclist)
             intermediate['train_time']     = np.array(traintimelist)
+            intermediate['valid_nll']      = np.array(validnlllist)
             intermediate['valid_acc']      = np.array(validacclist)
             intermediate['valid_conf_mat'] = validconflist 
             saveHDF5(savefile+'-EP'+str(epoch)+'-stats.h5', intermediate)
     ret_map={}
+    ret_map['train_nll']      = np.array(trainnlllist)
     ret_map['train_acc']      = np.array(trainacclist)
     ret_map['train_time']     = np.array(traintimelist)
     ret_map['valid_acc']      = np.array(validacclist)

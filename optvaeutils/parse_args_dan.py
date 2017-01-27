@@ -9,7 +9,7 @@ parser = argparse.ArgumentParser()
 #Model specification
 parser.add_argument('-dh','--dim_hidden', action='store', default = 400, help='Hidden dimensions (in p)', type=int)
 parser.add_argument('-numl','--layers', action='store',default = 2, help='#Layers in Generative Model', type=int)
-parser.add_argument('-idrop','--input_dropout', action='store',default = 0.2, help='Dropout words at input',type=float)
+parser.add_argument('-idrop','--input_dropout', action='store',default = 0.01, help='Dropout words at input',type=float)
 parser.add_argument('-etype','--emission_type', action='store',default = 'mlp', help='Dropout words at input',type=str,choices=['mlp','res'])
 parser.add_argument('-nl','--nonlinearity', action='store',default = 'relu', help='Nonlinarity',type=str, choices=['relu','tanh','softplus'])
 
@@ -20,7 +20,7 @@ parser.add_argument('-iw','--init_weight', action='store',default = 0.1, help='R
 parser.add_argument('-dset','--dataset', action='store',default = 'sst_binary', help='Dataset', type=str, choices=['sst_binary','sst_fine','rotten_tomatoes','imdb'])
 parser.add_argument('-dset_wvecs','--dataset_wvecs', action='store',default = 'wikicorp', help='Dataset for using Jacobian vecs', type=str, choices=['20newsgroups_miao','wikicorp'])
 parser.add_argument('-jloc', '--jacobian_location', action='store',default = 'NOTFOUND', help='Must set the location of file containing jacobian', type=str)
-parser.add_argument('-jtype','--jacobian_type', action='store', default = 'ejacob', help='Jacobian Vector Type', type=str, choices=['ejacob','ejacob-probs','ejacob-energy'])
+parser.add_argument('-jtype','--jacobian_type', action='store', default = 'ejacob', help='Jacobian Vector Type', type=str, choices=['ejacob','ejacob_probs','ejacob_energy'])
 parser.add_argument('-otype','--opt_type', action='store',default = 'fixed', help='Keep vectors fixed or learn them', type=str, choices=['fixed','learn'])
 parser.add_argument('-lr','--lr', action='store',default = 8e-4, help='Learning rate', type=float)
 parser.add_argument('-opt','--optimizer', action='store',default = 'adam', help='Optimizer',choices=['adam'])
