@@ -142,26 +142,23 @@ def _setupRT(DIR):
     ctvec    = CountVectorizer(stop_words='english',analyzer='word',strip_accents='ascii')
     ctvec.fit(positive)
     ctvec.fit(negative)
-    positive_vecs = ctvec.transform(positive)
-    negative_vecs = ctvec.transform(negative)
-    
+    positive_vecs = ctvec.transform(positive).toarray()
+    negative_vecs = ctvec.transform(negative).toarray()
     data  =[]
     labels=[]
     for pvec in positive_vecs:
-        pos_list  = pvec.toarray().squeeze()
         idxlist   = []
-        non_zero_idx = np.where(pos_list>0.)[0]
+        non_zero_idx = np.where(pvec>0.)[0]
         for idx in non_zero_idx.tolist(): 
-            count   = pos_list[idx]
+            count   = pvec[idx]
             idxlist += [idx]*count
         data.append(idxlist)
         labels.append(1)
     for nvec in negative_vecs:
-        neg_list  = nvec.toarray().squeeze().tolist()
         idxlist   = []
-        non_zero_idx = np.where(neg_list>0.)[0]
+        non_zero_idx = np.where(nvec>0.)[0]
         for idx in non_zero_idx.tolist(): 
-            count    = neg_list[idx]
+            count    = nvec[idx]
             idxlist += [idx]*count
         data.append(idxlist)
         labels.append(0)
@@ -199,8 +196,8 @@ def _loadRT():
     return readPickle(DIR+'/rt.pkl')[0]
 
 if __name__=='__main__':
-    sst_fine= _loadStanford('sst_fine')
-    sst_bin = _loadStanford('sst_binary')
-    imdb    = _loadIMDB()
+    #sst_fine= _loadStanford('sst_fine')
+    #sst_bin = _loadStanford('sst_binary')
+    #imdb    = _loadIMDB()
     rt      = _loadRT()
     import ipdb;ipdb.set_trace()
