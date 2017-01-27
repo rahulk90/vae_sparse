@@ -80,10 +80,10 @@ epochMin, valMin, idxMin = getLowestError(savedata['valid_acc'])
 reloadFile               = pfile.replace('-config.pkl','')+'-EP'+str(int(epochMin))+'-params.npz'
 print 'Loading from : ',reloadFile
 params['validate_only']  = True
-bestDAN                  = DAN(params, paramFile = pfile, reloadFile = reloadFile)
-test_nll, test_acc, test_confusion_mat   = evaluateAcc(bestDAN, dataset['test_x'], dataset['test_mask'], dataset['test_y'], batch_size = params['batch_size'])
+bestDAN                  = DAN(params, paramFile = pfile, reloadFile = reloadFile, additional_attrs = attrs)
+test_nll, test_acc, test_confusion_mat  = evaluateAcc(bestDAN, dataset['test_x'], dataset['test_mask'], dataset['test_y'], batch_size = params['batch_size'])
 savedata['test_nll']           = test_nll
 savedata['test_acc']           = test_acc
 savedata['test_confusion_mat'] = test_confusion_mat
 saveHDF5(savef+'-final.h5', savedata)
-import ipdb; ipdb.set_trace()
+#import ipdb; ipdb.set_trace()

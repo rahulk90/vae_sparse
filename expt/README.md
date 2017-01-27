@@ -26,6 +26,7 @@ and `none` refers to regular training of the models
     * Set the `DIR` variable to point to the folder where the checkpoints are created (such as `chkpt-wikicorp-finopt`) 
     * This file compiles the table comparing the results on held out data from training models with and without finopt
 * [`getTable_parallel_qvary.py`](getTable_parallel_qvary.py)
+    * This experiment should be run when there are no other folders with `chkpt-rcv2...` present in the `expt` directory
     * This file is relevant to compiling results as a function of doing a small grid search over parameters of the inference network 
     * It uses [`template_parallel_qvary.py`](template_parallel_qvary.py) to create files named `tmplt_#.py` where # is a number
     * Each file estimates the train/test perplexity using the best model and writes the results of evaluation as text to files having format `tmplt_#.outf`

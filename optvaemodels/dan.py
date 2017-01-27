@@ -107,8 +107,8 @@ class DAN(BaseModel, object):
         #Used in optimizer.py
         self._addWeights('lr',   np.asarray(self.params['lr'],dtype=config.floatX),  borrow=False)
         lr                 = self.tWeights['lr']
-        cost_eval, y_probs  = self._cost(idx, mask, labels, input_dropout = 0.)
-        self.accuracy      = theano.function([idx, mask, labels], [cost_eval, y_probs],name = 'Evaluate', allow_input_downcast = True)
+        cost_eval, y_probs = self._cost(idx, mask, labels, input_dropout = 0.)
+        self.evaluate      = theano.function([idx, mask, labels], [cost_eval, y_probs],name = 'Evaluate', allow_input_downcast = True)
         if 'validate_only' in self.params or 'EVALUATE' in self.params:
             self.updates_ack = True
             self.tOptWeights = []
@@ -149,7 +149,7 @@ def evaluateAcc(dan, data_x, mask, data_y, batch_size):
         X    = data_x[st_idx:end_idx]
         M    = mask[st_idx:end_idx]
         Y    = data_y[st_idx:end_idx]
-        batch_nll, y_probs = dan.accuracy(X, M, Y)
+        batch_nll, y_probs = dan.evaluate(X, M, Y)
         nll += batch_nll
         pred_y += np.argmax(y_probs,1).tolist()
     cmat     = confusion_matrix(data_y, np.array(pred_y))
@@ -180,7 +180,7 @@ def learn(dan, dataset = None, mask= None, labels = None,
             ep_nll += batch_nll
             ep_pred+= np.argmax(batch_probs,axis=1).tolist()
         train_nll = ep_nll/float(N)
-        train_acc = accuracy_score(labels, np.array(ep_pred))
+        train_acc = accuracy_score(labels[idxlist], np.array(ep_pred))
         ep_time   = (time.time()-start_time)/60.
         trainnlllist.append((epoch,train_nll))
         trainacclist.append((epoch,train_acc))

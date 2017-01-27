@@ -59,5 +59,6 @@ for k in hmap:
             combined+=hmap[k]+'-'+('%.1e')%(params[k])+'-'
         else:
             combined+=hmap[k]+'-'+str(params[k])+'-'
-params['unique_id'] = combined[:-1]+str(params['reg_type'])+str(params['reg_value'])+str(params['reg_spec'])+'-'+params['unique_id']
+#If you want regularization to be included
+params['unique_id'] = combined[:-1]+'-'+params['unique_id']#+str(params['reg_type'])+str(params['reg_value'])+str(params['reg_spec'])+'-'+params['unique_id']
 params['unique_id'] = 'DAN_'+params['unique_id'].replace('.','_')
