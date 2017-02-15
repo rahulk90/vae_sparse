@@ -3,7 +3,7 @@ from collections import OrderedDict
 import sys
 
 expt_type = 'rcv2_tfidf'
-valid_expts= set(['20newsgroups_norm','20newsgroups_tfidf','rcv2_norm','rcv2_tfidf','rcv2_q_vary',
+valid_expts= set(['20newsgroups_norm','20newsgroups_tfidf','20newsgroups_tfidf_qdrop','rcv2_norm','rcv2_tfidf','rcv2_q_vary','rcv2_tfidf_qdrop',
     'wikicorp','wikicorp_sparsity','wikicorp_evaluate','wikicorp_evaluate'])
 
 print 'Valid Expts: ',','.join(list(valid_expts))
@@ -40,6 +40,9 @@ expt_runs['20newsgroups_tfidf']['2_finopt'] = gpu_1_full+' '+'python2.7 train.py
 expt_runs['20newsgroups_tfidf']['0_none']   = gpu_0_full+' '+'python2.7 train.py -dset 20newsgroups_miao -ds 100 -itype tfidf -nl relu -otype none -pl 0 -ns 100 -ep 400' 
 expt_runs['20newsgroups_tfidf']['0_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset 20newsgroups_miao -ds 100 -itype tfidf -nl relu -otype finopt -pl 0 -ns 100 -ep 400'
 
+expt_runs['20newsgroups_tfidf_qdrop'] = OrderedDict()
+expt_runs['20newsgroups_tfidf_qdrop']['2_none']   = gpu_0_full+' '+'python2.7 train.py -dset 20newsgroups_miao -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 400 -idrop 0.5'
+expt_runs['20newsgroups_tfidf_qdrop']['0_none']   = gpu_0_full+' '+'python2.7 train.py -dset 20newsgroups_miao -ds 100 -itype tfidf -nl relu -otype none -pl 0 -ns 100 -ep 400 -idrop 0.5' 
 
 """
 Experiments on RCV2
@@ -56,6 +59,10 @@ expt_runs['rcv2_tfidf']['2_none']   = gpu_0_full+' '+'python2.7 train.py -dset r
 expt_runs['rcv2_tfidf']['2_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype finopt -pl 2 -ns 100 -ep 200'
 expt_runs['rcv2_tfidf']['0_none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype none -pl 0 -ns 100 -ep 200' 
 expt_runs['rcv2_tfidf']['0_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype finopt -pl 0 -ns 100 -ep 200'
+
+expt_runs['rcv2_tfidf_qdrop'] = OrderedDict()
+expt_runs['rcv2_tfidf_qdrop']['2_none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 200 -idrop 0.5'
+expt_runs['rcv2_tfidf_qdrop']['0_none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype none -pl 0 -ns 100 -ep 200 -idrop 0.5' 
 
 expt_runs['rcv2_q_vary']= OrderedDict() 
 expt_runs['rcv2_q_vary']['3-400-none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 200 -qh 400 -ql 3'

@@ -1,9 +1,58 @@
-from utils.misc import savePickle,downloadData,extractData
 import os,re
-from utils.misc import readPickle, savePickle
+from utils.misc import downloadData,extractData
+from utils.misc import readPickle, savePickle, saveHDF5
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
+import sys
 
+"""
+  cleanDataset
+  * Use this function to clean up the vocabulary in accordance with what you would expect 
+  from the wikipedia data setup
+    * replace multiple instances of '-' with just one '-'
+    * split up words separated by '\' into two and assign to the same training point 
+    * do nothing to the labels 
+    * setup new word2idx, idx2word
+"""
+def cleanDataset(dataset):
+    vocab           = dataset['word2idx'].keys()
+    def recreateDoc(dataidx, idx2word):
+        doc         = '' 
+        for tlist in dataidx: 
+            doc     = doc+'\n'+' '.join([idx2word[idx] for idx in tlist])
+        return doc
+    def arrayToIdxLists(idxarray):
+        data  =[]
+        for vec in idxarray:
+            idxlist   = []
+            non_zero_idx = np.where(vec>0.)[0]
+            for idx in non_zero_idx.tolist(): 
+                count   =  vec[idx]
+                idxlist += [idx]*count
+            data.append(idxlist)
+        return data
+    doclist_train   = recreateDoc(dataset['train'], dataset['idx2word']) 
+    doclist_valid   = recreateDoc(dataset['valid'], dataset['idx2word']) 
+    doclist_test    = recreateDoc(dataset['test'], dataset['idx2word']) 
+    ctvec           = CountVectorizer(stop_words='english',analyzer='word',strip_accents='ascii')
+    ctvec.fit(doclist_train)
+    ctvec.fit(doclist_valid)
+    ctvec.fit(doclist_test)
+    dataset_new         = {}
+    dataset_new['train_x']= arrayToIdxLists(ctvec.transform(doclist_train).toarray())
+    dataset_new['valid_x']= arrayToIdxLists(ctvec.transform(doclist_valid).toarray())
+    dataset_new['test_x'] = arrayToIdxLists(ctvec.transform(doclist_test).toarray())
+    dataset_new['train_y']= dataset['train_y']
+    dataset_new['valid_y']= dataset['valid_y']
+    dataset_new['test_y'] = dataset['test_y']
+    vocab         = ctvec.vocabulary_
+    word2idx      = vocab
+    idx2word      = {}
+    for w in vocab:
+        idx2word[word2idx[w]] = w
+    dataset_new['word2idx'] = word2idx
+    dataset_new['idx2word'] = idx2word
+    return dataset_new
 
 """
 Setup Stanford Sentiment Analysis Dataset
@@ -47,6 +96,7 @@ def _processStanford(DIR, dset):
         for w in word2idx:
             idx2word[word2idx[w]] = w
         dataset_fine['idx2word'] = idx2word
+        dataset_fine = cleanDataset(dataset_fine)
         savePickle([dataset_fine],DIR+'/sst_fine.pkl')
 
         dataset_binary = {} 
@@ -55,6 +105,7 @@ def _processStanford(DIR, dset):
         dataset_binary['test_x'],  dataset_binary['test_y']  = split(test,  binary=True) 
         dataset_binary['word2idx'] = word2idx
         dataset_binary['idx2word'] = idx2word
+        dataset_binary = cleanDataset(dataset_binary)
         savePickle([dataset_binary],DIR+'/sst_binary.pkl')
         if dset =='sst_fine':
             return dataset_fine
@@ -109,6 +160,7 @@ def _processIMDB(DIR):
         dataset['test_x'], dataset['test_y']   = split(test_tup) 
         dataset['word2idx']=word2idx
         dataset['idx2word']=idx2word
+        dataset = cleanDataset(dataset)
         savePickle([dataset],DIR+'/imdb.pkl')
         print 'Saved....'
         return dataset
@@ -123,6 +175,12 @@ def _loadIMDB():
 """
 Setup Rotten Tomatoes dataset
 """
+def procDoc(document):
+    ws  = document.replace('-',' ')
+    ws  = re.sub('[^\w\s]','',ws.strip())
+    ws_lower = ws.lower()
+    wsd = re.sub(r'\d', '', ws_lower)
+    return wsd
 def _setupRT(DIR):
     locations = {}
     locations['rt-polaritydata.tar.gz'] = 'http://www.cs.cornell.edu/people/pabo/movie-review-data/rt-polaritydata.tar.gz'
@@ -132,11 +190,6 @@ def _setupRT(DIR):
         pos = f.read()
     with open(DIR+'/rt-polaritydata/rt-polarity.neg') as f:
         neg = f.read()
-    def procDoc(document):
-        ws  = re.sub('[^\w\s]','', document.strip())
-        ws_lower = ws.lower()
-        wsd = re.sub(r'\d', '', ws_lower)
-        return wsd
     positive = procDoc(pos).split('\n')
     negative = procDoc(neg).split('\n')
     ctvec    = CountVectorizer(stop_words='english',analyzer='word',strip_accents='ascii')
@@ -177,12 +230,12 @@ def _setupRT(DIR):
     for w in vocab:
         idx2word[word2idx[w]] = w
     dataset = {}
-    dataset['train_x'] = [data[idx] for idx in train_idx.tolist()]
-    dataset['valid_x'] = [data[idx] for idx in valid_idx.tolist()]
-    dataset['test_x']  = [data[idx] for idx in test_idx.tolist()]
-    dataset['train_y']    = labels[train_idx] 
-    dataset['valid_y']    = labels[valid_idx] 
-    dataset['test_y']     = labels[test_idx] 
+    dataset['train_x']  = [data[idx] for idx in train_idx.tolist()]
+    dataset['valid_x']  = [data[idx] for idx in valid_idx.tolist()]
+    dataset['test_x']   = [data[idx] for idx in test_idx.tolist()]
+    dataset['train_y']  = labels[train_idx] 
+    dataset['valid_y']  = labels[valid_idx] 
+    dataset['test_y']   = labels[test_idx] 
     dataset['idx2word'] = idx2word
     dataset['word2idx'] = word2idx
     savePickle([dataset],DIR+'/rt.pkl')
@@ -195,9 +248,66 @@ def _loadRT():
         _setupRT(DIR)
     return readPickle(DIR+'/rt.pkl')[0]
 
+def _setupGlove():
+    DIR = os.path.dirname(os.path.realpath(__file__)).split('inference_introspection')[0]+'inference_introspection/optvaedatasets/sentiment/glove'
+    if not os.path.exists(DIR):
+        os.system('mkdir -p '+DIR)
+    locations = {}
+    locations['glove.42B.300d.zip'] = 'http://nlp.stanford.edu/data/glove.42B.300d.zip'
+    downloadData(DIR, locations)
+    extractData(DIR, locations)
+
+def _setupGloveJacobian():
+    DIR = os.path.dirname(os.path.realpath(__file__)).split('inference_introspection')[0]+'inference_introspection/optvaedatasets/sentiment/glove'
+    if not os.path.exists(DIR+'/glove.42B.300d.txt'):
+        _setupGlove()
+    WIKIDIR = os.path.dirname(os.path.realpath(__file__)).split('inference_introspection')[0]+'inference_introspection/optvaedatasets/wikicorp'
+    if not os.path.exists(DIR+'/glove.h5'):
+        dataset = {}
+        objs = readPickle(WIKIDIR+'/misc.pkl',nobjects=3)
+        dataset['mapIdx']              = objs[0]
+        dataset['vocabulary']          = objs[1]
+        dataset['vocabulary_singular'] = objs[2]
+        vocab    = dataset['vocabulary'].tolist()
+        vocab2idx= {} 
+        for idx, w in enumerate(vocab):
+            vocab2idx[w] = idx
+        newjacob = np.zeros((len(vocab), 300))
+        print 'Loading txt'
+        word2vec = {}
+        with open(DIR+'/glove.42B.300d.txt') as f:
+            alllines = f.readlines()
+        print 'Building word->vec'
+        VECLEN   = 300
+        for idx in xrange(len(alllines)): 
+            spt  = alllines[idx].strip().split(' ')
+            w    = spt[0]
+            vec  = spt[1:] 
+            word2vec[w] = vec
+            assert len(vec)==VECLEN,'expecting '+str(VECLEN)+', got:'+str(len(vec))
+
+        print 'Checking vocab and building new matrix'
+        newjacob    = np.zeros((len(vocab),300))-500
+        print 'Not found (idx set to -500):'
+        norms       = []
+        for idx in xrange(len(vocab)):
+            w       = vocab[idx]
+            if w in word2vec:
+                vec = np.array([float(k) for k in word2vec[w]]) 
+                newjacob[idx,:] = vec
+                norms.append(np.linalg.norm(vec))
+            else:
+                print w,',', 
+        print '\n'
+        results = {}
+        results['ejacob']       = newjacob
+        saveHDF5(DIR+'/glove.h5', results)
+        print 'Sanity check (should be different): ',np.mean(norms[:10]), np.mean(norms[-10:])
+
 if __name__=='__main__':
     #sst_fine= _loadStanford('sst_fine')
     #sst_bin = _loadStanford('sst_binary')
     #imdb    = _loadIMDB()
     rt      = _loadRT()
+    _setupJacobian()
     import ipdb;ipdb.set_trace()

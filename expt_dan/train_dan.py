@@ -25,6 +25,15 @@ reformatDataset(dataset, dataset_wvecs)
 print 'Loading Jacobian'
 saved_jacob   = loadHDF5(params['jacobian_location'])
 jacobian      = saved_jacob[params['jacobian_type']]
+
+for prefix in ['train','valid','test']:
+    for dnum, idxvec, maskvec in zip(np.arange(dataset[prefix+'_x'].shape[0]),dataset[prefix+'_x'], dataset[prefix+'_mask']):
+        idxlist = idxvec[:int(maskvec.sum())].astype(int).tolist() 
+        for idx in idxlist:
+            if np.linalg.norm(jacobian[idx]) > 50:
+                print 'Bad! Setting mask to 0: ',prefix,dnum,idx,dataset_wvecs['vocabulary'][idx]
+                iloc  = idxlist.index(idx)
+                dataset[prefix+'_mask'][dnum,iloc] = 0.
 attrs         = {}
 attrs['jacobian_th'] = jacobian
 

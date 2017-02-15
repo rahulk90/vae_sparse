@@ -127,7 +127,7 @@ class VAE(BaseModel, object):
         else:
             assert False,'Bad emission_type: '+str(self.params['emission_type'])
     
-    def _negCLL(self, z, X, validation = False):
+    def _negCLL(self, z, X):#, validation = False):
         """Estimate -log p[x|z]"""
         if self.params['data_type']=='binary':
             p_x_z    = self._conditionalXgivenZ(z)
@@ -168,6 +168,9 @@ class VAE(BaseModel, object):
                 inp  = tfidf/T.sqrt((tfidf**2).sum(1,keepdims=True)) 
             else:
                 assert False,'Invalid input type'
+            if dropout_prob>0.1:
+                self._p('Applying dropout to bow for sure')
+                inp = self._dropout(inp, dropout_prob)
         else:
             inp = self._dropout(X,dropout_prob)
 
@@ -189,7 +192,7 @@ class VAE(BaseModel, object):
         if eps is None:
             eps = self.srng.normal(size=mu_q.shape,dtype=config.floatX)
         z              = mu_q+eps*T.exp(logcov_q*0.5)
-        mean_p, negCLL = self._negCLL(z, X, validation=dropout_prob==0.)
+        mean_p, negCLL = self._negCLL(z, X)#, validation=dropout_prob==0.)
         KL             = self._KL(mu_q, logcov_q, z, keepmat=True)
         #Collect statistics
         if type(savedict) is dict:
@@ -447,7 +450,7 @@ class VAE(BaseModel, object):
                                               updates = optimizer_p, name = 'Train P')
             ##################                UPDATE Q           ######################
             q_params                 = self._getModelParams(restrict='q_')
-            elbo                     = self._ELBO(X,  dropout_prob = self.params['input_dropout'], anneal = anneal)
+            elbo                     = self._ELBO(X,  dropout_prob = 0. , anneal = anneal)
             optimizer_q, norm_list_q = self._setupOptimizer(elbo, q_params,lr = lr, 
                                                         grad_noise = self.params['grad_noise'],
                                                         rng = self.srng)

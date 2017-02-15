@@ -78,6 +78,7 @@ hmap['emission_type']= 'etype'
 hmap['likelihood']   = 'll'
 hmap['input_type']   = 'itype'
 hmap['n_steps']      = 'ns'
+hmap['input_dropout']= 'idrop'
 combined   = ''
 for k in hmap:
     if k in params:
