@@ -1,4 +1,4 @@
-import os,re
+import os,re,time
 from utils.misc import downloadData,extractData
 from utils.misc import readPickle, savePickle, saveHDF5
 import numpy as np
@@ -14,12 +14,14 @@ import sys
     * do nothing to the labels 
     * setup new word2idx, idx2word
 """
-def cleanDataset(dataset):
-    vocab           = dataset['word2idx'].keys()
+def cleanDataset(dataset, min_df = 1):
     def recreateDoc(dataidx, idx2word):
         doc         = '' 
-        for tlist in dataidx: 
-            doc     = doc+'\n'+' '.join([idx2word[idx] for idx in tlist])
+        for tnum, tlist in enumerate(dataidx): 
+            if tnum>0:
+                doc     = doc+'\n'+' '.join([idx2word[idx] for idx in tlist])
+            else:
+                doc     = ' '.join([idx2word[idx] for idx in tlist])
         return doc
     def arrayToIdxLists(idxarray):
         data  =[]
@@ -31,13 +33,14 @@ def cleanDataset(dataset):
                 idxlist += [idx]*count
             data.append(idxlist)
         return data
-    doclist_train   = recreateDoc(dataset['train'], dataset['idx2word']) 
-    doclist_valid   = recreateDoc(dataset['valid'], dataset['idx2word']) 
-    doclist_test    = recreateDoc(dataset['test'], dataset['idx2word']) 
-    ctvec           = CountVectorizer(stop_words='english',analyzer='word',strip_accents='ascii')
-    ctvec.fit(doclist_train)
-    ctvec.fit(doclist_valid)
-    ctvec.fit(doclist_test)
+    start = time.time()
+    doclist_train   = procDoc(recreateDoc(dataset['train_x'], dataset['idx2word'])).split('\n') 
+    doclist_valid   = procDoc(recreateDoc(dataset['valid_x'], dataset['idx2word'])).split('\n') 
+    doclist_test    = procDoc(recreateDoc(dataset['test_x'], dataset['idx2word'])).split('\n')
+    end   = (time.time()-start)/60.
+    print 'Cleaning train/valid/test took:',end,' mins'
+    ctvec           = CountVectorizer(stop_words='english',analyzer='word',strip_accents='ascii', min_df = min_df)
+    ctvec.fit(doclist_train+doclist_valid+doclist_test)
     dataset_new         = {}
     dataset_new['train_x']= arrayToIdxLists(ctvec.transform(doclist_train).toarray())
     dataset_new['valid_x']= arrayToIdxLists(ctvec.transform(doclist_valid).toarray())
@@ -46,12 +49,13 @@ def cleanDataset(dataset):
     dataset_new['valid_y']= dataset['valid_y']
     dataset_new['test_y'] = dataset['test_y']
     vocab         = ctvec.vocabulary_
+    print 'New Vocab:' , len(vocab)
     word2idx      = vocab
     idx2word      = {}
     for w in vocab:
         idx2word[word2idx[w]] = w
-    dataset_new['word2idx'] = word2idx
-    dataset_new['idx2word'] = idx2word
+    dataset_new['word2idx']   = word2idx
+    dataset_new['idx2word']   = idx2word
     return dataset_new
 
 """
@@ -160,7 +164,7 @@ def _processIMDB(DIR):
         dataset['test_x'], dataset['test_y']   = split(test_tup) 
         dataset['word2idx']=word2idx
         dataset['idx2word']=idx2word
-        dataset = cleanDataset(dataset)
+        dataset = cleanDataset(dataset, min_df = 10)
         savePickle([dataset],DIR+'/imdb.pkl')
         print 'Saved....'
         return dataset
@@ -177,10 +181,13 @@ Setup Rotten Tomatoes dataset
 """
 def procDoc(document):
     ws  = document.replace('-',' ')
+    ws  = ws.replace('/',' ')
+    ws  = ws.replace(' ',' ')
     ws  = re.sub('[^\w\s]','',ws.strip())
     ws_lower = ws.lower()
     wsd = re.sub(r'\d', '', ws_lower)
     return wsd
+
 def _setupRT(DIR):
     locations = {}
     locations['rt-polaritydata.tar.gz'] = 'http://www.cs.cornell.edu/people/pabo/movie-review-data/rt-polaritydata.tar.gz'
@@ -193,8 +200,7 @@ def _setupRT(DIR):
     positive = procDoc(pos).split('\n')
     negative = procDoc(neg).split('\n')
     ctvec    = CountVectorizer(stop_words='english',analyzer='word',strip_accents='ascii')
-    ctvec.fit(positive)
-    ctvec.fit(negative)
+    ctvec.fit(positive+negative)
     positive_vecs = ctvec.transform(positive).toarray()
     negative_vecs = ctvec.transform(negative).toarray()
     data  =[]
@@ -306,8 +312,8 @@ def _setupGloveJacobian():
 
 if __name__=='__main__':
     #sst_fine= _loadStanford('sst_fine')
-    #sst_bin = _loadStanford('sst_binary')
-    #imdb    = _loadIMDB()
-    rt      = _loadRT()
-    _setupJacobian()
+    sst_bin = _loadStanford('sst_binary')
+    imdb    = _loadIMDB()
+    rt      = _loadRT() #checked
+    #_setupGloveJacobian()
     import ipdb;ipdb.set_trace()
