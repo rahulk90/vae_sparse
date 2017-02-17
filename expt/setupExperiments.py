@@ -3,7 +3,7 @@ from collections import OrderedDict
 import sys
 
 expt_type = 'rcv2_tfidf'
-valid_expts= set(['20newsgroups_norm','20newsgroups_tfidf','20newsgroups_tfidf_qdrop','rcv2_norm','rcv2_tfidf','rcv2_q_vary','rcv2_tfidf_qdrop',
+valid_expts= set(['20newsgroups_norm','20newsgroups_tfidf','20newsgroups_tfidf_qdrop','rcv2_norm','rcv2_tfidf','rcv2_q_vary','rcv2_tfidf_qdrop','rcv2_p_fixed',
     'wikicorp','wikicorp_sparsity','wikicorp_evaluate','wikicorp_evaluate'])
 
 print 'Valid Expts: ',','.join(list(valid_expts))
@@ -64,9 +64,29 @@ expt_runs['rcv2_tfidf_qdrop'] = OrderedDict()
 expt_runs['rcv2_tfidf_qdrop']['2_none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 200 -idrop 0.5'
 expt_runs['rcv2_tfidf_qdrop']['0_none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype none -pl 0 -ns 100 -ep 200 -idrop 0.5' 
 
+
+chkpt = {}
+QVARYDIR = './results_qvary/chkpt-rcv2_miao-finopt/'
+chkpt['3-400-p_fixed'] = QVARYDIR+'VAE_lr-8_0e-04-ph-400-qh-400-ds-100-pl-2-ql-3-nl-relu-bs-500-ep-200-plr-1_0e-02-ar-0-otype-finopt-ns-100-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
+chkpt['2-400-p_fixed'] = QVARYDIR+'VAE_lr-8_0e-04-ph-400-qh-400-ds-100-pl-2-ql-2-nl-relu-bs-500-ep-200-plr-1_0e-02-ar-0-otype-finopt-ns-100-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
+chkpt['1-400-p_fixed'] = QVARYDIR+'VAE_lr-8_0e-04-ph-400-qh-400-ds-100-pl-2-ql-1-nl-relu-bs-500-ep-200-plr-1_0e-02-ar-0-otype-finopt-ns-100-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
+chkpt['3-100-p_fixed'] = QVARYDIR+'VAE_lr-8_0e-04-ph-400-qh-100-ds-100-pl-2-ql-3-nl-relu-bs-500-ep-200-plr-1_0e-02-ar-0-otype-finopt-ns-100-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
+chkpt['2-100-p_fixed'] = QVARYDIR+'VAE_lr-8_0e-04-ph-400-qh-100-ds-100-pl-2-ql-2-nl-relu-bs-500-ep-200-plr-1_0e-02-ar-0-otype-finopt-ns-100-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
+chkpt['1-100-p_fixed'] = QVARYDIR+'VAE_lr-8_0e-04-ph-400-qh-100-ds-100-pl-2-ql-1-nl-relu-bs-500-ep-200-plr-1_0e-02-ar-0-otype-finopt-ns-100-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
+
+expt_runs['rcv2_p_fixed']= OrderedDict() 
+expt_runs['rcv2_p_fixed']['3-400-p_fixed']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype q_only -pl 2 -ns 100 -ep 100 -qh 400 -ql 3 -reload '+chkpt['3-400-p_fixed']+'-EP200-params.npz -params '+chkpt['3-400-p_fixed']+'-config.pkl'
+expt_runs['rcv2_p_fixed']['2-400-p_fixed']   = gpu_1_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype q_only -pl 2 -ns 100 -ep 100 -qh 400 -ql 2 -reload '+chkpt['2-400-p_fixed']+'-EP200-params.npz -params '+chkpt['2-400-p_fixed']+'-config.pkl'
+expt_runs['rcv2_p_fixed']['1-400-p_fixed']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype q_only -pl 2 -ns 100 -ep 100 -qh 400 -ql 1 -reload '+chkpt['1-400-p_fixed']+'-EP200-params.npz -params '+chkpt['1-400-p_fixed']+'-config.pkl'
+expt_runs['rcv2_p_fixed']['3-100-p_fixed']   = gpu_1_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype q_only -pl 2 -ns 100 -ep 100 -qh 100 -ql 3 -reload '+chkpt['3-100-p_fixed']+'-EP200-params.npz -params '+chkpt['3-100-p_fixed']+'-config.pkl'
+expt_runs['rcv2_p_fixed']['2-100-p_fixed']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype q_only -pl 2 -ns 100 -ep 100 -qh 100 -ql 2 -reload '+chkpt['2-100-p_fixed']+'-EP200-params.npz -params '+chkpt['2-100-p_fixed']+'-config.pkl'
+expt_runs['rcv2_p_fixed']['1-100-p_fixed']   = gpu_1_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype q_only -pl 2 -ns 100 -ep 100 -qh 100 -ql 1 -reload '+chkpt['1-100-p_fixed']+'-EP200-params.npz -params '+chkpt['1-100-p_fixed']+'-config.pkl'
+
 expt_runs['rcv2_q_vary']= OrderedDict() 
 expt_runs['rcv2_q_vary']['3-400-none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 200 -qh 400 -ql 3'
 expt_runs['rcv2_q_vary']['3-400-finopt']   = gpu_1_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype finopt -pl 2 -ns 100 -ep 200 -qh 400 -ql 3'
+expt_runs['rcv2_q_vary']['2-400-none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 200 -qh 400 -ql 2'
+expt_runs['rcv2_q_vary']['2-400-finopt']   = gpu_1_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype finopt -pl 2 -ns 100 -ep 200 -qh 400 -ql 2'
 expt_runs['rcv2_q_vary']['1-400-none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 200 -qh 400 -ql 1'
 expt_runs['rcv2_q_vary']['1-400-finopt']   = gpu_1_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype finopt -pl 2 -ns 100 -ep 200 -qh 400 -ql 1'
 expt_runs['rcv2_q_vary']['3-100-none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2_miao -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 200 -qh 100 -ql 3'
@@ -92,6 +112,12 @@ expt_runs['wikicorp']['2-none']   = gpu_0_full+' '+'python2.7 train.py -dset wik
 expt_runs['wikicorp']['2-finopt'] = gpu_1_full+' '+'python2.7 train.py -dset wikicorp -ds 100 -itype tfidf -nl relu -otype finopt -pl 2 -ns 200 -ep 50'
 expt_runs['wikicorp']['0-none']   = gpu_0_full+' '+'python2.7 train.py -dset wikicorp -ds 100 -itype tfidf -nl relu -otype none -pl 0 -ns 200 -ep 50'
 expt_runs['wikicorp']['0-finopt'] = gpu_1_full+' '+'python2.7 train.py -dset wikicorp -ds 100 -itype tfidf -nl relu -otype finopt -pl 0 -ns 200 -ep 50'
+
+expt_runs['wikicorp-large'] = OrderedDict() 
+expt_runs['wikicorp-large']['2-none']   = gpu_0_full+' '+'python2.7 train.py -dset wikicorp-large -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 200 -ep 50'
+expt_runs['wikicorp-large']['2-finopt'] = gpu_1_full+' '+'python2.7 train.py -dset wikicorp-large -ds 100 -itype tfidf -nl relu -otype finopt -pl 2 -ns 200 -ep 50'
+expt_runs['wikicorp-large']['0-none']   = gpu_0_full+' '+'python2.7 train.py -dset wikicorp-large -ds 100 -itype tfidf -nl relu -otype none -pl 0 -ns 200 -ep 50'
+expt_runs['wikicorp-large']['0-finopt'] = gpu_1_full+' '+'python2.7 train.py -dset wikicorp-large -ds 100 -itype tfidf -nl relu -otype finopt -pl 0 -ns 200 -ep 50'
 
 expt_runs['wikicorp_sparsity'] = OrderedDict() 
 expt_runs['wikicorp_sparsity']['1000-2-finopt'] = gpu_0_full+' '+'python2.7 train.py -dset wikicorp_1000 -ds 100 -itype tfidf -nl relu -otype finopt -pl 2 -ns 100 -ep 20'

@@ -27,6 +27,8 @@ def loadDataset(dsetname):
         return evaluate_wvecs._loadSCWS()
     elif dsetname in ['wikicorp']:
         return wikicorp._loadWikicorp()
+    elif dsetname in ['wikicorp_large']:
+        return wikicorp._loadWikicorpLarge()
     elif dsetname in ['synthetic_ball','synthetic_s']:
         return synthetic._loadSynthetic(dsetname)
     elif dsetname in ['wikicorp_1000','wikicorp_5000','wikicorp_10000']:
@@ -49,4 +51,5 @@ def largewikivocab():
 if __name__=='__main__':
     dset  = loadDataset('scws')
     dset  = loadDataset('wordsim353')
+    dset  = loadDataset('wikicorp_large')
     import ipdb;ipdb.set_trace()

@@ -104,7 +104,8 @@ def learn(vae, dataset=None, epoch_start=0, epoch_end=1000, batch_size=200, shuf
     if replicate_K is not None:
         assert vae.params['opt_type']=='none','Multiple samples to evaluate expectation only valid for simple opt'
     learnBatch = None
-    if vae.params['opt_type'] in ['none']:
+    print 'OPT TYPE: ',vae.params['opt_type']
+    if vae.params['opt_type'] in ['none','q_only']:
         learnBatch = _optNone
     elif vae.params['opt_type'] in ['finopt']:
         learnBatch = _optFinopt

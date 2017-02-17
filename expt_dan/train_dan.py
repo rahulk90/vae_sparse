@@ -49,6 +49,8 @@ from optvaemodels.dan import DAN
 from optvaemodels.dan import learn
 from optvaemodels.dan import evaluateAcc
 
+
+import ipdb;ipdb.set_trace()
 displayTime('import DAN',start_time, time.time())
 vae    = None
 #Remove from params

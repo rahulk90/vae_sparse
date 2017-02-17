@@ -413,6 +413,28 @@ class VAE(BaseModel, object):
             self.train      = theano.function(fxn_inputs, [upperbound_train, norm_list[0], norm_list[1], norm_list[2],
                                                            anneal.sum(), lr.sum()],
                                               updates = optimizer_up, name = 'Train')
+        elif self.params['opt_type']=='q_only':
+            """ q_only: optimizing phi only 
+            Typically, you would want to use this option when you have
+            trained generative model and want to learn an inference
+            network for it
+            """
+            self._p('SETTING UP to optimizing Q only')
+            traindict = {}
+            upperbound_train         = self._ELBO(X, anneal = anneal, 
+                                        dropout_prob = self.params['input_dropout'], savedict=traindict)
+            self.updates_ack = True
+            q_params                 = self._getModelParams(restrict='q_')
+            optimizer_up, norm_list  = self._setupOptimizer(upperbound_train,  q_params,
+                                                        lr = lr,  
+                                                        grad_noise = self.params['grad_noise'],
+                                                        rng = self.srng)
+            self._p('# additional updates: '+str(len(self.updates)))
+            optimizer_up+=anneal_update +self.updates
+            fxn_inputs      = [X]
+            self.train      = theano.function(fxn_inputs, [upperbound_train, norm_list[0], norm_list[1], norm_list[2],
+                                                           anneal.sum(), lr.sum()],
+                                              updates = optimizer_up, name = 'Train')
         elif self.params['opt_type'] in ['finopt']:
             ##################                UPDATE  P         ######################
             dictopt,dictf = {},{}

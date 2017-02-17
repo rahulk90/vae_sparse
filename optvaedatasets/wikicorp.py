@@ -48,6 +48,28 @@ def _loadWikicorp():
         dataset['vocabulary_singular'] = objs[2]
         return dataset
 
+def _loadWikicorpLarge():
+    DIR = os.path.dirname(os.path.realpath(__file__)).split('inference_introspection')[0]+'inference_introspection/optvaedatasets/wikicorp'
+    if not os.path.exists(DIR):
+        os.mkdir(DIR)
+    if not os.path.exists(DIR+'/data-large.h5') or not os.path.exists(DIR+'/misc-large.pkl'):
+        raise ValueError,'Run ProcessWikicorp-LargeVocab.ipynb to setup data.h5'
+    else:
+        dataset = {}
+        dataset['data_type'] = 'bow'
+        dataset['train']     = loadSparseHDF5('train',DIR+'/data-large.h5')
+        dataset['valid']     = loadSparseHDF5('valid',DIR+'/data-large.h5')
+        dataset['test']      = loadSparseHDF5('test',DIR+'/data-large.h5')
+        dataset['dim_observations'] = dataset['train'].shape[1]
+        objs = readPickle(DIR+'/misc-large.pkl',nobjects=3)
+        """
+        For evaluating on WS and SCWS
+        """
+        dataset['mapIdx']              = objs[0]
+        dataset['vocabulary']          = objs[1]
+        dataset['vocabulary_singular'] = objs[2]
+        return dataset
+
 def _loadWikicorpSubset(kval):
     assert kval in [1000,5000,10000],'Bad value: '+str(kval) 
     DIR = os.path.dirname(os.path.realpath(__file__)).split('inference_introspection')[0]+'inference_introspection/optvaedatasets/wikicorp'
@@ -82,6 +104,7 @@ def _loadWikicorpSubset(kval):
     return dset
 
 if __name__=='__main__':
-    dataset = _loadWikicorp()
-    dataset = _loadWikicorpSubset(2000)
+    #dataset = _loadWikicorp()
+    dataset = _loadWikicorpLarge()
+    #dataset = _loadWikicorpSubset(2000)
     import ipdb;ipdb.set_trace()
