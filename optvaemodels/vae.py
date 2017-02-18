@@ -413,7 +413,7 @@ class VAE(BaseModel, object):
             self.train      = theano.function(fxn_inputs, [upperbound_train, norm_list[0], norm_list[1], norm_list[2],
                                                            anneal.sum(), lr.sum()],
                                               updates = optimizer_up, name = 'Train')
-        elif self.params['opt_type']=='q_only':
+        elif self.params['opt_type'] in ['q_only','q_only_random']:
             """ q_only: optimizing phi only 
             Typically, you would want to use this option when you have
             trained generative model and want to learn an inference
@@ -425,6 +425,19 @@ class VAE(BaseModel, object):
                                         dropout_prob = self.params['input_dropout'], savedict=traindict)
             self.updates_ack = True
             q_params                 = self._getModelParams(restrict='q_')
+            #Random initialization for parameters of q
+            if self.params['opt_type']=='q_only_random':
+                for param in q_params:
+                    old_norm = (param**2).mean().eval()
+                    newval = self._getWeight(param.shape.eval())
+                    param.set_value(newval)
+                    new_norm = (param**2).mean().eval()
+                    print param.name, 'Old: ',old_norm,' New: ',new_norm
+            p_params                 = self._getModelParams(restrict='p_')
+            p_sum = 0.
+            for param in p_params:
+                p_sum+=(param**2).sum()
+            self.pnorm = theano.function([],T.sqrt(p_sum),name='param sum')
             optimizer_up, norm_list  = self._setupOptimizer(upperbound_train,  q_params,
                                                         lr = lr,  
                                                         grad_noise = self.params['grad_noise'],

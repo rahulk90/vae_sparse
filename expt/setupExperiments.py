@@ -4,7 +4,7 @@ import sys
 
 expt_type = 'rcv2_tfidf'
 valid_expts= set(['20newsgroups_norm','20newsgroups_tfidf','20newsgroups_tfidf_qdrop','rcv2_norm','rcv2_tfidf','rcv2_q_vary','rcv2_tfidf_qdrop','rcv2_p_fixed',
-    'wikicorp','wikicorp_sparsity','wikicorp_evaluate','wikicorp_evaluate'])
+    'wikicorp','wikicorp_sparsity','wikicorp-large','wikicorp_evaluate','wikicorp_evaluate'])
 
 print 'Valid Expts: ',','.join(list(valid_expts))
 print 'Default: ',expt_type
@@ -114,10 +114,10 @@ expt_runs['wikicorp']['0-none']   = gpu_0_full+' '+'python2.7 train.py -dset wik
 expt_runs['wikicorp']['0-finopt'] = gpu_1_full+' '+'python2.7 train.py -dset wikicorp -ds 100 -itype tfidf -nl relu -otype finopt -pl 0 -ns 200 -ep 50'
 
 expt_runs['wikicorp-large'] = OrderedDict() 
-expt_runs['wikicorp-large']['2-none']   = gpu_0_full+' '+'python2.7 train.py -dset wikicorp-large -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 200 -ep 50'
-expt_runs['wikicorp-large']['2-finopt'] = gpu_1_full+' '+'python2.7 train.py -dset wikicorp-large -ds 100 -itype tfidf -nl relu -otype finopt -pl 2 -ns 200 -ep 50'
-expt_runs['wikicorp-large']['0-none']   = gpu_0_full+' '+'python2.7 train.py -dset wikicorp-large -ds 100 -itype tfidf -nl relu -otype none -pl 0 -ns 200 -ep 50'
-expt_runs['wikicorp-large']['0-finopt'] = gpu_1_full+' '+'python2.7 train.py -dset wikicorp-large -ds 100 -itype tfidf -nl relu -otype finopt -pl 0 -ns 200 -ep 50'
+expt_runs['wikicorp-large']['2-none']   = gpu_0_full+' '+'python2.7 train.py -dset wikicorp-large -ds 300 -itype tfidf -nl relu -otype none -pl 2 -ns 200 -ep 50 -uid final'
+expt_runs['wikicorp-large']['2-finopt'] = gpu_1_full+' '+'python2.7 train.py -dset wikicorp-large -ds 300 -itype tfidf -nl relu -otype finopt -pl 2 -ns 200 -ep 50 -uid final'
+expt_runs['wikicorp-large']['0-none']   = gpu_0_full+' '+'python2.7 train.py -dset wikicorp-large -ds 300 -itype tfidf -nl relu -otype none -pl 0 -ns 200 -ep 50 -uid final'
+expt_runs['wikicorp-large']['0-finopt'] = gpu_1_full+' '+'python2.7 train.py -dset wikicorp-large -ds 300 -itype tfidf -nl relu -otype finopt -pl 0 -ns 200 -ep 50 -uid final'
 
 expt_runs['wikicorp_sparsity'] = OrderedDict() 
 expt_runs['wikicorp_sparsity']['1000-2-finopt'] = gpu_0_full+' '+'python2.7 train.py -dset wikicorp_1000 -ds 100 -itype tfidf -nl relu -otype finopt -pl 2 -ns 100 -ep 20'
