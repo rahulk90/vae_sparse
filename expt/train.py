@@ -108,5 +108,3 @@ if 'synthetic' in params['dataset']:
 saveHDF5(savef+'-evaluate.h5',evaluate)
 if np.any([k in params['dataset'] for k in ['synthetic','newsgroups']]):
     pass
-else:
-    import ipdb; ipdb.set_trace()
