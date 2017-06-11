@@ -35,60 +35,60 @@ Experiments on Stanford Sentiment
 """
 expt_runs['sst_fine'] = OrderedDict()
 expt_runs['sst_fine']['2_l_2_finopt']   = gpu_0_half+' '+'python2.7 train_dan.py -dset sst_fine -otype fixed -numl 2 -ep 400 -jloc '+JLOC_2_finopt
-expt_runs['sst_fine']['2_l_2_none']   = gpu_1_half+' '+'python2.7 train_dan.py -dset sst_fine -otype fixed -numl 2 -ep 400 -jloc '+JLOC_2_none
-expt_runs['sst_fine']['0_l_2_finopt']   = gpu_0_half+' '+'python2.7 train_dan.py -dset sst_fine -otype fixed -numl 0 -ep 400 -jloc '+JLOC_2_finopt
-expt_runs['sst_fine']['0_l_2_none']   = gpu_1_half+' '+'python2.7 train_dan.py -dset sst_fine -otype fixed -numl 0 -ep 400 -jloc '+JLOC_2_none
-expt_runs['sst_fine']['2_l_0_finopt']   = gpu_0_half+' '+'python2.7 train_dan.py -dset sst_fine -otype fixed -numl 2 -ep 400 -jloc '+JLOC_0_finopt
+#expt_runs['sst_fine']['2_l_2_none']   = gpu_1_half+' '+'python2.7 train_dan.py -dset sst_fine -otype fixed -numl 2 -ep 400 -jloc '+JLOC_2_none
+#expt_runs['sst_fine']['0_l_2_finopt']   = gpu_0_half+' '+'python2.7 train_dan.py -dset sst_fine -otype fixed -numl 0 -ep 400 -jloc '+JLOC_2_finopt
+#expt_runs['sst_fine']['0_l_2_none']   = gpu_1_half+' '+'python2.7 train_dan.py -dset sst_fine -otype fixed -numl 0 -ep 400 -jloc '+JLOC_2_none
+#expt_runs['sst_fine']['2_l_0_finopt']   = gpu_0_half+' '+'python2.7 train_dan.py -dset sst_fine -otype fixed -numl 2 -ep 400 -jloc '+JLOC_0_finopt
 expt_runs['sst_fine']['2_l_0_none']   = gpu_1_half+' '+'python2.7 train_dan.py -dset sst_fine -otype fixed -numl 2 -ep 400 -jloc '+JLOC_0_none
-expt_runs['sst_fine']['0_l_0_finopt']   = gpu_0_half+' '+'python2.7 train_dan.py -dset sst_fine -otype fixed -numl 2 -ep 400 -jloc '+JLOC_0_finopt
-expt_runs['sst_fine']['0_l_0_none']   = gpu_1_half+' '+'python2.7 train_dan.py -dset sst_fine -otype fixed -numl 0 -ep 400 -jloc '+JLOC_0_none
+#expt_runs['sst_fine']['0_l_0_finopt']   = gpu_0_half+' '+'python2.7 train_dan.py -dset sst_fine -otype fixed -numl 2 -ep 400 -jloc '+JLOC_0_finopt
+#expt_runs['sst_fine']['0_l_0_none']   = gpu_1_half+' '+'python2.7 train_dan.py -dset sst_fine -otype fixed -numl 0 -ep 400 -jloc '+JLOC_0_none
 
 expt_runs['sst_fine']['2_l_0_glove']   = gpu_1_half+' '+'python2.7 train_dan.py -dset sst_fine -otype fixed -numl 2 -ep 400 -jloc '+JLOC_glove
-expt_runs['sst_fine']['0_l_0_glove']   = gpu_0_half+' '+'python2.7 train_dan.py -dset sst_fine -otype fixed -numl 0 -ep 400 -jloc '+JLOC_glove
+#expt_runs['sst_fine']['0_l_0_glove']   = gpu_0_half+' '+'python2.7 train_dan.py -dset sst_fine -otype fixed -numl 0 -ep 400 -jloc '+JLOC_glove
 
 expt_runs['sst_binary'] = OrderedDict()
 expt_runs['sst_binary']['2_l_2_finopt'] = gpu_0_half+' '+'python2.7 train_dan.py -dset sst_binary -otype fixed -numl 2 -ep 400 -jloc '+JLOC_2_finopt
-expt_runs['sst_binary']['2_l_2_none'] = gpu_1_half+' '+'python2.7 train_dan.py -dset sst_binary -otype fixed -numl 2 -ep 400 -jloc '+JLOC_2_none
-expt_runs['sst_binary']['0_l_2_finopt']   = gpu_0_half+' '+'python2.7 train_dan.py -dset sst_binary -otype fixed -numl 0 -ep 400 -jloc '+JLOC_2_finopt
-expt_runs['sst_binary']['0_l_2_none']   = gpu_1_half+' '+'python2.7 train_dan.py -dset sst_binary -otype fixed -numl 0 -ep 400 -jloc '+JLOC_2_none
-expt_runs['sst_binary']['2_l_0_finopt'] = gpu_0_half+' '+'python2.7 train_dan.py -dset sst_binary -otype fixed -numl 2 -ep 400 -jloc '+JLOC_0_finopt
+#expt_runs['sst_binary']['2_l_2_none'] = gpu_1_half+' '+'python2.7 train_dan.py -dset sst_binary -otype fixed -numl 2 -ep 400 -jloc '+JLOC_2_none
+#expt_runs['sst_binary']['0_l_2_finopt']   = gpu_0_half+' '+'python2.7 train_dan.py -dset sst_binary -otype fixed -numl 0 -ep 400 -jloc '+JLOC_2_finopt
+#expt_runs['sst_binary']['0_l_2_none']   = gpu_1_half+' '+'python2.7 train_dan.py -dset sst_binary -otype fixed -numl 0 -ep 400 -jloc '+JLOC_2_none
+#expt_runs['sst_binary']['2_l_0_finopt'] = gpu_0_half+' '+'python2.7 train_dan.py -dset sst_binary -otype fixed -numl 2 -ep 400 -jloc '+JLOC_0_finopt
 expt_runs['sst_binary']['2_l_0_none'] = gpu_1_half+' '+'python2.7 train_dan.py -dset sst_binary -otype fixed -numl 2 -ep 400 -jloc '+JLOC_0_none
-expt_runs['sst_binary']['0_l_0_finopt']   = gpu_0_half+' '+'python2.7 train_dan.py -dset sst_binary -otype fixed -numl 0 -ep 400 -jloc '+JLOC_0_finopt
-expt_runs['sst_binary']['0_l_0_none']   = gpu_1_half+' '+'python2.7 train_dan.py -dset sst_binary -otype fixed -numl 0 -ep 400 -jloc '+JLOC_0_none
+#expt_runs['sst_binary']['0_l_0_finopt']   = gpu_0_half+' '+'python2.7 train_dan.py -dset sst_binary -otype fixed -numl 0 -ep 400 -jloc '+JLOC_0_finopt
+#expt_runs['sst_binary']['0_l_0_none']   = gpu_1_half+' '+'python2.7 train_dan.py -dset sst_binary -otype fixed -numl 0 -ep 400 -jloc '+JLOC_0_none
 
 expt_runs['sst_binary']['2_l_0_glove']   = gpu_0_half+' '+'python2.7 train_dan.py -dset sst_binary -otype fixed -numl 2 -ep 400 -jloc '+JLOC_glove
-expt_runs['sst_binary']['0_l_0_glove']   = gpu_1_half+' '+'python2.7 train_dan.py -dset sst_binary -otype fixed -numl 0 -ep 400 -jloc '+JLOC_glove
+#expt_runs['sst_binary']['0_l_0_glove']   = gpu_1_half+' '+'python2.7 train_dan.py -dset sst_binary -otype fixed -numl 0 -ep 400 -jloc '+JLOC_glove
 
 """
 Experiments on RT 
 """
 expt_runs['rotten_tomatoes'] = OrderedDict()
 expt_runs['rotten_tomatoes']['2_l_2_finopt']   = gpu_0_full+' '+'python2.7 train_dan.py -dset rotten_tomatoes -otype fixed -numl 2 -ep 400 -jloc '+JLOC_2_finopt
-expt_runs['rotten_tomatoes']['2_l_2_none']   = gpu_1_full+' '+'python2.7 train_dan.py -dset rotten_tomatoes -otype fixed -numl 2 -ep 400 -jloc '+JLOC_2_none
-expt_runs['rotten_tomatoes']['0_l_2_finopt']   = gpu_0_full+' '+'python2.7 train_dan.py -dset rotten_tomatoes -otype fixed -numl 0 -ep 400 -jloc '+JLOC_2_finopt
-expt_runs['rotten_tomatoes']['0_l_2_none']   = gpu_1_full+' '+'python2.7 train_dan.py -dset rotten_tomatoes -otype fixed -numl 0 -ep 400 -jloc '+JLOC_2_none
-expt_runs['rotten_tomatoes']['2_l_0_finopt']   = gpu_0_full+' '+'python2.7 train_dan.py -dset rotten_tomatoes -otype fixed -numl 2 -ep 400 -jloc '+JLOC_0_finopt
+#expt_runs['rotten_tomatoes']['2_l_2_none']   = gpu_1_full+' '+'python2.7 train_dan.py -dset rotten_tomatoes -otype fixed -numl 2 -ep 400 -jloc '+JLOC_2_none
+#expt_runs['rotten_tomatoes']['0_l_2_finopt']   = gpu_0_full+' '+'python2.7 train_dan.py -dset rotten_tomatoes -otype fixed -numl 0 -ep 400 -jloc '+JLOC_2_finopt
+#expt_runs['rotten_tomatoes']['0_l_2_none']   = gpu_1_full+' '+'python2.7 train_dan.py -dset rotten_tomatoes -otype fixed -numl 0 -ep 400 -jloc '+JLOC_2_none
+#expt_runs['rotten_tomatoes']['2_l_0_finopt']   = gpu_0_full+' '+'python2.7 train_dan.py -dset rotten_tomatoes -otype fixed -numl 2 -ep 400 -jloc '+JLOC_0_finopt
 expt_runs['rotten_tomatoes']['2_l_0_none']   = gpu_1_full+' '+'python2.7 train_dan.py -dset rotten_tomatoes -otype fixed -numl 2 -ep 400 -jloc '+JLOC_0_none
-expt_runs['rotten_tomatoes']['0_l_0_finopt']   = gpu_0_full+' '+'python2.7 train_dan.py -dset rotten_tomatoes -otype fixed -numl 0 -ep 400 -jloc '+JLOC_0_finopt
-expt_runs['rotten_tomatoes']['0_l_0_none']   = gpu_1_full+' '+'python2.7 train_dan.py -dset rotten_tomatoes -otype fixed -numl 0 -ep 400 -jloc '+JLOC_0_none
+#expt_runs['rotten_tomatoes']['0_l_0_finopt']   = gpu_0_full+' '+'python2.7 train_dan.py -dset rotten_tomatoes -otype fixed -numl 0 -ep 400 -jloc '+JLOC_0_finopt
+#expt_runs['rotten_tomatoes']['0_l_0_none']   = gpu_1_full+' '+'python2.7 train_dan.py -dset rotten_tomatoes -otype fixed -numl 0 -ep 400 -jloc '+JLOC_0_none
 
 expt_runs['rotten_tomatoes']['2_l_0_glove']   = gpu_1_full+' '+'python2.7 train_dan.py -dset rotten_tomatoes -otype fixed -numl 2 -ep 400 -jloc '+JLOC_glove
-expt_runs['rotten_tomatoes']['0_l_0_glove']   = gpu_0_full+' '+'python2.7 train_dan.py -dset rotten_tomatoes -otype fixed -numl 0 -ep 400 -jloc '+JLOC_glove
+#expt_runs['rotten_tomatoes']['0_l_0_glove']   = gpu_0_full+' '+'python2.7 train_dan.py -dset rotten_tomatoes -otype fixed -numl 0 -ep 400 -jloc '+JLOC_glove
 """
 Experiments on IMDB 
 """
 expt_runs['imdb'] = OrderedDict()
 expt_runs['imdb']['2_l_2_finopt']   = gpu_0_full+' '+'python2.7 train_dan.py -dset imdb -otype fixed -numl 2 -ep 400 -jloc '+JLOC_2_finopt
-expt_runs['imdb']['2_l_2_none']   = gpu_1_full+' '+'python2.7 train_dan.py -dset imdb -otype fixed -numl 2 -ep 400 -jloc '+JLOC_2_none
-expt_runs['imdb']['0_l_2_finopt']   = gpu_0_full+' '+'python2.7 train_dan.py -dset imdb -otype fixed -numl 0 -ep 400 -jloc '+JLOC_2_finopt
-expt_runs['imdb']['0_l_2_none']   = gpu_1_full+' '+'python2.7 train_dan.py -dset imdb -otype fixed -numl 0 -ep 400 -jloc '+JLOC_2_none
-expt_runs['imdb']['2_l_0_finopt']   = gpu_0_full+' '+'python2.7 train_dan.py -dset imdb -otype fixed -numl 2 -ep 400 -jloc '+JLOC_0_finopt
+#expt_runs['imdb']['2_l_2_none']   = gpu_1_full+' '+'python2.7 train_dan.py -dset imdb -otype fixed -numl 2 -ep 400 -jloc '+JLOC_2_none
+#expt_runs['imdb']['0_l_2_finopt']   = gpu_0_full+' '+'python2.7 train_dan.py -dset imdb -otype fixed -numl 0 -ep 400 -jloc '+JLOC_2_finopt
+#expt_runs['imdb']['0_l_2_none']   = gpu_1_full+' '+'python2.7 train_dan.py -dset imdb -otype fixed -numl 0 -ep 400 -jloc '+JLOC_2_none
+#expt_runs['imdb']['2_l_0_finopt']   = gpu_0_full+' '+'python2.7 train_dan.py -dset imdb -otype fixed -numl 2 -ep 400 -jloc '+JLOC_0_finopt
 expt_runs['imdb']['2_l_0_none']   = gpu_1_full+' '+'python2.7 train_dan.py -dset imdb -otype fixed -numl 2 -ep 400 -jloc '+JLOC_0_none
-expt_runs['imdb']['0_l_0_finopt']   = gpu_0_full+' '+'python2.7 train_dan.py -dset imdb -otype fixed -numl 0 -ep 400 -jloc '+JLOC_0_finopt
-expt_runs['imdb']['0_l_0_none']   = gpu_1_full+' '+'python2.7 train_dan.py -dset imdb -otype fixed -numl 0 -ep 400 -jloc '+JLOC_0_none
+#expt_runs['imdb']['0_l_0_finopt']   = gpu_0_full+' '+'python2.7 train_dan.py -dset imdb -otype fixed -numl 0 -ep 400 -jloc '+JLOC_0_finopt
+#expt_runs['imdb']['0_l_0_none']   = gpu_1_full+' '+'python2.7 train_dan.py -dset imdb -otype fixed -numl 0 -ep 400 -jloc '+JLOC_0_none
 
 expt_runs['imdb']['2_l_0_glove']   = gpu_0_full+' '+'python2.7 train_dan.py -dset imdb -otype fixed -numl 2 -ep 400 -jloc '+JLOC_glove
-expt_runs['imdb']['0_l_0_glove']   = gpu_1_full+' '+'python2.7 train_dan.py -dset imdb -otype fixed -numl 0 -ep 400 -jloc '+JLOC_glove
+#expt_runs['imdb']['0_l_0_glove']   = gpu_1_full+' '+'python2.7 train_dan.py -dset imdb -otype fixed -numl 0 -ep 400 -jloc '+JLOC_glove
 
 for expt in expt_runs[expt_type]:
     print 'screen -S '+expt

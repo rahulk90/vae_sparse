@@ -17,9 +17,9 @@ import synthetic
 import sentiment
 
 def loadDataset(dsetname):
-    if dsetname in ['20newsgroups_miao']: #Code provided by Miao et. al 
+    if dsetname in ['20newsgroups']: #Code provided by Miao et. al 
         return newsgroups._load20news_miao()
-    elif dsetname in ['rcv2_miao']:
+    elif dsetname in ['rcv2']:
         return rcv2._loadrcv2_miao()
     elif dsetname in ['wordsim353']:
         return evaluate_wvecs._loadWordSim353()

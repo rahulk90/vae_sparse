@@ -270,7 +270,7 @@ def _setupGloveJacobian():
     WIKIDIR = os.path.dirname(os.path.realpath(__file__)).split('inference_introspection')[0]+'inference_introspection/optvaedatasets/wikicorp'
     if not os.path.exists(DIR+'/glove.h5'):
         dataset = {}
-        objs = readPickle(WIKIDIR+'/misc.pkl',nobjects=3)
+        objs = readPickle(WIKIDIR+'/misc-large.pkl',nobjects=3)
         dataset['mapIdx']              = objs[0]
         dataset['vocabulary']          = objs[1]
         dataset['vocabulary_singular'] = objs[2]
@@ -307,7 +307,7 @@ def _setupGloveJacobian():
         print '\n'
         results = {}
         results['ejacob']       = newjacob
-        saveHDF5(DIR+'/glove.h5', results)
+        saveHDF5(DIR+'/glove-large.h5', results)
         print 'Sanity check (should be different): ',np.mean(norms[:10]), np.mean(norms[-10:])
 
 if __name__=='__main__':
@@ -315,5 +315,5 @@ if __name__=='__main__':
     sst_bin = _loadStanford('sst_binary')
     imdb    = _loadIMDB()
     rt      = _loadRT() #checked
-    #_setupGloveJacobian()
+    _setupGloveJacobian()
     import ipdb;ipdb.set_trace()

@@ -36,28 +36,6 @@ def _loadrcv2_miao():
     dset['data_type'] = 'bow'
     return dset
 
-def _loadrcv2_miao_k(kval):
-    DIR = os.path.dirname(os.path.realpath(__file__)).split('inference_introspection')[0]+'inference_introspection/optvaedatasets'
-    assert type(kval) is int,'Expecting kval as int'
-    h5file = DIR+'/rcv2_miao/rcv2.h5'
-    assert os.path.exists(h5file),'Please run _loadrcv2_miao to generate rcv2.h5'
-    vocab= [k.strip().split(' ')[0] for k in open(DIR+'/rcv2_miao/vocab.new').readlines()]
-    train= loadSparseHDF5('train',h5file).tocsc()
-    valid= loadSparseHDF5('valid',h5file).tocsc()
-    test = loadSparseHDF5('test',h5file).tocsc()
-    assert kval in [500,1000,4000],'Bad value' 
-    sumfeats = np.array(train.sum(0)).squeeze()
-    idx_sort = np.argsort(sumfeats)
-    idx_to_keep = idx_sort[-kval:]
-    dset = {}
-    dset['vocabulary'] = [vocab[idx] for idx in idx_to_keep.squeeze().tolist()]
-    dset['train']      = train[:,idx_to_keep].tocsr()
-    dset['valid']      = valid[:,idx_to_keep].tocsr()
-    dset['test']       = test[:,idx_to_keep].tocsr()
-    dset['dim_observations'] = dset['train'].shape[1]
-    dset['data_type']  = 'bow'
-    return dset
-
 if __name__=='__main__':
     dset = _loadrcv2_miao()
     import ipdb;ipdb.set_trace()

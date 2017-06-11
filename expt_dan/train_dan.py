@@ -25,6 +25,7 @@ reformatDataset(dataset, dataset_wvecs)
 print 'Loading Jacobian'
 saved_jacob   = loadHDF5(params['jacobian_location'])
 jacobian      = saved_jacob[params['jacobian_type']]
+print 'Jac. shape: ',jacobian.shape
 
 for prefix in ['train','valid','test']:
     for dnum, idxvec, maskvec in zip(np.arange(dataset[prefix+'_x'].shape[0]),dataset[prefix+'_x'], dataset[prefix+'_mask']):
@@ -50,7 +51,6 @@ from optvaemodels.dan import learn
 from optvaemodels.dan import evaluateAcc
 
 
-import ipdb;ipdb.set_trace()
 displayTime('import DAN',start_time, time.time())
 vae    = None
 #Remove from params
@@ -87,8 +87,10 @@ savedata   = learn( model,  dataset     = dataset['train_x'],
                             )
 displayTime('Running DAN',start_time, time.time())
 # Work w/ the best model thus far
-epochMin, valMin, idxMin = getLowestError(savedata['valid_acc'])
-reloadFile               = pfile.replace('-config.pkl','')+'-EP'+str(int(epochMin))+'-params.npz'
+#epochMin, valMin, idxMin = getLowestError(savedata['valid_acc'])
+#epochMin  = , valMin, idxMin = getLowestError(savedata['valid_acc'])
+epochMax   = int(savedata['valid_acc'][np.argmax(savedata['valid_acc'][:,1]),0])
+reloadFile = pfile.replace('-config.pkl','')+'-EP'+str(int(epochMax))+'-params.npz'
 print 'Loading from : ',reloadFile
 params['validate_only']  = True
 bestDAN                  = DAN(params, paramFile = pfile, reloadFile = reloadFile, additional_attrs = attrs)

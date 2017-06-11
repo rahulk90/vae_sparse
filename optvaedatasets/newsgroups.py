@@ -12,7 +12,7 @@ from nltk.stem.lancaster import LancasterStemmer
 
 def _load20news_miao():
     """
-    Taken from Miao et. al
+    Dataset setup from Miao et. al
     """
     DIR = os.path.dirname(os.path.realpath(__file__)).split('inference_introspection')[0]+'inference_introspection/optvaedatasets'
     DIR += '/20news_miao'

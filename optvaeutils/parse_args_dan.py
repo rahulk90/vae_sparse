@@ -18,7 +18,7 @@ parser.add_argument('-ischeme','--init_scheme', action='store',default = 'unifor
 parser.add_argument('-lky','--leaky_param', action='store',default =0., help='Leaky ReLU parameter',type=float)
 parser.add_argument('-iw','--init_weight', action='store',default = 0.1, help='Range to initialize weights during learning',type=float)
 parser.add_argument('-dset','--dataset', action='store',default = 'sst_binary', help='Dataset', type=str, choices=['sst_binary','sst_fine','rotten_tomatoes','imdb'])
-parser.add_argument('-dset_wvecs','--dataset_wvecs', action='store',default = 'wikicorp', help='Dataset for using Jacobian vecs', type=str, choices=['20newsgroups_miao','wikicorp'])
+parser.add_argument('-dset_wvecs','--dataset_wvecs', action='store',default = 'wikicorp_large', help='Dataset for using Jacobian vecs', type=str, choices=['20newsgroups_miao','wikicorp'])
 parser.add_argument('-jloc', '--jacobian_location', action='store',default = 'NOTFOUND', help='Must set the location of file containing jacobian', type=str)
 parser.add_argument('-jtype','--jacobian_type', action='store', default = 'ejacob', help='Jacobian Vector Type', type=str, choices=['ejacob','ejacob_probs','ejacob_energy'])
 parser.add_argument('-otype','--opt_type', action='store',default = 'fixed', help='Keep vectors fixed or learn them', type=str, choices=['fixed','learn'])
