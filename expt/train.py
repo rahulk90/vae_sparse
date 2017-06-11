@@ -68,8 +68,7 @@ savedata   = Learn.learn( model,
                                 batch_size  = params['batch_size'],
                                 savefreq    = params['savefreq'],
                                 savefile    = savef,
-                                dataset_eval= validData,
-                                replicate_K = params['replicate_K'],
+                                dataset_eval= validData
                                 )
 
 displayTime('Running Model',start_time, time.time())

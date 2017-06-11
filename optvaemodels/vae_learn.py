@@ -19,17 +19,15 @@ def arrToReadableString(nparr, divideBy=1):
         ss += ('%.1f'%(k/float(divideBy)))+', '
     return ss
 
-def _optNone(vae, bnum, Nbatch, X, replicate_K = None, retVals = {}, calcELBOfinal = False):
+def _optNone(vae, bnum, Nbatch, X, retVals = {}, calcELBOfinal = False):
     """
     vae:    VAE object
     bnum:   Batch number
     Nbatch: # elements in batch
     X:      Current batch
-    replicate_K: Whether the batch is replicated
     retVals:Map to return values from 
     calcELBOfinal: Whether or not calculate final evidence lower bound
     """
-    assert replicate_K is None,'Expecting None'
     start_time = time.time()
     elbo_0, pnorm, gnorm, optnorm, anneal, lr = vae.train(X=X)
     if np.isnan(elbo_0):
@@ -40,9 +38,6 @@ def _optNone(vae, bnum, Nbatch, X, replicate_K = None, retVals = {}, calcELBOfin
     gmu, glcov, diff_elbo, diff_ent = np.nan, np.nan, np.nan, np.nan
     if calcELBOfinal:
         _, elbo_f, n_steps, gmu, glcov,  diff_elbo, diff_ent = vae.final_elbo(X=X)
-    if replicate_K is not None:
-        elbo_0 /= float(replicate_K)
-        elbo_f/=float(replicate_K)
     freq  = 100
     time_taken = time.time()-start_time
     if bnum%freq==0:
@@ -61,8 +56,7 @@ def _optNone(vae, bnum, Nbatch, X, replicate_K = None, retVals = {}, calcELBOfin
     retVals['time_taken'] = time_taken
     return retVals
 
-def _optFinopt(vae, bnum, Nbatch, X,  replicate_K = None, retVals = {},calcELBOfinal=True):
-    assert replicate_K is None,'Expecting None'
+def _optFinopt(vae, bnum, Nbatch, X,  retVals = {},calcELBOfinal=True):
     start_time = time.time()
     D_b     = vae.update_q(X=X)
     results = vae.update_p(X=X)
@@ -90,7 +84,7 @@ def _optFinopt(vae, bnum, Nbatch, X,  replicate_K = None, retVals = {},calcELBOf
     return retVals
 
 def learn(vae, dataset=None, epoch_start=0, epoch_end=1000, batch_size=200, shuffle=False, 
-        savefile = None, savefreq = None, dataset_eval=None, replicate_K = None):
+        savefile = None, savefreq = None, dataset_eval=None):
     assert dataset is not None,'Expecting 2D dataset matrix'
     assert np.prod(dataset.shape[1:])==vae.params['dim_observations'],'dim observations incorrect'
     N = dataset.shape[0]
@@ -101,8 +95,6 @@ def learn(vae, dataset=None, epoch_start=0, epoch_end=1000, batch_size=200, shuf
     for name in vae.p_names:
         gdifflists[name] = []
 
-    if replicate_K is not None:
-        assert vae.params['opt_type']=='none','Multiple samples to evaluate expectation only valid for simple opt'
     learnBatch = None
     print 'OPT TYPE: ',vae.params['opt_type']
     if vae.params['opt_type'] in ['none','q_only', 'q_only_random']:
@@ -122,9 +114,7 @@ def learn(vae, dataset=None, epoch_start=0, epoch_end=1000, batch_size=200, shuf
                 X   = X.toarray()
             X       = X.astype(config.floatX)
             Nbatch  = X.shape[0]
-            if replicate_K is not None:
-                X   = X.repeat(replicate_K,0)
-            retVal  = learnBatch(vae, bnum, Nbatch, X,replicate_K, calcELBOfinal=(epoch%20==0))
+            retVal  = learnBatch(vae, bnum, Nbatch, X, calcELBOfinal=(epoch%10==0))
             bd_0    += retVal['elbo_0']
             bd_f    += retVal['elbo_f']
             gmu     += retVal['gmu']
@@ -158,9 +148,6 @@ def learn(vae, dataset=None, epoch_start=0, epoch_end=1000, batch_size=200, shuf
                 if vae.params['data_type']=='bow':
                     k0='perp_0'
                     kf='perp_f'
-                elif vae.params['data_type']=='image':
-                    k0='bdim_0'
-                    kf='bdim_f'
                 else:
                     k0='elbo_0'
                     kf='elbo_f'

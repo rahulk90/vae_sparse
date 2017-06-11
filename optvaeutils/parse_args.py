@@ -24,7 +24,6 @@ parser.add_argument('-dset','--dataset', action='store',default = 'binarized_mni
 parser.add_argument('-lr','--lr', action='store',default = 8e-4, help='Learning rate', type=float)
 parser.add_argument('-opt','--optimizer', action='store',default = 'adam', help='Optimizer',choices=['adam','rmsprop'])
 parser.add_argument('-bs','--batch_size', action='store',default = 500, help='Batch Size',type=int)
-parser.add_argument('-repK','--replicate_K', action='store',default = None, help='Number of samples used for the variational bound. Created by replicating the batch',type=int)
 
 # Additional Features 
 # A] lr_p to deal w/ different learning rates B] ar to deal with regularizing KL divergence 
