@@ -30,19 +30,16 @@ def _loadWikicorp():
     locations['WestburyLab.wikicorp.201004.txt.bz2'] = 'http://nlp.stanford.edu/data/WestburyLab.wikicorp.201004.txt.bz2'
     if not os.path.exists(DIR+'/WestburyLab.wikicorp.201004.txt'):
         _getData(DIR,locations)
-    if not os.path.exists(DIR+'/data.h5') or not os.path.exists(DIR+'/misc.pkl'):
-        raise ValueError,'Run ProcessWikicorp.ipynb to setup data.h5'
+    if not os.path.exists(DIR+'/data-learning.h5') or not os.path.exists(DIR+'/misc-learning.pkl'):
+        raise ValueError,'Run ProcessWikicorp(-learning/-large).ipynb to setup data.h5'
     else:
         dataset = {}
         dataset['data_type'] = 'bow'
-        dataset['train']     = loadSparseHDF5('train',DIR+'/data.h5')
-        dataset['valid']     = loadSparseHDF5('valid',DIR+'/data.h5')
-        dataset['test']      = loadSparseHDF5('test',DIR+'/data.h5')
+        dataset['train']     = loadSparseHDF5('train',DIR+'/data-learning.h5')
+        dataset['valid']     = loadSparseHDF5('valid',DIR+'/data-learning.h5')
+        dataset['test']      = loadSparseHDF5('test',DIR+'/data-learning.h5')
         dataset['dim_observations'] = dataset['train'].shape[1]
-        objs = readPickle(DIR+'/misc.pkl',nobjects=3)
-        """
-        For evaluating on WS and SCWS
-        """
+        objs = readPickle(DIR+'/misc-learning.pkl',nobjects=3)
         dataset['mapIdx']              = objs[0]
         dataset['vocabulary']          = objs[1]
         dataset['vocabulary_singular'] = objs[2]
@@ -62,26 +59,23 @@ def _loadWikicorpLarge():
         dataset['test']      = loadSparseHDF5('test',DIR+'/data-large.h5')
         dataset['dim_observations'] = dataset['train'].shape[1]
         objs = readPickle(DIR+'/misc-large.pkl',nobjects=3)
-        """
-        For evaluating on WS and SCWS
-        """
         dataset['mapIdx']              = objs[0]
         dataset['vocabulary']          = objs[1]
         dataset['vocabulary_singular'] = objs[2]
         return dataset
 
 def _loadWikicorpSubset(kval):
-    assert kval in [1000,5000,10000],'Bad value: '+str(kval) 
+    assert kval in [1000, 5000, 10000, 15000],'Bad value: '+str(kval) 
     DIR = os.path.dirname(os.path.realpath(__file__)).split('inference_introspection')[0]+'inference_introspection/optvaedatasets/wikicorp'
     assert type(kval) is int,'Expecting kval as int'
-    h5file = DIR+'/data.h5'
-    pklfile= DIR+'/misc.pkl'
+    h5file = DIR+'/data-learning.h5'
+    pklfile= DIR+'/misc-learning.pkl'
     assert os.path.exists(h5file) and os.path.exists(pklfile),'Please run _loadWikicorp to generate data.h5'
     #Load Wikicorp raw data
     train= loadSparseHDF5('train',h5file).tocsc()
     valid= loadSparseHDF5('valid',h5file).tocsc()
     test = loadSparseHDF5('test',h5file).tocsc()
-    objs = readPickle(DIR+'/misc.pkl',nobjects=3)
+    objs = readPickle(DIR+'/misc-learning.pkl',nobjects=3)
     vocabulary          = objs[1]
     
     sumfeats = np.array(train.sum(0)).squeeze()
@@ -106,5 +100,5 @@ def _loadWikicorpSubset(kval):
 if __name__=='__main__':
     dataset = _loadWikicorp()
     dataset = _loadWikicorpLarge()
-    dataset = _loadWikicorpSubset(2000)
+    dataset = _loadWikicorpSubset(5000)
     import ipdb;ipdb.set_trace()
