@@ -49,6 +49,12 @@ python wikicorp.py #Downloads the dataset into wikicorp/
 #Navigate to <path>/inference_introspection/optvaedatasets/wikicorp/
 ```
 * Install [inflect](https://pypi.python.org/pypi/inflect), [gensim](https://radimrehurek.com/gensim/) and [nltk](http://www.nltk.org/)
+* Install `wordnet` and `stopwords` within nltk by running:
+```
+python
+>>> import nltk
+>>> nltk.download() #Follow instructions and download "wordnet" and "stopwords"
+```
 ```bash
 #Parses the text and converts it into a BOW representation
 python tokenizer.py 
