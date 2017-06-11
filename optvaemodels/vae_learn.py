@@ -189,7 +189,7 @@ def learn(vae, dataset=None, epoch_start=0, epoch_end=1000, batch_size=200, shuf
             intermediate['diff_ent']   = np.array(diff_entlist)
             if eval_retVal and 'debug' in eval_retVal: 
                 intermediate['debug']= np.array(eval_retVal['debug'])
-            jacob = vae.jacobian_logprobs(np.zeros((vae.params['dim_stochastic'],)))
+            jacob = vae.jacobian_logprobs(np.zeros((vae.params['dim_stochastic'],)).astype('float32'))
             _,svals,_  = np.linalg.svd(jacob)
             epres      = np.array([epoch] + svals.ravel().tolist())
             svallist.append(epres)
