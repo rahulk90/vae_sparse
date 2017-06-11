@@ -83,13 +83,18 @@ def _optFinopt(vae, bnum, Nbatch, X,  retVals = {},calcELBOfinal=True):
     retVals['time_taken']= time_taken
     return retVals
 
+def _optFinoptNone(vae, bnum, Nbatch, X, retVals = {}, calcELBOfinal = True, frac = 0.):
+    pass
+def _optNoneFinopt(vae, bnum, Nbatch, X, retVals = {}, calcELBOfinal = True, frac = 0.):
+    pass
+
 def learn(vae, dataset=None, epoch_start=0, epoch_end=1000, batch_size=200, shuffle=False, 
         savefile = None, savefreq = None, dataset_eval=None):
     assert dataset is not None,'Expecting 2D dataset matrix'
     assert np.prod(dataset.shape[1:])==vae.params['dim_observations'],'dim observations incorrect'
     N = dataset.shape[0]
     idxlist = range(N)
-    trainbound_0, trainbound_f, validbound_0, validbound_f, validll, klmat = [],[],[],[],[],[]
+    trainbound_0, trainbound_f, validbound_0, validbound_f, svallist, validll, klmat = [],[],[],[],[],[],[]
     gmulist,glcovlist,diff_entlist, diff_elbolist,batchtimelist = [],[],[],[],[]
     gdifflists = {}
     for name in vae.p_names:
@@ -101,6 +106,10 @@ def learn(vae, dataset=None, epoch_start=0, epoch_end=1000, batch_size=200, shuf
         learnBatch = _optNone
     elif vae.params['opt_type'] in ['finopt']:
         learnBatch = _optFinopt
+    elif vae.params['opt_type'] in ['finopt_none']:
+        learnBatch = _optFinoptNone
+    elif vae.params['opt_type'] in ['none_finopt']:
+        learnBatch = _optNoneFinopt
     else:
         raise ValueError('Invalid optimization type: '+str(vae.params['opt_type']))
     for epoch in range(epoch_start, epoch_end+1):
@@ -139,7 +148,14 @@ def learn(vae, dataset=None, epoch_start=0, epoch_end=1000, batch_size=200, shuf
         end_time   = time.time()
         print '\n'
         vae._p(('Ep(%d) ELBO[0]: %.4f, ELBO[f]: %.4f, gmu: %.4f, glcov: %.4f, [%.3f, %.3f] [%.4f seconds]')%(epoch, bd_0, bd_f, gmu, glcov, diff_elbo, diff_ent, (end_time-start_time)))
-        if savefreq is not None and epoch%savefreq==0:
+        """
+        Evaluate more frequently in the initial few epochs
+        """
+        if epoch > 10:
+            sfreq = savefreq 
+        else:
+            sfreq = 3 
+        if savefreq is not None and epoch%sfreq==0:
             vae._p(('Saving at epoch %d'%epoch))
             vae._saveModel(fname=savefile+'-EP'+str(epoch))
             eval_retVal = None
@@ -169,10 +185,15 @@ def learn(vae, dataset=None, epoch_start=0, epoch_end=1000, batch_size=200, shuf
             intermediate['samples']    = VAE_evaluate.sample(vae)
             intermediate['gmu']        = np.array(gmulist)
             intermediate['glcov']      = np.array(glcovlist)
-            intermediate['diff_elbo']= np.array(diff_elbolist)
-            intermediate['diff_ent']= np.array(diff_entlist)
+            intermediate['diff_elbo']  = np.array(diff_elbolist)
+            intermediate['diff_ent']   = np.array(diff_entlist)
             if eval_retVal and 'debug' in eval_retVal: 
                 intermediate['debug']= np.array(eval_retVal['debug'])
+            jacob = vae.jacobian_logprobs(np.zeros((vae.params['dim_stochastic'],)))
+            _,svals,_  = np.linalg.svd(jacob)
+            epres      = np.array([epoch] + svals.ravel().tolist())
+            svallist.append(epres)
+            intermediate['svals']      = np.array(svallist)
             saveHDF5(savefile+'-EP'+str(epoch)+'-stats.h5', intermediate)
     ret_map={}
     ret_map['train_bound_0'] = np.array(trainbound_0)
@@ -191,4 +212,5 @@ def learn(vae, dataset=None, epoch_start=0, epoch_end=1000, batch_size=200, shuf
     ret_map['glcov']         = np.array(glcovlist)
     ret_map['diff_elbo']= np.array(diff_elbolist)
     ret_map['diff_ent']= np.array(diff_entlist)
+    ret_map['svals']         = np.array(svallist)
     return ret_map
