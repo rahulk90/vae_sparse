@@ -26,26 +26,35 @@ from   optvaedatasets.load import loadDataset
 if len(sys.argv)!=2:
     raise ValueError,'Bad input: python evaluateConditionalWikipedia.py <pl-2-none/pl-2-finopt>'
 MODEL_TO_USE = sys.argv[-1].strip()
-dataset = loadDataset('wikicorp')
 
+    
+models, epochval        = OrderedDict(), OrderedDict()
+
+#models['pl-2-none']     = './chkpt-wikicorp-none/VAE_lr-8_0e-04-ph-400-qh-400-ds-100-pl-2-ql-2-nl-relu-bs-500-ep-50-plr-1_0e-02-ar-0-otype-none-ns-200-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
+#epochval['pl-2-none']   = '50'
+
+#models['pl-2-finopt']   = './chkpt-wikicorp-finopt/VAE_lr-8_0e-04-ph-400-qh-400-ds-100-pl-2-ql-2-nl-relu-bs-500-ep-50-plr-1_0e-02-ar-0-otype-finopt-ns-200-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
+#epochval['pl-2-finopt'] = '50'
+
+#models['pl-0-none']   = './chkpt-wikicorp-none/VAE_lr-8_0e-04-ph-400-qh-400-ds-100-pl-0-ql-2-nl-relu-bs-500-ep-50-plr-1_0e-02-ar-0-otype-none-ns-200-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
+#epochval['pl-0-none'] = '50'
+
+#models['pl-0-finopt']   = './chkpt-wikicorp-finopt/VAE_lr-8_0e-04-ph-400-qh-400-ds-100-pl-0-ql-2-nl-relu-bs-500-ep-50-plr-1_0e-02-ar-0-otype-finopt-ns-200-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
+#epochval['pl-0-finopt'] = '50'
+
+models['pl-2-finopt']   = './chkpt-wikicorp_large-finopt/VAE_lr-8_0e-04-ph-400-qh-400-ds-300-pl-2-ql-2-nl-relu-bs-500-ep-50-plr-1_0e-02-ar-0-otype-finopt-ns-200-om-adam-etype-mlp-ll-mult-itype-tfidf-idrop-1_0e-04l20_01_-uid'
+epochval['pl-2-finopt'] = '30'
+models['pl-0-none']   = './chkpt-wikicorp_large-none/VAE_lr-8_0e-04-ph-400-qh-400-ds-300-pl-0-ql-2-nl-relu-bs-500-ep-50-plr-1_0e-02-ar-0-otype-none-ns-200-om-adam-etype-mlp-ll-mult-itype-tfidf-idrop-1_0e-04l20_01_-uid'
+epochval['pl-0-none'] = '50'
+
+DSET    = models[MODEL_TO_USE].split('chkpt-')[1].split('-')[0]
+print 'Loading : ',DSET
+dataset = loadDataset(DSET)
 additional_attrs        = {}
 tfidf                   = TfidfTransformer(norm=None)
 tfidf.fit(dataset['train'])
 additional_attrs['idf'] = tfidf.idf_
-    
-models, epochval        = OrderedDict(), OrderedDict()
 
-models['pl-2-none']     = './chkpt-wikicorp-none/VAE_lr-8_0e-04-ph-400-qh-400-ds-100-pl-2-ql-2-nl-relu-bs-500-ep-50-plr-1_0e-02-ar-0-otype-none-ns-200-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
-epochval['pl-2-none']   = '50'
-
-models['pl-2-finopt']   = './chkpt-wikicorp-finopt/VAE_lr-8_0e-04-ph-400-qh-400-ds-100-pl-2-ql-2-nl-relu-bs-500-ep-50-plr-1_0e-02-ar-0-otype-finopt-ns-200-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
-epochval['pl-2-finopt'] = '50'
-
-models['pl-0-none']   = './chkpt-wikicorp-none/VAE_lr-8_0e-04-ph-400-qh-400-ds-100-pl-0-ql-2-nl-relu-bs-500-ep-50-plr-1_0e-02-ar-0-otype-none-ns-200-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
-epochval['pl-0-none'] = '50'
-
-models['pl-0-finopt']   = './chkpt-wikicorp-finopt/VAE_lr-8_0e-04-ph-400-qh-400-ds-100-pl-0-ql-2-nl-relu-bs-500-ep-50-plr-1_0e-02-ar-0-otype-finopt-ns-200-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
-epochval['pl-0-finopt'] = '50'
 if MODEL_TO_USE not in models:
     raise ValueError, MODEL_TO_USE+' not found'
 

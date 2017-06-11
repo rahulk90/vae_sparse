@@ -6,13 +6,29 @@ DIR     = './'
 
 ctr     = 0
 cmdlist = []
+print 'Q intialized with previous result'
 for f in glob.glob(DIR+'/chkpt-rcv2_miao-q_only/*evaluate.h5'):
     dset    = loadHDF5(f)
-    'e-04-ph-400-qh-100-ds-100-pl-2-ql-3-nl-relu-bs-500-ep-100-plr-1_0e-02-ar-0-otype-q_only-ns-100-om-adam-etype-mlp-ll-mult-itype-tfidf-idrop-1_0e-04l20_01_-uid-evaluate.h5'
+    print dset.keys()
     def getStatStr(name, fname):
         return fname.split(name+'-')[1].split('-')[0]
     name  = ''
     name += 'qh-'+getStatStr('qh',f)
     name += '-ql-'+getStatStr('ql',f)
+    if 'ql-2' in name:
+        continue
+    print name, (dset['perp_0_eb'],dset['perp_f_eb'])
+
+
+print 'Q intialized randomly'
+for f in glob.glob(DIR+'/chkpt-rcv2_miao-q_only_random/*evaluate.h5'):
+    dset    = loadHDF5(f)
+    def getStatStr(name, fname):
+        return fname.split(name+'-')[1].split('-')[0]
+    name  = ''
+    name += 'qh-'+getStatStr('qh',f)
+    name += '-ql-'+getStatStr('ql',f)
+    if 'ql-2' in name:
+        continue
     print name, (dset['perp_0_eb'],dset['perp_f_eb'])
 
