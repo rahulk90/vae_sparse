@@ -64,6 +64,9 @@ expt_runs['rcv2_tfidf_qdrop']['2_none']   = gpu_0_full+' '+'python2.7 train.py -
 expt_runs['rcv2_tfidf_qdrop']['0_none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2 -ds 100 -itype tfidf -nl relu -otype none -pl 0 -ns 100 -ep 200 -idrop 0.5' 
 
 
+"""
+Run some experiments where you reload
+"""
 chkpt = {}
 QVARYDIR = './results_qvary/chkpt-rcv2-finopt/'
 chkpt['3-400-p_fixed'] = QVARYDIR+'VAE_lr-8_0e-04-ph-400-qh-400-ds-100-pl-2-ql-3-nl-relu-bs-500-ep-200-plr-1_0e-02-ar-0-otype-finopt-ns-100-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
@@ -118,12 +121,6 @@ expt_runs['wikicorp']['0-ar50k']   = gpu_0_full+' '+'python2.7 train.py -dset wi
 expt_runs['wikicorp']['2-ar100k']   = gpu_0_full+' '+'python2.7 train.py -dset wikicorp -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 200 -ep 500 -ar 100000'
 expt_runs['wikicorp']['0-ar100k']   = gpu_0_full+' '+'python2.7 train.py -dset wikicorp -ds 100 -itype tfidf -nl relu -otype none -pl 0 -ns 200 -ep 500 -ar 100000'
 
-expt_runs['wikicorp-large'] = OrderedDict() 
-expt_runs['wikicorp-large']['2-none']   = gpu_0_full+' '+'python2.7 train.py -dset wikicorp-large -ds 300 -itype tfidf -nl relu -otype none -pl 2 -ns 200 -ep 50 -uid final'
-expt_runs['wikicorp-large']['2-finopt'] = gpu_1_full+' '+'python2.7 train.py -dset wikicorp-large -ds 300 -itype tfidf -nl relu -otype finopt -pl 2 -ns 200 -ep 50 -uid final'
-expt_runs['wikicorp-large']['0-none']   = gpu_0_full+' '+'python2.7 train.py -dset wikicorp-large -ds 300 -itype tfidf -nl relu -otype none -pl 0 -ns 200 -ep 50 -uid final'
-expt_runs['wikicorp-large']['0-finopt'] = gpu_1_full+' '+'python2.7 train.py -dset wikicorp-large -ds 300 -itype tfidf -nl relu -otype finopt -pl 0 -ns 200 -ep 50 -uid final'
-
 expt_runs['wikicorp_sparsity'] = OrderedDict() 
 expt_runs['wikicorp_sparsity']['1000-2-finopt'] = gpu_0_full+' '+'python2.7 train.py -dset wikicorp_1000 -ds 100 -itype tfidf -nl relu -otype finopt -pl 2 -ns 100 -ep 50'
 expt_runs['wikicorp_sparsity']['5000-2-finopt'] = gpu_1_full+' '+'python2.7 train.py -dset wikicorp_5000 -ds 100 -itype tfidf -nl relu -otype finopt -pl 2 -ns 100 -ep 50'
@@ -136,6 +133,12 @@ expt_runs['wikicorp_sparsity']['10000-2-none'] = gpu_0_full+' '+'python2.7 train
 * Evaluating different models: comprise evaluating and saving Ejacob and/or CJacob
 * Open and setup all the evaluation scripts to point to the relevant checkpoints
 """
+expt_runs['wikicorp-large'] = OrderedDict() 
+expt_runs['wikicorp-large']['2-none']   = gpu_0_full+' '+'python2.7 train.py -dset wikicorp-large -ds 300 -itype tfidf -nl relu -otype none -pl 2 -ns 200 -ep 50 -uid final'
+expt_runs['wikicorp-large']['2-finopt'] = gpu_1_full+' '+'python2.7 train.py -dset wikicorp-large -ds 300 -itype tfidf -nl relu -otype finopt -pl 2 -ns 200 -ep 50 -uid final'
+expt_runs['wikicorp-large']['0-none']   = gpu_0_full+' '+'python2.7 train.py -dset wikicorp-large -ds 300 -itype tfidf -nl relu -otype none -pl 0 -ns 200 -ep 50 -uid final'
+expt_runs['wikicorp-large']['0-finopt'] = gpu_1_full+' '+'python2.7 train.py -dset wikicorp-large -ds 300 -itype tfidf -nl relu -otype finopt -pl 0 -ns 200 -ep 50 -uid final'
+
 """ Evaluate Wikicorp """
 expt_runs['wikicorp_evaluate'] = OrderedDict() 
 expt_runs['wikicorp_evaluate']['2-none']   = gpu_0_full+' '+'python2.7 evaluateWikipedia.py pl-2-none'

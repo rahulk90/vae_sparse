@@ -39,14 +39,8 @@ def loadDataset(dsetname):
         return sentiment._loadRT()
     elif dsetname in ['sst_fine','sst_binary']:
         return sentiment._loadStanford(dsetname)
-    elif dsetname in ['largewikivocab']:
-        #Keep the vocabulary for wikipedia to include subset of words for imdb, rotten tomatoes, sst, wordsim and scws
-        return largewikivocab() 
     else:
         assert False,'Invalid dataset name: '+str(dsetname)
-
-def largewikivocab():
-    pass
 
 if __name__=='__main__':
     dset  = loadDataset('scws')
