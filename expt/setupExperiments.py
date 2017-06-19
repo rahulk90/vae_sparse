@@ -4,7 +4,7 @@ import sys
 
 expt_type = 'rcv2_tfidf'
 valid_expts= set(['20newsgroups_norm','20newsgroups_tfidf','20newsgroups_tfidf_qdrop','rcv2_norm','rcv2_tfidf','rcv2_q_vary','rcv2_tfidf_qdrop','rcv2_p_fixed','rcv2_p_fixed_random',
-    'wikicorp','wikicorp_sparsity','wikicorp-large','wikicorp_evaluate','wikicorp_evaluate'])
+    'wikicorp','wikicorp_sparsity','wikicorp-large','wikicorp_evaluate','wikicorp_evaluate','wikicorp_mixed_training'])
 
 print 'Valid Expts: ',','.join(list(valid_expts))
 print 'Default: ',expt_type
