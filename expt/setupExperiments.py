@@ -135,6 +135,10 @@ expt_runs['wikicorp_sparsity']['1000-2-none'] = gpu_0_full+' '+'python2.7 train.
 expt_runs['wikicorp_sparsity']['5000-2-none'] = gpu_1_full+' '+'python2.7 train.py -dset wikicorp_5000 -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 500'
 expt_runs['wikicorp_sparsity']['10000-2-none'] = gpu_0_full+' '+'python2.7 train.py -dset wikicorp_10000 -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 500'
 
+expt_runs['wikicorp_mixed_training'] = OrderedDict()
+expt_runs['wikicorp_mixed_training']['none_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset wikicorp -ds 100 -itype tfidf -nl relu -otype none_finopt -pl 2 -ns 100 -ep 20'
+expt_runs['wikicorp_mixed_training']['finopt_none'] = gpu_0_full+' '+'python2.7 train.py -dset wikicorp -ds 100 -itype tfidf -nl relu -otype finopt_none -pl 2 -ns 100 -ep 20'
+
 """
 * Evaluating different models: comprise evaluating and saving Ejacob and/or CJacob
 * Open and setup all the evaluation scripts to point to the relevant checkpoints
