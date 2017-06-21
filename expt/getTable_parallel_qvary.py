@@ -6,7 +6,7 @@ DIR     = './'
 
 ctr     = 0
 cmdlist = []
-for f in glob.glob(DIR+'/chkpt-rcv2_miao-*/*evaluate.h5'):
+for f in glob.glob(DIR+'/chkpt-rcv2-*/*evaluate.h5'):
     params  = readPickle(getConfigFile(f.replace('evaluate.h5','')))[0] 
     rfile   = f.replace('evaluate.h5','EP200-params.npz')
     pfile   = f.replace('evaluate.h5','config.pkl')
@@ -26,15 +26,16 @@ cmdreplace =''
 indices    = []
 for idx, cmd in enumerate(cmdlist):
     print idx, cmd
-    if idx>0 and idx%2==0:
+    if idx>0 and idx%8==0:
         with open('tmplate_'+str(idx)+'.py','w') as f:
             f.write(data.replace('<INSERT HERE>',cmdreplace))
         indices.append(idx)
         cmdreplace = ''
     cmdreplace += cmd+'\n'
-with open('tmplate_'+str(idx+1)+'.py','w') as f:
+print len(cmdlist), cmdreplace
+with open('tmplate_'+str(len(cmdlist))+'.py','w') as f:
     f.write(data.replace('<INSERT HERE>',cmdreplace))
-indices.append(idx+1)
+indices.append(len(cmdlist))
 
 
 for ctr,idx in enumerate(indices):

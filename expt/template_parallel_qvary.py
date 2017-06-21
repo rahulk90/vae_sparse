@@ -7,7 +7,7 @@ from optvaemodels.vae import VAE as Model
 import optvaemodels.vae_evaluate as Evaluate
 from sklearn.feature_extraction.text import TfidfTransformer
 DIR     = './'
-dataset= loadDataset('rcv2_miao')
+dataset= loadDataset('rcv2')
 
 additional_attrs        = {}
 tfidf                   = TfidfTransformer(norm=None) 
@@ -36,4 +36,4 @@ for name in names:
     result[name]  = (train_perp_0, train_perp_f, valid_perp_0, valid_perp_f)
     outf.write(name+' train: '+str(train_perp_0)+','+str(train_perp_f)+'; valid:'+str(valid_perp_0)+','+str(valid_perp_f)+' \n')
 outf.close()
-import ipdb;ipdb.set_trace()
+#import ipdb;ipdb.set_trace()

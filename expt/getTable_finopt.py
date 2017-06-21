@@ -1,13 +1,13 @@
 import glob
 from utils.misc import loadHDF5,getConfigFile, readPickle
-DIR     = './results_dec19'
-#datasets= ['20newsgroups_miao','rcv2_miao']
-DIR='./';datasets= ['wikicorp']
+DIR     = './'#results_dec19'
+datasets= ['20newsgroups','rcv2']
+#DIR='./';datasets= ['wikicorp']
 result  = {}
 for dataset in datasets:
     print 'Dataset: ',dataset
     for f in glob.glob(DIR+'/chkpt-'+dataset+'-*/*evaluate.h5'):
-        if 'mnist' in f:
+        if 'mnist' in f or 'qvary' in f:
             continue
         dataset = f.split('chkpt-')[1].split('-')[0]
         opt_type= f.split('chkpt-')[1].split('-')[1].split('/')[0]
