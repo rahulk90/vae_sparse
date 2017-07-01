@@ -19,7 +19,7 @@ def arrToReadableString(nparr, divideBy=1):
         ss += ('%.1f'%(k/float(divideBy)))+', '
     return ss
 
-def _optNone(vae, bnum, Nbatch, X, retVals = {}, calcELBOfinal = False):
+def _optNone(vae, bnum, Nbatch, X, retVals = {}, calcELBOfinal = False, update_opt= None):
     """
     vae:    VAE object
     bnum:   Batch number
@@ -56,7 +56,7 @@ def _optNone(vae, bnum, Nbatch, X, retVals = {}, calcELBOfinal = False):
     retVals['time_taken'] = time_taken
     return retVals
 
-def _optFinopt(vae, bnum, Nbatch, X,  retVals = {},calcELBOfinal=True):
+def _optFinopt(vae, bnum, Nbatch, X,  retVals = {}, calcELBOfinal=True, update_opt = None):
     start_time = time.time()
     D_b     = vae.update_q(X=X)
     results = vae.update_p(X=X)
@@ -83,10 +83,42 @@ def _optFinopt(vae, bnum, Nbatch, X,  retVals = {},calcELBOfinal=True):
     retVals['time_taken']= time_taken
     return retVals
 
-def _optFinoptNone(vae, bnum, Nbatch, X, retVals = {}, calcELBOfinal = True, frac = 0.):
-    pass
-def _optNoneFinopt(vae, bnum, Nbatch, X, retVals = {}, calcELBOfinal = True, frac = 0.):
-    pass
+def _optMixed(vae, bnum, Nbatch, X, retVals = {}, calcELBOfinal = True, update_opt= False):
+    start_time = time.time()
+    if update_opt:
+        D_b        = vae.update_q(X=X)
+        results    = vae.update_p(X=X)
+        elbo_0, elbo_f, anneal, pnorm, gnorm, optnorm   = results[0], results[1], results[2], results[3], results[4],results[5]
+        n_steps, gmu,glcov, diff_elbo, diff_ent         = results[6], results[7], results[8], results[9], results[10]
+    else:
+        elbo_0, pnorm, gnorm, optnorm, anneal, lr = vae.train(X=X)
+        if np.isnan(elbo_0):
+            print 'NAN warning'
+            import ipdb;ipdb.set_trace()
+        elbo_f = np.nan
+        n_steps    = 0
+        gmu, glcov, diff_elbo, diff_ent = np.nan, np.nan, np.nan, np.nan
+        _, elbo_f, n_steps, gmu, glcov,  diff_elbo, diff_ent = vae.final_elbo(X=X)
+    if np.isnan(elbo_0):
+        print 'NAN warning'
+        import ipdb;ipdb.set_trace()
+    time_taken = time.time()-start_time
+    freq = 100
+    if bnum%freq==0:
+        vae._p(('--Batch: %d, Bound (init): %.4f, Bound (final): %.4f, Time (sec): %.2f')%
+                (bnum, elbo_0/Nbatch, elbo_f/Nbatch, time_taken))
+        vae._p(('--||w||: %.4f, ||dw|| : %.4f, ||w_opt||: %.4f, anneal : %.4f----')%
+                (pnorm, gnorm, optnorm, anneal))
+        vae._p(('--n_steps: %d, g_mu_f:%.3f, g_lcov_f:%.3f,diff_elbo:%.3f, diff_ent:%.3f--')%
+                (n_steps,gmu/Nbatch,glcov/Nbatch,diff_elbo/Nbatch, diff_ent/Nbatch))
+    retVals['elbo_0'] = elbo_0
+    retVals['elbo_f'] = elbo_f
+    retVals['gmu']    = gmu
+    retVals['glcov']  = glcov
+    retVals['diff_elbo'] = diff_elbo
+    retVals['diff_ent']  = diff_ent
+    retVals['time_taken']= time_taken
+    return retVals
 
 def learn(vae, dataset=None, epoch_start=0, epoch_end=1000, batch_size=200, shuffle=False, 
         savefile = None, savefreq = None, dataset_eval=None):
@@ -106,16 +138,23 @@ def learn(vae, dataset=None, epoch_start=0, epoch_end=1000, batch_size=200, shuf
         learnBatch = _optNone
     elif vae.params['opt_type'] in ['finopt']:
         learnBatch = _optFinopt
-    elif vae.params['opt_type'] in ['finopt_none']:
-        learnBatch = _optFinoptNone
-    elif vae.params['opt_type'] in ['none_finopt']:
-        learnBatch = _optNoneFinopt
+    elif vae.params['opt_type'] in ['finopt_none','none_finopt']:
+        learnBatch = _optMixed
     else:
         raise ValueError('Invalid optimization type: '+str(vae.params['opt_type']))
     for epoch in range(epoch_start, epoch_end+1):
         np.random.shuffle(idxlist)
         start_time = time.time()
         bd_0, bd_f, gmu, glcov,diff_elbo, diff_ent, time_taken = 0, 0, 0, 0, 0, 0, 0
+        """
+        Evaluate more frequently in the initial few epochs
+        """
+        if epoch > 10:
+            sfreq = savefreq 
+            tfreq = 10
+        else:
+            sfreq = 3 
+            tfreq = 3
         for bnum,st_idx in enumerate(range(0,N,batch_size)):
             end_idx = min(st_idx+batch_size, N)
             X       = dataset[idxlist[st_idx:end_idx]]
@@ -123,7 +162,19 @@ def learn(vae, dataset=None, epoch_start=0, epoch_end=1000, batch_size=200, shuf
                 X   = X.toarray()
             X       = X.astype(config.floatX)
             Nbatch  = X.shape[0]
-            retVal  = learnBatch(vae, bnum, Nbatch, X, calcELBOfinal=(epoch%10==0))
+            update_opt= None
+            if vae.params['opt_type'] in ['finopt_none','none_finopt']:
+                if vae.params['opt_type'] == 'finopt_none': #start w/ optimizing var. params, then stop
+                    if epoch<(epoch_end/2.):
+                        update_opt = True
+                    else:
+                        update_opt = False
+                else: #'none_finopt' - start w/out optimizing var. params, then optimize them
+                    if epoch<(epoch_end/2.):
+                        update_opt = False
+                    else:
+                        update_opt = True
+            retVal  = learnBatch(vae, bnum, Nbatch, X, calcELBOfinal=(epoch%tfreq==0),  update_opt=update_opt) 
             bd_0    += retVal['elbo_0']
             bd_f    += retVal['elbo_f']
             gmu     += retVal['gmu']
@@ -148,13 +199,6 @@ def learn(vae, dataset=None, epoch_start=0, epoch_end=1000, batch_size=200, shuf
         end_time   = time.time()
         print '\n'
         vae._p(('Ep(%d) ELBO[0]: %.4f, ELBO[f]: %.4f, gmu: %.4f, glcov: %.4f, [%.3f, %.3f] [%.4f seconds]')%(epoch, bd_0, bd_f, gmu, glcov, diff_elbo, diff_ent, (end_time-start_time)))
-        """
-        Evaluate more frequently in the initial few epochs
-        """
-        if epoch > 10:
-            sfreq = savefreq 
-        else:
-            sfreq = 3 
         if savefreq is not None and epoch%sfreq==0:
             vae._p(('Saving at epoch %d'%epoch))
             vae._saveModel(fname=savefile+'-EP'+str(epoch))

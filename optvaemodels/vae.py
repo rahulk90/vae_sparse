@@ -377,6 +377,7 @@ class VAE(BaseModel, object):
         n_steps, plr            = T.iscalar('n_steps'), T.fscalar('plr')
         n_steps.tag.test_value, plr.tag.test_value = self.params['n_steps'],self.params['param_lr']
         
+        self._p('Building Functions for Evaluation')
         self._buildOptimizationFunction(X, n_steps, plr)
         self._buildEvaluationFunctions(X,n_steps,plr)
         if 'validate_only' in self.params or 'EVALUATE' in self.params:
@@ -384,6 +385,7 @@ class VAE(BaseModel, object):
             self.tOptWeights = []
             self._p('Not building training functions...')
             return
+        self._p('Building Functions for Training')
         if self.params['opt_type']=='none':
             """ none: simple vae optimization """
             traindict = {}
@@ -490,6 +492,78 @@ class VAE(BaseModel, object):
                                                         grad_noise = self.params['grad_noise'],
                                                         rng = self.srng)
             self.update_q   = theano.function([X], elbo, updates = optimizer_q, name = 'Train Q')
+        elif self.params['opt_type'] in ['finopt_none','none_finopt']:
+            """
+            Functions to update with and without optimizing variational parameters
+            """
+            self._p('Functions to learning while optimizing var.params')
+            ##################                UPDATE  P         ######################
+            dictopt,dictf = {},{}
+            mu_q_0, logcov_q_0 = self._inference(X)
+            mu_q_f, logcov_q_f, _ = self._optimizeVariationalParams(X, mu_q_0, logcov_q_0, 
+                                                                          n_steps, plr, savedict=dictopt)
+            elbo_init      = self._ELBO(X, mu_q=mu_q_0, logcov_q=logcov_q_0, anneal=anneal)
+            mu_f_dgrad     = theano.gradient.disconnected_grad(mu_q_f)
+            logcov_f_dgrad = theano.gradient.disconnected_grad(logcov_q_f)
+            elbo_final     = self._ELBO(X, mu_q=mu_f_dgrad, logcov_q=logcov_f_dgrad, savedict = dictf, anneal=anneal)
+            
+            p_params                 = self._getModelParams(restrict='p_')
+            self.updates_ack = True
+            if 'GRADONLY' in self.params:
+                self._p('Only computing gradients with respect to cost function')
+                p_grads                  = T.grad(elbo_final, p_params)
+                self.getgrads            = theano.function([X,
+                                                            theano.In(n_steps, value=self.params['n_steps'], name='n_steps'),
+                                                            theano.In(plr, value=self.params['param_lr'], name='plr')],
+                                                            [pp*1. for pp in p_grads])
+                self.tOptWeights = []
+                return 
+
+            """
+            Update P while optimizing var. params
+            """
+            optimizer_p, norm_list_p = self._setupOptimizer(elbo_final, p_params, lr = lr, 
+                                                        grad_noise = self.params['grad_noise'],
+                                                        rng = self.srng)#,
+            self._p('# additional updates: '+str(len(self.updates)))
+            optimizer_p += self.updates+anneal_update
+            diff_elbo, diff_ent = self._estimateELBOEntropy(elbo_init, elbo_final, logcov_q_0, logcov_q_f)
+            self.update_p   = theano.function([X,theano.In(n_steps, value=self.params['n_steps'], name='n_steps'),
+                                                  theano.In(plr, value=self.params['param_lr'], name='plr')], 
+                                              [elbo_init, elbo_final, anneal.sum(), 
+                                               norm_list_p[0], norm_list_p[1], norm_list_p[2], 
+                                               dictopt['n_steps'], dictopt['gradnorm_mu_its'][-1], 
+                                               dictopt['gradnorm_logcov_its'][-1],diff_elbo, diff_ent],#+gdiffs, 
+                                              updates = optimizer_p, name = 'Train P')
+            ##################                UPDATE Q           ######################
+            elbo                     = self._ELBO(X,  dropout_prob = 0. , anneal = anneal)
+            """
+            Update Q
+            """
+            q_params                 = self._getModelParams(restrict='q_')
+            optimizer_q, norm_list_q = self._setupOptimizer(elbo, q_params,lr = lr, 
+                                                        grad_noise = self.params['grad_noise'],
+                                                        rng = self.srng)
+            self.update_q            = theano.function([X], elbo, updates = optimizer_q, name = 'Train Q')
+            """
+            Update P/Q
+            """
+            self._p('Functions to learning without optimizing var.params')
+            model_params             = self._getModelParams()
+            optimizer_up, norm_list  = self._setupOptimizer(elbo,  model_params,
+                                                        lr = lr,  
+                                                        grad_noise = self.params['grad_noise'],
+                                                        rng = self.srng)#,
+                                                        #reg_type =self.params['reg_type'], 
+                                                        #reg_spec =self.params['reg_spec'], 
+                                                        #reg_value= self.params['reg_value'],
+                                                        #grad_norm = 1.,
+                                                        #divide_grad = T.cast(X.shape[0],config.floatX))
+            self._p('# additional updates: '+str(len(self.updates)))
+            optimizer_up+=anneal_update +self.updates
+            fxn_inputs      = [X]
+            self.train      = theano.function(fxn_inputs, [elbo, norm_list[0], norm_list[1], norm_list[2], anneal.sum(), lr.sum()],
+                                              updates = optimizer_up, name = 'Train')
         else:
             assert False,'Invalid optimization type: '+self.params['opt_type']
         self._p('Done creating functions for training')

@@ -59,8 +59,7 @@ displayTime('Building vae',start_time, time.time())
 
 savef      = os.path.join(params['savedir'],params['unique_id']) 
 start_time = time.time()
-trainData  = dataset['train'];validData     = dataset['valid']
-
+trainData  = dataset['train'];validData = dataset['valid']
 savedata   = Learn.learn( model, 
                                 dataset     = trainData,
                                 epoch_start = 0 , 

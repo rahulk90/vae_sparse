@@ -13,12 +13,12 @@ def getName(params):
             name+='_rK'+str(params['replicate_K'])
         if params['anneal_rate']>1:
             name+='_annealKL'
-    elif params['opt_type']=='miao':
-        name = 'miao'
-    elif params['opt_type']=='miao_ascent':
-        name = 'miao_ascent'
     elif params['opt_type'] in ['finopt']:
         name = 'fin'+str(params['n_steps'])
+    elif params['opt_type'] in ['finopt_none']:
+        name = 'fin-none'+str(params['n_steps'])
+    elif params['opt_type'] in ['none_finopt']:
+        name = 'none-fin'+str(params['n_steps'])
     elif params['opt_type'] in ['finopt_mult']:
         name = 'fin_mult'+str(float(params['p_updates']))+'_'+str(int(params['n_steps']/float(params['p_updates'])))
     else:
