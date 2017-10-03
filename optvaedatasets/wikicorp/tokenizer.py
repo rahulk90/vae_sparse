@@ -4,6 +4,12 @@ import re,time,os
 from nltk.corpus import wordnet as wn
 from nltk.corpus import stopwords
 import inflect
+import h5py,os
+from utils.sparse_utils import saveSparseHDF5
+from scipy.sparse import csc_matrix
+import gensim
+import logging
+from gensim import corpora
 p = inflect.engine()
 with open('stop_words.txt') as f:
     sw    = [k.strip() for k in f.readlines()]
@@ -71,7 +77,6 @@ with open(DOCNAME) as f:
 end_time = time.time()
 printTime('Collecting Word Counts', start_time, end_time)
 
-
 start_time = time.time()
 from collections import defaultdict
 frequency = defaultdict(int)
@@ -94,27 +99,21 @@ end_time   = time.time()
 printTime('Finding smallest frequency: ',start_time, end_time)
 
 start_time = time.time()
-doclist = [[word for word in doc if (frequency[word] > 1 and len(word)>2)] for doc in doclist]
+doclist = [[word for word in doc if (frequency[word] > 10 and len(word)>3)] for doc in doclist]
 end_time = time.time()
 printTime('Restricting words in documents: ',start_time, end_time)
 
 #Gensim
 start_time = time.time()
-import gensim
-import logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
-from gensim import corpora
 dictionary = corpora.Dictionary(doclist)
 corpus     = [dictionary.doc2bow(doc) for doc in doclist]
 end_time = time.time()
 printTime('Generating Corpus and BOW',start_time,end_time)
 
 #Convert to a sparse matrix
-from scipy.sparse import csc_matrix
 sparse_corpus = gensim.matutils.corpus2csc(corpus).T
 
-import h5py,os
-from utils.sparse_utils import saveSparseHDF5
 basename = DOCNAME.split('.txt')[0]
 if splitHyphenated:
     basename+='-split_hyphen'
