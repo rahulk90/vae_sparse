@@ -78,6 +78,7 @@ saveHDF5(savef+'-init_final_train.h5',train_map_init_final)
 
 eval_map_init_final  = model.getInitFinal(validData)
 saveHDF5(savef+'-init_final_eval.h5',eval_map_init_final)
+print 'done'
 
 """
 test_results = Evaluate.evaluateBound(model, dataset['test'], batch_size = params['batch_size'])
@@ -94,7 +95,6 @@ else:
 
 
 # Work w/ the best model thus far
-"""
 epochMin, valMin, idxMin = getLowestError(savedata[kname])
 reloadFile               = pfile.replace('-config.pkl','')+'-EP'+str(int(epochMin))+'-params.npz'
 print 'Loading from : ',reloadFile

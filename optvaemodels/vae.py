@@ -288,7 +288,7 @@ class VAE(BaseModel, object):
         self.init_final_params = theano.function([X, theano.In(n_steps, value=self.params['n_steps'], name='n_steps'),
                                                  theano.In(plr, value=self.params['param_lr'], name='plr')],
                                                [optdict['mu_its'][0],optdict['logcov_its'][0], optdict['mu_its'][-1],
-                                               optdict['logcov_its'][-1], name = 'init/final params')
+                                                   optdict['logcov_its'][-1]], name = 'init/final params')
     def _estimateELBOEntropy(self, elbo_0, elbo_f, logcov_0, logcov_f):
         """ H = 0.5*log |Sigma| + K/2 + K/2 log (2\pi) 
             if the ratio is high, most of the
