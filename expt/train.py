@@ -73,10 +73,10 @@ savedata   = Learn.learn( model,
 displayTime('Running Model',start_time, time.time())
 saveHDF5(savef+'-final.h5',savedata)
 
-train_map_init_final = model.getInitFinal(trainData)
+train_map_init_final = Evaluate.getInitFinal(model, trainData)
 saveHDF5(savef+'-init_final_train.h5',train_map_init_final)
 
-eval_map_init_final  = model.getInitFinal(validData)
+eval_map_init_final  = Evaluate.getInitFinal(model, validData)
 saveHDF5(savef+'-init_final_eval.h5',eval_map_init_final)
 print 'done'
 
