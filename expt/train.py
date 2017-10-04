@@ -87,6 +87,7 @@ savedata['test_klmat']  = test_results['klmat']
 saveHDF5(savef+'-final.h5',savedata)
 
 # Work w/ the best model thus far
+"""
 epochMin, valMin, idxMin = getLowestError(savedata[kname])
 reloadFile               = pfile.replace('-config.pkl','')+'-EP'+str(int(epochMin))+'-params.npz'
 print 'Loading from : ',reloadFile
@@ -107,3 +108,4 @@ if 'synthetic' in params['dataset']:
 saveHDF5(savef+'-evaluate.h5',evaluate)
 if np.any([k in params['dataset'] for k in ['synthetic','newsgroups']]):
     pass
+"""
