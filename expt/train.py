@@ -94,6 +94,7 @@ else:
 
 
 # Work w/ the best model thus far
+"""
 epochMin, valMin, idxMin = getLowestError(savedata[kname])
 reloadFile               = pfile.replace('-config.pkl','')+'-EP'+str(int(epochMin))+'-params.npz'
 print 'Loading from : ',reloadFile
