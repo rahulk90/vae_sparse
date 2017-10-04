@@ -26,6 +26,8 @@ def getInitFinal(vae, dataset, batch_size):
     init_mulist, final_mulist = [], []
     init_logcovlist, final_logcovlist = [], []
     for bnum,st_idx in enumerate(range(0,N,batch_size)):
+        if bnum%1000==0:
+            print bnum,
         end_idx = min(st_idx+batch_size, N)
         X       = dataset[st_idx:end_idx]
         if X.__class__.__name__=='csr_matrix' or X.__class__.__name__=='csc_matrix':
@@ -36,6 +38,7 @@ def getInitFinal(vae, dataset, batch_size):
         init_logcovlist.append(logcov_0)
         final_mulist.append(mu_f)
         final_logcovlist.append(logcov_f)
+    print '... done init_final'
     retVals['mu_0']      = np.concatenate(init_mulist, axis=0)
     retVals['logcov_0']  = np.concatenate(init_logcovlist, axis=0)
     retVals['mu_f']      = np.concatenate(final_mulist, axis=0)
@@ -49,6 +52,8 @@ def evaluateBound(vae, dataset, batch_size):
     perp0,perpf = 0,0
     diff_elbo = 0
     for bnum,st_idx in enumerate(range(0,N,batch_size)):
+        if bnum%1000==0:
+            print bnum,
         end_idx = min(st_idx+batch_size, N)
         X       = dataset[st_idx:end_idx]
         if X.__class__.__name__=='csr_matrix' or X.__class__.__name__=='csc_matrix':
@@ -63,6 +68,7 @@ def evaluateBound(vae, dataset, batch_size):
             bd_0  += elbo_0
             bd_f  += elbo_f
         diff_elbo+= d_elbo
+    print '.... done evaluation'
     bd_0 /= float(N)
     bd_f /= float(N)
     diff_elbo /= float(N)

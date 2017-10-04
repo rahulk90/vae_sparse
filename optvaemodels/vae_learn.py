@@ -177,7 +177,8 @@ def learn(vae, dataset=None, epoch_start=0, epoch_end=1000, batch_size=200, shuf
             glcov   += retVal['glcov']
             diff_elbo  += retVal['diff_elbo']
             time_taken += retVal['time_taken']
-            break
+            if bnum > 2:
+                pass#break
         bd_0   /= float(N)
         bd_f   /= float(N)
         gmu    /= float(N)
