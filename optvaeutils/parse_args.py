@@ -44,7 +44,7 @@ parser.add_argument('-dir','--savedir', action='store',default = './chkpt', help
 parser.add_argument('-ep','--epochs', action='store',default = 500, help='MaxEpochs',type=int)
 parser.add_argument('-reload','--reloadFile', action='store',default = './NOSUCHFILE', help='Reload from saved model',type=str)
 parser.add_argument('-params','--paramFile', action='store',default = './NOSUCHFILE', help='Reload parameters from saved model',type=str)
-parser.add_argument('-sfreq','--savefreq', action='store',default = 10, help='Frequency of saving',type=int)
+parser.add_argument('-sfreq','--savefreq', action='store',default =5, help='Frequency of saving',type=int)
 parser.add_argument('-gn','--grad_noise', action='store',default = 0., help='Gradient noise',type=float)
 
 #Regularization

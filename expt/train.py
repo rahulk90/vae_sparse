@@ -71,6 +71,15 @@ savedata   = Learn.learn( model,
                                 )
 
 displayTime('Running Model',start_time, time.time())
+saveHDF5(savef+'-final.h5',savedata)
+
+train_map_init_final = model.getInitFinal(trainData)
+saveHDF5(savef+'-init_final_train.h5',train_map_init_final)
+
+eval_map_init_final  = model.getInitFinal(validData)
+saveHDF5(savef+'-init_final_eval.h5',eval_map_init_final)
+
+"""
 test_results = Evaluate.evaluateBound(model, dataset['test'], batch_size = params['batch_size'])
 if model.params['data_type']=='bow':
     savedata['test_perp_0'] = test_results['perp_0'] 
@@ -82,9 +91,7 @@ else:
     savedata['test_bound_f'] =test_results['elbo_f'] 
     print 'Test Bound: ',savedata['test_bound_f']
     kname = 'valid_bound_f'
-savedata['test_klmat']  = test_results['klmat'] 
-#Save file log file
-saveHDF5(savef+'-final.h5',savedata)
+
 
 # Work w/ the best model thus far
 epochMin, valMin, idxMin = getLowestError(savedata[kname])
@@ -107,3 +114,4 @@ if 'synthetic' in params['dataset']:
 saveHDF5(savef+'-evaluate.h5',evaluate)
 if np.any([k in params['dataset'] for k in ['synthetic','newsgroups']]):
     pass
+"""

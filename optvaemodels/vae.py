@@ -273,18 +273,22 @@ class VAE(BaseModel, object):
         optdict = {}
         _, logcov_f, elbo_final = self._optimizeVariationalParams(X, mu_0, logcov_0, n_steps, plr,
                                                                               savedict = optdict)
-        diff_elbo, diff_entropy = self._estimateELBOEntropy(optdict['elbo_its'][0],optdict['elbo_its'][-1], logcov_0, logcov_f)
+        diff_elbo, _ = self._estimateELBOEntropy(optdict['elbo_its'][0],optdict['elbo_its'][-1], logcov_0, logcov_f)
         self.optimize_mu_logcov = theano.function([X, theano.In(n_steps, value=self.params['n_steps'], name='n_steps'),
                                                  theano.In(plr, value=self.params['param_lr'], name='plr')],
                                                    [optdict['elbo_its'], optdict['gradnorm_mu_its'],
-                                                    optdict['gradnorm_logcov_its'],optdict['elbo_its'].shape[0], diff_elbo, diff_entropy], 
+                                                    optdict['gradnorm_logcov_its'],optdict['elbo_its'].shape[0], diff_elbo], 
                                                  name = 'Optimize ELBO wrt mu/cov')
-        diff_elbo, diff_ent = self._estimateELBOEntropy(optdict['elbo_its'][0], optdict['elbo_its'][-1], logcov_0, logcov_f)
+        diff_elbo, _ = self._estimateELBOEntropy(optdict['elbo_its'][0], optdict['elbo_its'][-1], logcov_0, logcov_f)
         self.final_elbo     = theano.function([X, theano.In(n_steps, value=self.params['n_steps'], name='n_steps'),
                                                  theano.In(plr, value=self.params['param_lr'], name='plr')],
                                                [optdict['elbo_its'][0],optdict['elbo_its'][-1], optdict['elbo_its'].shape[0],
                                                optdict['gradnorm_mu_its'][-1],optdict['gradnorm_logcov_its'][-1], 
-                                               diff_elbo, diff_ent], name = 'Optimize ELBO wrt mu/cov')
+                                               diff_elbo], name = 'Optimize ELBO wrt mu/cov')
+        self.init_final_params = theano.function([X, theano.In(n_steps, value=self.params['n_steps'], name='n_steps'),
+                                                 theano.In(plr, value=self.params['param_lr'], name='plr')],
+                                               [optdict['mu_its'][0],optdict['logcov_its'][0], optdict['mu_its'][-1],
+                                               optdict['logcov_its'][-1], name = 'init/final params')
     def _estimateELBOEntropy(self, elbo_0, elbo_f, logcov_0, logcov_f):
         """ H = 0.5*log |Sigma| + K/2 + K/2 log (2\pi) 
             if the ratio is high, most of the
@@ -318,8 +322,8 @@ class VAE(BaseModel, object):
             init_val = 5
         fxn_inputs.append(theano.In(n_steps, value = init_val, name = 'n_steps'))
         fxn_inputs.append(theano.In(plr, value = 8e-3, name = 'plr'))
-        diff_elbo, diff_ent = self._estimateELBOEntropy(elbo_init, elbo_final, evaldict0['logcov_q'], evaldictf['logcov_q'])
-        self.evaluate   = theano.function(fxn_inputs, [elbo_init, elbo_final,evaldictopt['n_steps'], diff_elbo, diff_ent], name = 'Evaluate')
+        diff_elbo, _ = self._estimateELBOEntropy(elbo_init, elbo_final, evaldict0['logcov_q'], evaldictf['logcov_q'])
+        self.evaluate   = theano.function(fxn_inputs, [elbo_init, elbo_final,evaldictopt['n_steps'], diff_elbo], name = 'Evaluate')
         self.reconstruct= theano.function([evaldictf['z']], evaldictf['mean_p'], name='Reconstruct')
         self.inference  = theano.function(fxn_inputs, [evaldictf['z'], evaldictf['mu_q'], evaldictf['logcov_q'] ], 
                                           name = 'Posterior Inference')
@@ -350,7 +354,7 @@ class VAE(BaseModel, object):
         if self.params['data_type']=='bow':
             X_count     = X.sum(1,keepdims=True)
             self.evaluatePerp = theano.function(fxn_inputs, [(elbo_init_batch/X_count).sum(), 
-                (elbo_final_batch/X_count).sum(), evaldictopt['n_steps'], diff_elbo, diff_ent])
+                (elbo_final_batch/X_count).sum(), evaldictopt['n_steps'], diff_elbo])
         self.debugModel  = theano.function([X], [evaldict0['elbo_batch'].sum(), evaldict0['negCLL'].sum(),evaldict0['KLmat'].sum()])
 
     ################################    Building Model #####################
@@ -477,13 +481,13 @@ class VAE(BaseModel, object):
                                                         rng = self.srng)#,
             self._p('# additional updates: '+str(len(self.updates)))
             optimizer_p += self.updates+anneal_update
-            diff_elbo, diff_ent = self._estimateELBOEntropy(elbo_init, elbo_final, logcov_q_0, logcov_q_f)
+            diff_elbo, _ = self._estimateELBOEntropy(elbo_init, elbo_final, logcov_q_0, logcov_q_f)
             self.update_p   = theano.function([X,theano.In(n_steps, value=self.params['n_steps'], name='n_steps'),
                                                   theano.In(plr, value=self.params['param_lr'], name='plr')], 
                                               [elbo_init, elbo_final, anneal.sum(), 
                                                norm_list_p[0], norm_list_p[1], norm_list_p[2], 
                                                dictopt['n_steps'], dictopt['gradnorm_mu_its'][-1], 
-                                               dictopt['gradnorm_logcov_its'][-1],diff_elbo, diff_ent],#+gdiffs, 
+                                               dictopt['gradnorm_logcov_its'][-1],diff_elbo],#+gdiffs, 
                                               updates = optimizer_p, name = 'Train P')
             ##################                UPDATE Q           ######################
             q_params                 = self._getModelParams(restrict='q_')
@@ -527,13 +531,13 @@ class VAE(BaseModel, object):
                                                         rng = self.srng)#,
             self._p('# additional updates: '+str(len(self.updates)))
             optimizer_p += self.updates+anneal_update
-            diff_elbo, diff_ent = self._estimateELBOEntropy(elbo_init, elbo_final, logcov_q_0, logcov_q_f)
+            diff_elbo, _ = self._estimateELBOEntropy(elbo_init, elbo_final, logcov_q_0, logcov_q_f)
             self.update_p   = theano.function([X,theano.In(n_steps, value=self.params['n_steps'], name='n_steps'),
                                                   theano.In(plr, value=self.params['param_lr'], name='plr')], 
                                               [elbo_init, elbo_final, anneal.sum(), 
                                                norm_list_p[0], norm_list_p[1], norm_list_p[2], 
                                                dictopt['n_steps'], dictopt['gradnorm_mu_its'][-1], 
-                                               dictopt['gradnorm_logcov_its'][-1],diff_elbo, diff_ent],#+gdiffs, 
+                                               dictopt['gradnorm_logcov_its'][-1],diff_elbo],#+gdiffs, 
                                               updates = optimizer_p, name = 'Train P')
             ##################                UPDATE Q           ######################
             elbo                     = self._ELBO(X,  dropout_prob = 0. , anneal = anneal)
