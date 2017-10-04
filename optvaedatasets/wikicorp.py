@@ -99,6 +99,6 @@ def _loadWikicorpSubset(kval):
 
 if __name__=='__main__':
     dataset = _loadWikicorp()
-    dataset = _loadWikicorpLarge()
+    #dataset = _loadWikicorpLarge()
     dataset = _loadWikicorpSubset(5000)
     import ipdb;ipdb.set_trace()
