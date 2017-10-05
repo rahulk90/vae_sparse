@@ -39,6 +39,7 @@ def getInitFinal(vae, dataset, batch_size):
         final_mulist.append(mu_f)
         final_logcovlist.append(logcov_f)
     print '... done init_final'
+    retVals = {}
     retVals['mu_0']      = np.concatenate(init_mulist, axis=0)
     retVals['logcov_0']  = np.concatenate(init_logcovlist, axis=0)
     retVals['mu_f']      = np.concatenate(final_mulist, axis=0)

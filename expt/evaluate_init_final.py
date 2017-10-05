@@ -45,13 +45,13 @@ for mname in MODELS_TO_USE:
     params['EVALUATION'] = True
     if 'wikicorp' in mname: 
         vae   = VAE(params, paramFile=pfile, reloadFile=rfile, additional_attrs = additional_attrs_wiki)
+        trainData  = dataset_wiki['train'];validData = dataset_wiki['valid']
     else:
         vae   = VAE(params, paramFile=pfile, reloadFile=rfile, additional_attrs = additional_attrs_rcv2)
     savef     = SAVEDIR+mname
-    trainData  = dataset['train'];validData = dataset['valid']
-    train_map_init_final = VAE_evaluate.getInitFinal(vae, trainData)
+    train_map_init_final = VAE_evaluate.getInitFinal(vae, trainData, 500)
     saveHDF5(savef+'-if_train.h5',train_map_init_final)
-    eval_map_init_final  = VAE_evaluate.getInitFinal(vae, validData)
+    eval_map_init_final  = VAE_evaluate.getInitFinal(vae, validData, 500)
     saveHDF5(savef+'-if_eval.h5', eval_map_init_final)
     print 'Saved: ',mname
 print 'Done'
