@@ -18,19 +18,19 @@ import optvaemodels.vae_evaluate as VAE_evaluate
 import optvaemodels.vae_learn as VAE_learn
 from   optvaedatasets.load import loadDataset 
 
-    
+
 models, epochval        = OrderedDict(), OrderedDict()
 
-models['wikicorp-pl-2-none']     = './results_wiki/chkpt-wikicorp-none/VAE_lr-8_0e-04-ph-400-qh-400-ds-100-pl-2-ql-2-nl-relu-bs-500-ep-50-plr-1_0e-02-ar-0-otype-none-ns-200-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
+models['wikicorp-pl-2-none']     = './chkpt-wikicorp-none/VAE_lr-8_0e-04-ph-400-qh-400-ds-100-pl-2-ql-2-nl-relu-bs-500-ep-52-plr-1_0e-02-ar-0-otype-none-ns-100-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
 epochval['wikicorp-pl-2-none']   = '50'
 
-models['wikicorp-pl-2-finopt']   = './results_wiki/chkpt-wikicorp-finopt/VAE_lr-8_0e-04-ph-400-qh-400-ds-100-pl-2-ql-2-nl-relu-bs-500-ep-50-plr-1_0e-02-ar-0-otype-finopt-ns-200-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
+models['wikicorp-pl-2-finopt']   = './chkpt-wikicorp-finopt/VAE_lr-8_0e-04-ph-400-qh-400-ds-100-pl-2-ql-2-nl-relu-bs-500-ep-52-plr-1_0e-02-ar-0-otype-finopt-ns-100-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
 epochval['wikicorp-pl-2-finopt'] = '50'
 
-models['wikicorp-pl-0-none']   = './results_wiki/chkpt-wikicorp-none/VAE_lr-8_0e-04-ph-400-qh-400-ds-100-pl-0-ql-2-nl-relu-bs-500-ep-50-plr-1_0e-02-ar-0-otype-none-ns-200-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
+models['wikicorp-pl-0-none']   = './chkpt-wikicorp-none/VAE_lr-8_0e-04-ph-400-qh-400-ds-100-pl-0-ql-2-nl-relu-bs-500-ep-52-plr-1_0e-02-ar-0-otype-none-ns-100-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
 epochval['wikicorp-pl-0-none'] = '50'
 
-models['wikicorp-pl-0-finopt']   = './results_wiki/chkpt-wikicorp-finopt/VAE_lr-8_0e-04-ph-400-qh-400-ds-100-pl-0-ql-2-nl-relu-bs-500-ep-50-plr-1_0e-02-ar-0-otype-finopt-ns-200-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
+models['wikicorp-pl-0-finopt']   = './chkpt-wikicorp-finopt/VAE_lr-8_0e-04-ph-400-qh-400-ds-100-pl-0-ql-2-nl-relu-bs-500-ep-52-plr-1_0e-02-ar-0-otype-finopt-ns-100-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
 epochval['wikicorp-pl-0-finopt'] = '50'
 
 models['rcv2-pl-2-none']     = './results_dec19/chkpt-rcv2_miao-none/VAE_lr-8_0e-04-ph-400-ds-100-pl-2-ql-2-nl-relu-bs-500-ep-200-plr-1_0e-02-ar-0-otype-none-ns-100-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
@@ -54,7 +54,7 @@ createIfAbsent(SAVEDIR)
 
 DNAME = ''
 dataset_wiki = loadDataset('wikicorp') 
-dataset_rcv2 = loadDataset('rcv2_miao') 
+#dataset_rcv2 = loadDataset('rcv2') 
 additional_attrs_wiki = {}
 additional_attrs_rcv2 = {} 
 def getTF(dataset):
@@ -62,10 +62,11 @@ def getTF(dataset):
     tfidf.fit(dataset['train'])
     return tfidf.idf_
 additional_attrs_wiki['idf'] = getTF(dataset_wiki) 
-additional_attrs_rcv2['idf'] = getTF(dataset_rcv2) 
+#additional_attrs_rcv2['idf'] = getTF(dataset_rcv2) 
 
 for mname in MODELS_TO_USE:
-
+    if 'wikicorp' not in mname:
+        continue
     print 'Model: ',mname
     pfile = models[mname].split('uid')[0]+'uid-config.pkl'
     params= readPickle(pfile)[0]
