@@ -3,7 +3,7 @@ from collections import OrderedDict
 import sys
 
 expt_type = 'rcv2_tfidf'
-valid_expts= set(['20newsgroups_norm','20newsgroups_tfidf','20newsgroups_tfidf_qdrop','rcv2_norm','rcv2_tfidf','rcv2_q_vary','rcv2_tfidf_qdrop','rcv2_p_fixed','rcv2_p_fixed_random',
+valid_expts= set(['20newsgroups_norm','20newsgroups_tfidf','rcv2_norm','rcv2_tfidf','rcv2_q_vary','rcv2_p_fixed','rcv2_p_fixed_random',
     'wikicorp','wikicorp_sparsity','wikicorp-large','wikicorp_evaluate','wikicorp_evaluate','wikicorp_mixed_training'])
 
 print 'Valid Expts: ',','.join(list(valid_expts))
@@ -29,20 +29,16 @@ Experiments on 20newsgroups
 June 11- Rerun
 """
 expt_runs['20newsgroups_norm'] = OrderedDict()
-expt_runs['20newsgroups_norm']['2_none']   = gpu_0_full+' '+'python2.7 train.py -dset 20newsgroups -ds 100 -nl relu -otype none -pl 2 -ns 100 -ep 400'
-expt_runs['20newsgroups_norm']['2_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset 20newsgroups -ds 100 -nl relu -otype finopt -pl 2 -ns 100 -ep 400'
-expt_runs['20newsgroups_norm']['0_none']   = gpu_0_full+' '+'python2.7 train.py -dset 20newsgroups -ds 100 -nl relu -otype none -pl 0 -ns 100 -ep 400'
-expt_runs['20newsgroups_norm']['0_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset 20newsgroups -ds 100 -nl relu -otype finopt -pl 0 -ns 100 -ep 400'
+expt_runs['20newsgroups_norm']['2_none']   = gpu_0_full+' '+'python2.7 train.py -dset 20newsgroups -ds 100 -nl relu -otype none -pl 2 -ns 100 -ep 200'
+expt_runs['20newsgroups_norm']['2_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset 20newsgroups -ds 100 -nl relu -otype finopt -pl 2 -ns 100 -ep 200'
+expt_runs['20newsgroups_norm']['0_none']   = gpu_0_full+' '+'python2.7 train.py -dset 20newsgroups -ds 100 -nl relu -otype none -pl 0 -ns 100 -ep 200'
+expt_runs['20newsgroups_norm']['0_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset 20newsgroups -ds 100 -nl relu -otype finopt -pl 0 -ns 100 -ep 200'
 
 expt_runs['20newsgroups_tfidf'] = OrderedDict()
-expt_runs['20newsgroups_tfidf']['2_none']   = gpu_0_full+' '+'python2.7 train.py -dset 20newsgroups -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 400'
-expt_runs['20newsgroups_tfidf']['2_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset 20newsgroups -ds 100 -itype tfidf -nl relu -otype finopt -pl 2 -ns 100 -ep 400'
-expt_runs['20newsgroups_tfidf']['0_none']   = gpu_0_full+' '+'python2.7 train.py -dset 20newsgroups -ds 100 -itype tfidf -nl relu -otype none -pl 0 -ns 100 -ep 400' 
-expt_runs['20newsgroups_tfidf']['0_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset 20newsgroups -ds 100 -itype tfidf -nl relu -otype finopt -pl 0 -ns 100 -ep 400'
-
-expt_runs['20newsgroups_tfidf_qdrop'] = OrderedDict()
-expt_runs['20newsgroups_tfidf_qdrop']['2_none']   = gpu_0_full+' '+'python2.7 train.py -dset 20newsgroups -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 400 -idrop 0.5'
-expt_runs['20newsgroups_tfidf_qdrop']['0_none']   = gpu_0_full+' '+'python2.7 train.py -dset 20newsgroups -ds 100 -itype tfidf -nl relu -otype none -pl 0 -ns 100 -ep 400 -idrop 0.5' 
+expt_runs['20newsgroups_tfidf']['2_none']   = gpu_0_full+' '+'python2.7 train.py -dset 20newsgroups -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 200'
+expt_runs['20newsgroups_tfidf']['2_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset 20newsgroups -ds 100 -itype tfidf -nl relu -otype finopt -pl 2 -ns 100 -ep 200'
+expt_runs['20newsgroups_tfidf']['0_none']   = gpu_0_full+' '+'python2.7 train.py -dset 20newsgroups -ds 100 -itype tfidf -nl relu -otype none -pl 0 -ns 100 -ep 200' 
+expt_runs['20newsgroups_tfidf']['0_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset 20newsgroups -ds 100 -itype tfidf -nl relu -otype finopt -pl 0 -ns 100 -ep 200'
 
 """
 Experiments on RCV2
@@ -65,38 +61,6 @@ expt_runs['rcv2_tfidf']['0-ar50k']   = gpu_0_full+' '+'python2.7 train.py -dset 
 expt_runs['rcv2_tfidf']['2-ar100k']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2 -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 200 -ar 100000'
 expt_runs['rcv2_tfidf']['0-ar100k']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2 -ds 100 -itype tfidf -nl relu -otype none -pl 0 -ns 100 -ep 200 -ar 100000'
 
-expt_runs['rcv2_tfidf_qdrop'] = OrderedDict()
-expt_runs['rcv2_tfidf_qdrop']['2_none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2 -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 200 -idrop 0.5'
-expt_runs['rcv2_tfidf_qdrop']['0_none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2 -ds 100 -itype tfidf -nl relu -otype none -pl 0 -ns 100 -ep 200 -idrop 0.5' 
-
-"""
-Run some experiments where you reload
--Not used anymore, delete if unnecessary
-chkpt = {}
-QVARYDIR = './results_qvary/chkpt-rcv2-finopt/'
-chkpt['3-400-p_fixed'] = QVARYDIR+'VAE_lr-8_0e-04-ph-400-qh-400-ds-100-pl-2-ql-3-nl-relu-bs-500-ep-200-plr-1_0e-02-ar-0-otype-finopt-ns-100-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
-chkpt['2-400-p_fixed'] = QVARYDIR+'VAE_lr-8_0e-04-ph-400-qh-400-ds-100-pl-2-ql-2-nl-relu-bs-500-ep-200-plr-1_0e-02-ar-0-otype-finopt-ns-100-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
-chkpt['1-400-p_fixed'] = QVARYDIR+'VAE_lr-8_0e-04-ph-400-qh-400-ds-100-pl-2-ql-1-nl-relu-bs-500-ep-200-plr-1_0e-02-ar-0-otype-finopt-ns-100-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
-chkpt['3-100-p_fixed'] = QVARYDIR+'VAE_lr-8_0e-04-ph-400-qh-100-ds-100-pl-2-ql-3-nl-relu-bs-500-ep-200-plr-1_0e-02-ar-0-otype-finopt-ns-100-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
-chkpt['2-100-p_fixed'] = QVARYDIR+'VAE_lr-8_0e-04-ph-400-qh-100-ds-100-pl-2-ql-2-nl-relu-bs-500-ep-200-plr-1_0e-02-ar-0-otype-finopt-ns-100-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
-chkpt['1-100-p_fixed'] = QVARYDIR+'VAE_lr-8_0e-04-ph-400-qh-100-ds-100-pl-2-ql-1-nl-relu-bs-500-ep-200-plr-1_0e-02-ar-0-otype-finopt-ns-100-om-adam-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
-
-expt_runs['rcv2_p_fixed']= OrderedDict() 
-expt_runs['rcv2_p_fixed']['3-400-p_fixed']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2 -ds 100 -itype tfidf -nl relu -otype q_only -pl 2 -ns 100 -ep 100 -qh 400 -ql 3 -reload '+chkpt['3-400-p_fixed']+'-EP200-params.npz -params '+chkpt['3-400-p_fixed']+'-config.pkl'
-expt_runs['rcv2_p_fixed']['2-400-p_fixed']   = gpu_1_full+' '+'python2.7 train.py -dset rcv2 -ds 100 -itype tfidf -nl relu -otype q_only -pl 2 -ns 100 -ep 100 -qh 400 -ql 2 -reload '+chkpt['2-400-p_fixed']+'-EP200-params.npz -params '+chkpt['2-400-p_fixed']+'-config.pkl'
-expt_runs['rcv2_p_fixed']['1-400-p_fixed']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2 -ds 100 -itype tfidf -nl relu -otype q_only -pl 2 -ns 100 -ep 100 -qh 400 -ql 1 -reload '+chkpt['1-400-p_fixed']+'-EP200-params.npz -params '+chkpt['1-400-p_fixed']+'-config.pkl'
-expt_runs['rcv2_p_fixed']['3-100-p_fixed']   = gpu_1_full+' '+'python2.7 train.py -dset rcv2 -ds 100 -itype tfidf -nl relu -otype q_only -pl 2 -ns 100 -ep 100 -qh 100 -ql 3 -reload '+chkpt['3-100-p_fixed']+'-EP200-params.npz -params '+chkpt['3-100-p_fixed']+'-config.pkl'
-expt_runs['rcv2_p_fixed']['2-100-p_fixed']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2 -ds 100 -itype tfidf -nl relu -otype q_only -pl 2 -ns 100 -ep 100 -qh 100 -ql 2 -reload '+chkpt['2-100-p_fixed']+'-EP200-params.npz -params '+chkpt['2-100-p_fixed']+'-config.pkl'
-expt_runs['rcv2_p_fixed']['1-100-p_fixed']   = gpu_1_full+' '+'python2.7 train.py -dset rcv2 -ds 100 -itype tfidf -nl relu -otype q_only -pl 2 -ns 100 -ep 100 -qh 100 -ql 1 -reload '+chkpt['1-100-p_fixed']+'-EP200-params.npz -params '+chkpt['1-100-p_fixed']+'-config.pkl'
-
-expt_runs['rcv2_p_fixed_random']= OrderedDict() 
-expt_runs['rcv2_p_fixed_random']['3-400-p_fixed']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2 -ds 100 -itype tfidf -nl relu -otype q_only_random -pl 2 -ns 100 -ep 100 -qh 400 -ql 3 -reload '+chkpt['3-400-p_fixed']+'-EP200-params.npz -params '+chkpt['3-400-p_fixed']+'-config.pkl'
-expt_runs['rcv2_p_fixed_random']['2-400-p_fixed']   = gpu_1_full+' '+'python2.7 train.py -dset rcv2 -ds 100 -itype tfidf -nl relu -otype q_only_random -pl 2 -ns 100 -ep 100 -qh 400 -ql 2 -reload '+chkpt['2-400-p_fixed']+'-EP200-params.npz -params '+chkpt['2-400-p_fixed']+'-config.pkl'
-expt_runs['rcv2_p_fixed_random']['1-400-p_fixed']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2 -ds 100 -itype tfidf -nl relu -otype q_only_random -pl 2 -ns 100 -ep 100 -qh 400 -ql 1 -reload '+chkpt['1-400-p_fixed']+'-EP200-params.npz -params '+chkpt['1-400-p_fixed']+'-config.pkl'
-expt_runs['rcv2_p_fixed_random']['3-100-p_fixed']   = gpu_1_full+' '+'python2.7 train.py -dset rcv2 -ds 100 -itype tfidf -nl relu -otype q_only_random -pl 2 -ns 100 -ep 100 -qh 100 -ql 3 -reload '+chkpt['3-100-p_fixed']+'-EP200-params.npz -params '+chkpt['3-100-p_fixed']+'-config.pkl'
-expt_runs['rcv2_p_fixed_random']['2-100-p_fixed']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2 -ds 100 -itype tfidf -nl relu -otype q_only_random -pl 2 -ns 100 -ep 100 -qh 100 -ql 2 -reload '+chkpt['2-100-p_fixed']+'-EP200-params.npz -params '+chkpt['2-100-p_fixed']+'-config.pkl'
-expt_runs['rcv2_p_fixed_random']['1-100-p_fixed']   = gpu_1_full+' '+'python2.7 train.py -dset rcv2 -ds 100 -itype tfidf -nl relu -otype q_only_random -pl 2 -ns 100 -ep 100 -qh 100 -ql 1 -reload '+chkpt['1-100-p_fixed']+'-EP200-params.npz -params '+chkpt['1-100-p_fixed']+'-config.pkl'
-"""
 
 expt_runs['rcv2_q_vary']= OrderedDict() 
 expt_runs['rcv2_q_vary']['3-400-none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2 -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 200 -qh 400 -ql 3 -uid qvary'

@@ -46,12 +46,18 @@ for mname in MODELS_TO_USE:
     if 'wikicorp' in mname: 
         vae   = VAE(params, paramFile=pfile, reloadFile=rfile, additional_attrs = additional_attrs_wiki)
         trainData  = dataset_wiki['train'];validData = dataset_wiki['valid']
+        Ntrain     = trainData.shape[0]
+        np.random.seed(0)
+        trainData  = trainData[np.random.permutation(Ntrain)[:100000]]
     else:
         vae   = VAE(params, paramFile=pfile, reloadFile=rfile, additional_attrs = additional_attrs_rcv2)
     savef     = SAVEDIR+mname
     train_map_init_final = VAE_evaluate.getInitFinal(vae, trainData, 500)
+    train_map_init_final['data'] = trainData.toarray()
     saveHDF5(savef+'-if_train.h5',train_map_init_final)
+
     eval_map_init_final  = VAE_evaluate.getInitFinal(vae, validData, 500)
+    eval_map_init_final['data'] = validData.toarray()
     saveHDF5(savef+'-if_eval.h5', eval_map_init_final)
     print 'Saved: ',mname
 print 'Done'

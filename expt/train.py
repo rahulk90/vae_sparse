@@ -73,40 +73,20 @@ savedata   = Learn.learn( model,
 displayTime('Running Model',start_time, time.time())
 saveHDF5(savef+'-final.h5',savedata)
 
-
-"""
-test_results = Evaluate.evaluateBound(model, dataset['test'], batch_size = params['batch_size'])
-if model.params['data_type']=='bow':
-    savedata['test_perp_0'] = test_results['perp_0'] 
-    savedata['test_perp_f'] =test_results['perp_f'] 
-    print 'Test Bound: ',savedata['test_perp_f']
+if 'wiki' not in params['dataset']:
+    evaluate     = {}
+    test_results = Evaluate.evaluateBound(model, dataset['test'], batch_size = params['batch_size'])
+    evaluate['test_perp_0'] = test_results['perp_0'] 
+    evaluate['test_perp_f'] = test_results['perp_f'] 
+    print 'Test Bound: ', evaluate['test_perp_f']
     kname = 'valid_perp_f'
-else:
-    savedata['test_bound_0'] = test_results['elbo_0'] 
-    savedata['test_bound_f'] =test_results['elbo_f'] 
-    print 'Test Bound: ',savedata['test_bound_f']
-    kname = 'valid_bound_f'
-
-
-# Work w/ the best model thus far
-epochMin, valMin, idxMin = getLowestError(savedata[kname])
-reloadFile               = pfile.replace('-config.pkl','')+'-EP'+str(int(epochMin))+'-params.npz'
-print 'Loading from : ',reloadFile
-params['validate_only']  = True
-bestModel                = Model(params, paramFile = pfile, reloadFile = reloadFile, additional_attrs = additional_attrs)
-
-evaluate     = {}
-test_results = Evaluate.evaluateBound(bestModel, dataset['test'], batch_size = params['batch_size'])
-for k in test_results:
-    evaluate[k+'_eb'] = test_results[k]
-
-#Additions for synthetic datasets
-if 'synthetic' in params['dataset']:
-    evaluate['jacob_logprobs'] = EVECS.expectedJacobian(bestModel, nsamples = 200)
-    evaluate['jacob_probs']    = EVECS.expectedJacobianProbs(bestModel, nsamples = 200)
-    evaluate['jacob_energy']   = EVECS.expectedJacobianEnergy(bestModel, nsamples = 200)
-
-saveHDF5(savef+'-evaluate.h5',evaluate)
-if np.any([k in params['dataset'] for k in ['synthetic','newsgroups']]):
-    pass
-"""
+    # Work w/ the best model thus far
+    epochMin, valMin, idxMin = getLowestError(savedata[kname])
+    reloadFile               = pfile.replace('-config.pkl','')+'-EP'+str(int(epochMin))+'-params.npz'
+    print 'Loading model from epoch : ',epochMin#reloadFile
+    params['validate_only']  = True
+    bestModel                = Model(params, paramFile = pfile, reloadFile = reloadFile, additional_attrs = additional_attrs)
+    test_results = Evaluate.evaluateBound(bestModel, dataset['test'], batch_size = params['batch_size'])
+    for k in test_results:
+        evaluate[k+'_best'] = test_results[k]
+    saveHDF5(savef+'-evaluate.h5',evaluate)
