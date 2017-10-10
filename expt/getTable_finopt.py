@@ -1,9 +1,9 @@
 import glob
 from utils.misc import loadHDF5,getConfigFile, readPickle
-DIR     = './'#results_dec19'
+DIR     = './'
 datasets= ['20newsgroups','rcv2']
-#DIR='./';datasets= ['wikicorp']
-result  = {}
+result_best  = {}
+result_last  = {}
 for dataset in datasets:
     print 'Dataset: ',dataset
     for f in glob.glob(DIR+'/chkpt-'+dataset+'-*/*evaluate.h5'):
@@ -17,12 +17,13 @@ for dataset in datasets:
             name = str(params['p_layers'])+'-M'+str(params['n_steps'])+'-'+params['input_type']
         else:
             name = str(params['p_layers'])+'-M1-'+params['input_type']
-        result[params['dataset']+'-'+name] = (dset['perp_0_eb'],dset['perp_f_eb'])
-        print name, (dset['perp_0_eb'],dset['perp_f_eb'])
+        result_best[params['dataset']+'-'+name] = (dset['perp_0_best'],dset['perp_f_best'])
+        result_last[params['dataset']+'-'+name] = (dset['test_perp_0'],dset['test_perp_f'])
+        print name, (dset['perp_0_best'],dset['perp_f_best'])
 for dataset in datasets:
     for itype in ['normalize','tfidf']:
         for layer in ['0','2']: 
             for M in ['M1','M100']:
                name = dataset+'-'+layer+'-'+M+'-'+itype
-               print name, result[name]
+               print name, result_best[name], result_last[name]
     print '\n'

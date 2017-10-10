@@ -1,7 +1,8 @@
 import glob,os
 import numpy as np
 from utils.misc import loadHDF5,getConfigFile,readPickle
-for f in glob.glob('./chkpt-*/*-EP400-stats.h5'):
+
+for f in glob.glob('./chkpt-*/*-EP50-stats.h5'):
     code = 'ds'+os.path.basename(f).split('-ql')[0].split('ds')[1]
     if 'finopt' in f:
         code = 'finopt-'+code
