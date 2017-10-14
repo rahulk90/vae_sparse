@@ -62,20 +62,6 @@ expt_runs['rcv2_tfidf']['2-ar100k']   = gpu_0_full+' '+'python2.7 train.py -dset
 expt_runs['rcv2_tfidf']['0-ar100k']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2 -ds 100 -itype tfidf -nl relu -otype none -pl 0 -ns 100 -ep 200 -ar 100000'
 
 
-expt_runs['rcv2_q_vary']= OrderedDict() 
-expt_runs['rcv2_q_vary']['3-400-none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2 -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 200 -qh 400 -ql 3 -uid qvary'
-expt_runs['rcv2_q_vary']['3-400-finopt']   = gpu_1_full+' '+'python2.7 train.py -dset rcv2 -ds 100 -itype tfidf -nl relu -otype finopt -pl 2 -ns 100 -ep 200 -qh 400 -ql 3 -uid qvary'
-expt_runs['rcv2_q_vary']['2-400-none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2 -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 200 -qh 400 -ql 2 -uid qvary'
-expt_runs['rcv2_q_vary']['2-400-finopt']   = gpu_1_full+' '+'python2.7 train.py -dset rcv2 -ds 100 -itype tfidf -nl relu -otype finopt -pl 2 -ns 100 -ep 200 -qh 400 -ql 2 -uid qvary'
-expt_runs['rcv2_q_vary']['1-400-none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2 -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 200 -qh 400 -ql 1 -uid qvary'
-expt_runs['rcv2_q_vary']['1-400-finopt']   = gpu_1_full+' '+'python2.7 train.py -dset rcv2 -ds 100 -itype tfidf -nl relu -otype finopt -pl 2 -ns 100 -ep 200 -qh 400 -ql 1 -uid qvary'
-expt_runs['rcv2_q_vary']['3-100-none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2 -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 200 -qh 100 -ql 3 -uid qvary'
-expt_runs['rcv2_q_vary']['3-100-finopt']   = gpu_1_full+' '+'python2.7 train.py -dset rcv2 -ds 100 -itype tfidf -nl relu -otype finopt -pl 2 -ns 100 -ep 200 -qh 100 -ql 3 -uid qvary'
-expt_runs['rcv2_q_vary']['2-100-none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2 -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 200 -qh 100 -ql 2 -uid qvary'
-expt_runs['rcv2_q_vary']['2-100-finopt']   = gpu_1_full+' '+'python2.7 train.py -dset rcv2 -ds 100 -itype tfidf -nl relu -otype finopt -pl 2 -ns 100 -ep 200 -qh 100 -ql 2 -uid qvary'
-expt_runs['rcv2_q_vary']['1-100-none']   = gpu_0_full+' '+'python2.7 train.py -dset rcv2 -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 200 -qh 100 -ql 1 -uid qvary'
-expt_runs['rcv2_q_vary']['1-100-finopt']   = gpu_1_full+' '+'python2.7 train.py -dset rcv2 -ds 100 -itype tfidf -nl relu -otype finopt -pl 2 -ns 100 -ep 200 -qh 100 -ql 1 -uid qvary'
-
 """
 Experiments on the WikiCorpus Dataset
 """
@@ -87,11 +73,8 @@ expt_runs['wikicorp']['2-finopt'] = gpu_1_full+' '+'python2.7 train.py -dset wik
 expt_runs['wikicorp']['0-none']   = gpu_0_full+' '+'python2.7 train.py -dset wikicorp -ds 100 -itype tfidf -nl relu -otype none -pl 0 -ns 100 -ep 500'
 expt_runs['wikicorp']['0-finopt'] = gpu_1_full+' '+'python2.7 train.py -dset wikicorp -ds 100 -itype tfidf -nl relu -otype finopt -pl 0 -ns 100 -ep 50'
 expt_runs['wikicorp']['2-ar10k']   = gpu_0_full+' '+'python2.7 train.py -dset wikicorp -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 500 -ar 10000'
-#expt_runs['wikicorp']['0-ar10k']   = gpu_0_full+' '+'python2.7 train.py -dset wikicorp -ds 100 -itype tfidf -nl relu -otype none -pl 0 -ns 100 -ep 500 -ar 10000'
 expt_runs['wikicorp']['2-ar50k']   = gpu_0_full+' '+'python2.7 train.py -dset wikicorp -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 500 -ar 50000'
-#expt_runs['wikicorp']['0-ar50k']   = gpu_0_full+' '+'python2.7 train.py -dset wikicorp -ds 100 -itype tfidf -nl relu -otype none -pl 0 -ns 100 -ep 500 -ar 50000'
 expt_runs['wikicorp']['2-ar100k']   = gpu_0_full+' '+'python2.7 train.py -dset wikicorp -ds 100 -itype tfidf -nl relu -otype none -pl 2 -ns 100 -ep 500 -ar 100000'
-#expt_runs['wikicorp']['0-ar100k']   = gpu_0_full+' '+'python2.7 train.py -dset wikicorp -ds 100 -itype tfidf -nl relu -otype none -pl 0 -ns 100 -ep 500 -ar 100000'
 
 #r730
 expt_runs['wikicorp_sparsity'] = OrderedDict() 
@@ -107,29 +90,6 @@ expt_runs['wikicorp_mixed_training'] = OrderedDict()
 expt_runs['wikicorp_mixed_training']['none_finopt'] = gpu_1_full+' '+'python2.7 train.py -dset wikicorp -ds 100 -itype tfidf -nl relu -otype none_finopt -pl 2 -ns 100 -ep 50'
 expt_runs['wikicorp_mixed_training']['finopt_none'] = gpu_0_full+' '+'python2.7 train.py -dset wikicorp -ds 100 -itype tfidf -nl relu -otype finopt_none -pl 2 -ns 100 -ep 50'
 
-"""
-* Evaluating different models: comprise evaluating and saving Ejacob and/or CJacob
-* Open and setup all the evaluation scripts to point to the relevant checkpoints
-"""
-expt_runs['wikicorp-large'] = OrderedDict() 
-expt_runs['wikicorp-large']['2-none']   = gpu_0_full+' '+'python2.7 train.py -dset wikicorp-large -ds 300 -itype tfidf -nl relu -otype none -pl 2 -ns 200 -ep 50 -uid final'
-expt_runs['wikicorp-large']['2-finopt'] = gpu_1_full+' '+'python2.7 train.py -dset wikicorp-large -ds 300 -itype tfidf -nl relu -otype finopt -pl 2 -ns 200 -ep 50 -uid final'
-expt_runs['wikicorp-large']['0-none']   = gpu_0_full+' '+'python2.7 train.py -dset wikicorp-large -ds 300 -itype tfidf -nl relu -otype none -pl 0 -ns 200 -ep 50 -uid final'
-expt_runs['wikicorp-large']['0-finopt'] = gpu_1_full+' '+'python2.7 train.py -dset wikicorp-large -ds 300 -itype tfidf -nl relu -otype finopt -pl 0 -ns 200 -ep 50 -uid final'
-
-""" Evaluate Wikicorp """
-expt_runs['wikicorp_evaluate'] = OrderedDict() 
-expt_runs['wikicorp_evaluate']['2-none']   = gpu_0_full+' '+'python2.7 evaluateWikipedia.py pl-2-none'
-expt_runs['wikicorp_evaluate']['2-finopt'] = gpu_1_full+' '+'python2.7 evaluateWikipedia.py pl-2-finopt'
-expt_runs['wikicorp_evaluate']['0-none']   = gpu_0_full+' '+'python2.7 evaluateWikipedia.py pl-0-none'
-expt_runs['wikicorp_evaluate']['0-finopt'] = gpu_1_full+' '+'python2.7 evaluateWikipedia.py pl-0-finopt'
-
-""" Evaluate Wikicorp (Conditional Jacobian) """
-expt_runs['wikicorp_conditional_evaluate'] = OrderedDict() 
-expt_runs['wikicorp_conditional_evaluate']['2-none']   = gpu_0_full+' '+'python2.7 evaluateConditionalWikipedia.py pl-2-none'
-expt_runs['wikicorp_conditional_evaluate']['2-finopt'] = gpu_1_full+' '+'python2.7 evaluateConditionalWikipedia.py pl-2-finopt'
-expt_runs['wikicorp_conditional_evaluate']['0-none']   = gpu_0_full+' '+'python2.7 evaluateConditionalWikipedia.py pl-0-none'
-expt_runs['wikicorp_conditional_evaluate']['0-finopt'] = gpu_1_full+' '+'python2.7 evaluateConditionalWikipedia.py pl-0-finopt'
 
 for expt in expt_runs[expt_type]:
     print 'screen -S '+expt

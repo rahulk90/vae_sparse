@@ -18,7 +18,6 @@ import optvaemodels.vae_evaluate as VAE_evaluate
 import optvaemodels.vae_learn as VAE_learn
 from   optvaedatasets.load import loadDataset 
 
-
 models, epochval        = OrderedDict(), OrderedDict()
 
 models['wikicorp-pl-2-none']     = './chkpt-wikicorp-none/VAE_lr-8_0e-04-ph-400-qh-400-ds-100-pl-2-ql-2-nl-relu-bs-500-ep-52-plr-1_0e-02-ar-0-otype-none-ns-100-etype-mlp-ll-mult-itype-tfidfl20_01_-uid'
@@ -48,9 +47,8 @@ epochval['rcv2-pl-0-finopt'] = '200'
 MODELS_TO_USE = models.keys()
 print 'Evaluating on: ',MODELS_TO_USE
 
-SAVEDIR = './evaluateJac/'
+SAVEDIR = './evaluate_jac_dir/'
 createIfAbsent(SAVEDIR)
-
 
 DNAME = ''
 dataset_wiki = loadDataset('wikicorp') 

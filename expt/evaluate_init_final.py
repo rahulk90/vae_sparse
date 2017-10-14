@@ -21,7 +21,7 @@ epochval['wikicorp-pl-2-finopt'] = '50'
 MODELS_TO_USE = models.keys()
 print 'Evaluating on: ',MODELS_TO_USE
 
-SAVEDIR = './evaluateIF_params/'
+SAVEDIR = './evaluate_if_dir/'
 createIfAbsent(SAVEDIR)
 
 DNAME = ''
