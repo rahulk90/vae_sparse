@@ -34,7 +34,8 @@ parser.add_argument('-plr','--param_lr', action = 'store', default=0.01, help='L
 parser.add_argument('-ar','--anneal_rate', action = 'store', default=0, help='Number of steps before KL divergence stops being regularized', type=float)
 parser.add_argument('-otype','--opt_type', action='store', default='none', choices=['none','finopt','q_only','q_only_random','finopt_none','none_finopt'], 
         help='none-standard training,\n finopt-optimize theta w/ optimized mu/logcov')
-parser.add_argument('-ns','--n_steps', action='store', default=200, help='Number of steps of optimization to perform', type=int)
+parser.add_argument('-ns','--n_steps', action='store', default=200, help='Number of steps of optimization of variational parameters
+        to perform', type=int)
 parser.add_argument('-om','--opt_method', action='store', default='adam', help='Optimization',choices=['adam'])
 
 #Setup 
@@ -54,7 +55,7 @@ parser.add_argument('-rv','--reg_value', action='store',default = 0.01, help='Am
 parser.add_argument('-rspec','--reg_spec', action='store',default = '_', help='String to match parameters (Default is generative model)',type=str)
 
 #Type of model being learned
-parser.add_argument('-itype','--input_type', action='store',default = 'normalize', help='For BOW: ',choices=['normalize','counts','tfidf'])
+parser.add_argument('-itype','--input_type', action='store',default = 'normalize', help='For BOW: ',choices=['normalize','tfidf'])
 parser.add_argument('-etype','--emission_type', action='store',default = 'mlp',choices=['mlp','res'])
 params = vars(parser.parse_args())
 

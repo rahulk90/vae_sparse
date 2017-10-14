@@ -14,6 +14,7 @@ Rahul G. Krishnan, Dawen Liang, Matthew Hoffman
 
 ## Requirements
 * python2.7
+* numpy, scipy
 * [theano](http://deeplearning.net/software/theano/)
 * [theanomodels](https://github.com/clinicalml/theanomodels)
 
@@ -27,7 +28,9 @@ The repository is arranged as follows:
 * [`optvaeutils`](./optvaeutils)       - Utility functions 
 
 ## Dataset Format
-To run the 
+To run the model on your own data, you will have 
+to specify a dataset as follows. See [newsgroups.py](./optvaedatasets/newsgroups.py) for an example of
+how to setup the dataset from scratch. 
 ```
     dset = {}
     dset['vocabulary']= vocab # array of len V containing vocabulary

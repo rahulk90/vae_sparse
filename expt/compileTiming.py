@@ -1,3 +1,6 @@
+"""
+Compile aggregate timing information for different runs
+"""
 import glob,os
 import numpy as np
 from utils.misc import loadHDF5,getConfigFile,readPickle
