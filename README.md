@@ -20,11 +20,11 @@ Rahul G. Krishnan, Dawen Liang, Matthew Hoffman
 ## Setup 
 
 The repository is arranged as follows:
-	* [`ipynb`](./ipynb) - Code to visualize plots/simulations/samples from the generative model
-	* [`expt`](./expt)   - Folders for experiments
-	* [`optvaedatasets`](./optvaedatasets) - Setup for datasets 
-	* [`optvaemodels`](./optvaemodels)     - Code for the model 
-	* [`optvaeutils`](./optvaeutils)       - Utility functions 
+* [`ipynb`](./ipynb) - Code to visualize plots/simulations/samples from the generative model
+* [`expt`](./expt)   - Folders for experiments
+* [`optvaedatasets`](./optvaedatasets) - Setup for datasets 
+* [`optvaemodels`](./optvaemodels)     - Code for the model 
+* [`optvaeutils`](./optvaeutils)       - Utility functions 
 
 ## Dataset Format
-The data
+To run the 
