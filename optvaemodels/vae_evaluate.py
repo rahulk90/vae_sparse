@@ -83,29 +83,3 @@ def evaluateBound(vae, dataset, batch_size):
     retVals['diff_elbo'] = diff_elbo
     return retVals
 
-def meanSumExp(vae,mat,axis=1):
-    """ Estimate log 1/S \sum_s exp[ log k ] in 
-    a numerically stable manner where axis represents the sum
-    """
-    a = np.max(mat, axis=1, keepdims=True)
-    return a + np.log(np.mean(np.exp(mat-a.repeat(mat.shape[1],1)),axis=1,keepdims=True))
-
-def impSamplingNLL(vae, dataset, batch_size, S = 10):
-    """
-                                Importance sampling based log likelihood
-    """
-    N = dataset.shape[0]
-    ll = 0
-    for bnum,st_idx in enumerate(range(0,N,batch_size)):
-        end_idx = min(st_idx+batch_size, N)
-        X       = dataset[st_idx:end_idx].astype(config.floatX)
-        batch_lllist = []
-        for s in range(S):
-            if vae.params['inference_model']=='single':
-                batch_ll = vae.likelihood(X=X)
-            else:
-                assert False,'Should not be here'
-            batch_lllist.append(batch_ll)
-        ll  += vae.meanSumExp(np.concatenate(batch_lllist,axis=1), axis=1).sum()
-    ll /= float(N)
-    return -ll

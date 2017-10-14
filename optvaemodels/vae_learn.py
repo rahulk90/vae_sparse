@@ -4,21 +4,6 @@ from theano import config
 import optvaemodels.vae_evaluate as VAE_evaluate
 from utils.misc import saveHDF5,savePickle
 
-def numActive(vec):
-    assert vec.ndim==1 ,'Expecting single dimensional vector'
-    return np.sum((vec>0.01)*1.).astype(int)
-
-def arrToReadableString(nparr, divideBy=1):
-    assert nparr.ndim==1,'expecting 1 dimensional array'
-    if len(nparr)>20:
-        small_list = nparr[:5].tolist()+nparr[-5:].tolist()
-    else:
-        small_list = nparr.tolist()
-    ss =''
-    for k in small_list:
-        ss += ('%.1f'%(k/float(divideBy)))+', '
-    return ss
-
 def _optNone(vae, bnum, Nbatch, X, retVals = {}, calcELBOfinal = False, update_opt= None):
     """
     vae:    VAE object
@@ -132,7 +117,7 @@ def learn(vae, dataset=None, epoch_start=0, epoch_end=1000, batch_size=200, shuf
 
     learnBatch = None
     print 'OPT TYPE: ',vae.params['opt_type']
-    if vae.params['opt_type'] in ['none','q_only', 'q_only_random']:
+    if vae.params['opt_type'] in ['none']:
         learnBatch = _optNone
     elif vae.params['opt_type'] in ['finopt']:
         learnBatch = _optFinopt
