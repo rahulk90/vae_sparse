@@ -28,3 +28,12 @@ The repository is arranged as follows:
 
 ## Dataset Format
 To run the 
+```
+    dset = {}
+    dset['vocabulary']= vocab # array of len V containing vocabulary
+    dset['train']     = train_matrix #scipy sparse tensor of size Ntrain x dim_features
+    dset['valid']     = valid_matrix #scipy sparse tensor of size Nvalid x dim_features
+    dset['test']      = test_matrix #scipy sparse tensor of size Ntest x dim_features 
+    dset['dim_observations'] = dset['train'].shape[1]
+    dset['data_type'] = 'bow'
+```
