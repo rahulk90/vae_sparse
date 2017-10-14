@@ -11,7 +11,7 @@ from scipy.io import loadmat
 
 def _loadrcv2_miao():
     """ Dataset created using procedure detailed in Miao.et.al """
-    DIR  = os.path.dirname(os.path.realpath(__file__)).split('inference_introspection')[0]+'inference_introspection/optvaedatasets'
+    DIR  = os.path.dirname(os.path.realpath(__file__)).split('vae_sparse')[0]+'vae_sparse/optvaedatasets'
     DIR += '/rcv2_miao'
     assert os.path.exists(DIR+'/preprocess.lua'),'See instructions to create dataset.'
     h5file = DIR+'/rcv2.h5'

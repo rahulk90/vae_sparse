@@ -5,17 +5,7 @@ from utils.misc import readPickle
 from utils.sparse_utils import loadSparseHDF5
 import numpy as np
 from collections import Counter,OrderedDict
-"""
-Evaluating Vectors in their contexts
-------------------------------------
-Relevant Publications:
-@inproceedings{HuangEtAl2012,
-author = {Eric H. Huang and Richard Socher and Christopher D. Manning and Andrew Y. Ng},
-title = {{Improving Word Representations via Global Context and Multiple Word Prototypes}},
-booktitle = {Annual Meeting of the Association for Computational Linguistics (ACL)},
-year = 2012
-}
-"""
+
 def _getData(DIR,locations):
     if not np.all([os.path.exists(DIR+'/'+f) for f in locations]):
         downloadData(DIR, locations)
@@ -23,7 +13,7 @@ def _getData(DIR,locations):
         os.system('bunzip '+DIR+'/'+f)
 
 def _loadWikicorp():
-    DIR = os.path.dirname(os.path.realpath(__file__)).split('inference_introspection')[0]+'inference_introspection/optvaedatasets/wikicorp'
+    DIR = os.path.dirname(os.path.realpath(__file__)).split('vae_sparse')[0]+'vae_sparse/optvaedatasets/wikicorp'
     if not os.path.exists(DIR):
         os.mkdir(DIR)
     locations = {}
@@ -45,28 +35,9 @@ def _loadWikicorp():
         dataset['vocabulary_singular'] = objs[2]
         return dataset
 
-def _loadWikicorpLarge():
-    DIR = os.path.dirname(os.path.realpath(__file__)).split('inference_introspection')[0]+'inference_introspection/optvaedatasets/wikicorp'
-    if not os.path.exists(DIR):
-        os.mkdir(DIR)
-    if not os.path.exists(DIR+'/data-large.h5') or not os.path.exists(DIR+'/misc-large.pkl'):
-        raise ValueError,'Run ProcessWikicorp-LargeVocab.ipynb to setup data.h5'
-    else:
-        dataset = {}
-        dataset['data_type'] = 'bow'
-        dataset['train']     = loadSparseHDF5('train',DIR+'/data-large.h5')
-        dataset['valid']     = loadSparseHDF5('valid',DIR+'/data-large.h5')
-        dataset['test']      = loadSparseHDF5('test',DIR+'/data-large.h5')
-        dataset['dim_observations'] = dataset['train'].shape[1]
-        objs = readPickle(DIR+'/misc-large.pkl',nobjects=3)
-        dataset['mapIdx']              = objs[0]
-        dataset['vocabulary']          = objs[1]
-        dataset['vocabulary_singular'] = objs[2]
-        return dataset
-
 def _loadWikicorpSubset(kval):
     assert kval in [1000, 5000, 10000, 15000],'Bad value: '+str(kval) 
-    DIR = os.path.dirname(os.path.realpath(__file__)).split('inference_introspection')[0]+'inference_introspection/optvaedatasets/wikicorp'
+    DIR = os.path.dirname(os.path.realpath(__file__)).split('vae_sparse')[0]+'vae_sparse/optvaedatasets/wikicorp'
     assert type(kval) is int,'Expecting kval as int'
     h5file = DIR+'/data-learning.h5'
     pklfile= DIR+'/misc-learning.pkl'
@@ -99,6 +70,5 @@ def _loadWikicorpSubset(kval):
 
 if __name__=='__main__':
     dataset = _loadWikicorp()
-    #dataset = _loadWikicorpLarge()
     dataset = _loadWikicorpSubset(5000)
     import ipdb;ipdb.set_trace()

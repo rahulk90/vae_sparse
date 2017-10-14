@@ -26,5 +26,6 @@ def loadDataset(dsetname):
         assert False,'Invalid dataset name: '+str(dsetname)
 
 if __name__=='__main__':
-    dset  = loadDataset('wikicorp')
+    #dset  = loadDataset('wikicorp')
+    dset  = loadDataset('rcv2')
     import ipdb;ipdb.set_trace()
