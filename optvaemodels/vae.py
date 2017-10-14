@@ -408,46 +408,6 @@ class VAE(BaseModel, object):
                                                         lr = lr,  
                                                         grad_noise = self.params['grad_noise'],
                                                         rng = self.srng)#,
-                                                        #reg_type =self.params['reg_type'], 
-                                                        #reg_spec =self.params['reg_spec'], 
-                                                        #reg_value= self.params['reg_value'],
-                                                        #grad_norm = 1.,
-                                                        #divide_grad = T.cast(X.shape[0],config.floatX))
-            self._p('# additional updates: '+str(len(self.updates)))
-            optimizer_up+=anneal_update +self.updates
-            fxn_inputs      = [X]
-            self.train      = theano.function(fxn_inputs, [upperbound_train, norm_list[0], norm_list[1], norm_list[2],
-                                                           anneal.sum(), lr.sum()],
-                                              updates = optimizer_up, name = 'Train')
-        elif self.params['opt_type'] in ['q_only','q_only_random']:
-            """ q_only: optimizing phi only 
-            Typically, you would want to use this option when you have
-            trained generative model and want to learn an inference
-            network for it
-            """
-            self._p('SETTING UP to optimizing Q only')
-            traindict = {}
-            upperbound_train         = self._ELBO(X, anneal = anneal, 
-                                        dropout_prob = self.params['input_dropout'], savedict=traindict)
-            self.updates_ack = True
-            q_params                 = self._getModelParams(restrict='q_')
-            #Random initialization for parameters of q
-            if self.params['opt_type']=='q_only_random':
-                for param in q_params:
-                    old_norm = (param**2).mean().eval()
-                    newval = self._getWeight(param.shape.eval())
-                    param.set_value(newval)
-                    new_norm = (param**2).mean().eval()
-                    print param.name, 'Old: ',old_norm,' New: ',new_norm
-            p_params                 = self._getModelParams(restrict='p_')
-            p_sum = 0.
-            for param in p_params:
-                p_sum+=(param**2).sum()
-            self.pnorm = theano.function([],T.sqrt(p_sum),name='param sum')
-            optimizer_up, norm_list  = self._setupOptimizer(upperbound_train,  q_params,
-                                                        lr = lr,  
-                                                        grad_noise = self.params['grad_noise'],
-                                                        rng = self.srng)
             self._p('# additional updates: '+str(len(self.updates)))
             optimizer_up+=anneal_update +self.updates
             fxn_inputs      = [X]
@@ -558,11 +518,6 @@ class VAE(BaseModel, object):
                                                         lr = lr,  
                                                         grad_noise = self.params['grad_noise'],
                                                         rng = self.srng)#,
-                                                        #reg_type =self.params['reg_type'], 
-                                                        #reg_spec =self.params['reg_spec'], 
-                                                        #reg_value= self.params['reg_value'],
-                                                        #grad_norm = 1.,
-                                                        #divide_grad = T.cast(X.shape[0],config.floatX))
             self._p('# additional updates: '+str(len(self.updates)))
             optimizer_up+=anneal_update +self.updates
             fxn_inputs      = [X]
