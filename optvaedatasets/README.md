@@ -32,16 +32,8 @@ python rcv2.py
 python newsgroups.py 
 ```
 
-### WordSim353/SCWS
-* Datasets that contain pairs of words along with human annotated metric of similarity 
-```bash
-#Download and setup dataset:
-python evaluate_wvecs.py 
-```
-
 ### Wikicorp 
 * Based on the Wikipedia datadump of Huang et. al
-* Requires WordSim/SCWS in the previous step to be have been setup
 * Download and setup dataset from raw Wikipedia text
 ```bash
 #In <path>/inference_introspection/optvaedatasets/
@@ -62,22 +54,9 @@ python tokenizer.py
 * Limits the vocabulary (change parameters to get different variants of this dataset)
 ```bash
 ipython trust *.ipynb
-ipython notebook ProcessWikicorp.ipynb
+ipython notebook ProcessWikicorp-learning.ipynb
 ```
 * Final check to ensure the data can be loaded from python
 ```bash
 python wikicorp.py 
 ```
-
-### Synthetic
-* Synthetic datasets obtained from scikit-learn's page on [Dimensionality Reduction](http://scikit-learn.org/stable/auto_examples/manifold/plot_compare_methods.html) 
-```bash
-#Setup by running
-python synthetic.py
-```
-
-### Sentiment Analysis
-* There are three datasets to setup using `python sentiment.py`
-* The script will have to be re-run several times interspersed with preprocessing steps
-* Two files must be run from the `sentiment` directory : `preprocess_imdb.py` and `sentiment_trees.py`. You will be prompted about when these must be run
-* When all the instructions have been followed, you should be able to load the four datasets successfully and will halt at the command `import ipdb;ipdb.set_trace()` when running the file `sentiment.py`

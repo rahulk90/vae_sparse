@@ -1,5 +1,4 @@
 This folder contains ipython notebooks used for evaluation. For some notebooks, its purpose is listed below.
-The rest may be inferred by opening up the notebooks. 
 
 * [`VisualizeTrainingCurves.ipynb`](./bow_text/VisualizeTrainingCurves.ipynb)
     * This ipython notebook plots the training curves 
