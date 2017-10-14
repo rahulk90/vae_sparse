@@ -32,10 +32,8 @@ parser.add_argument('-bs','--batch_size', action='store',default = 500, help='Ba
 # E] popt pre-optimizing variational parameters
 parser.add_argument('-plr','--param_lr', action = 'store', default=0.01, help='Learning rates used to update mu/cov', type=float)
 parser.add_argument('-ar','--anneal_rate', action = 'store', default=0, help='Number of steps before KL divergence stops being regularized', type=float)
-parser.add_argument('-otype','--opt_type', action='store', default='none', choices=['none','finopt','q_only','q_only_random','finopt_none','none_finopt'], 
-        help='none-standard training,\n finopt-optimize theta w/ optimized mu/logcov')
-parser.add_argument('-ns','--n_steps', action='store', default=200, help='Number of steps of optimization of variational parameters
-        to perform', type=int)
+parser.add_argument('-otype','--opt_type', action='store', default='none', choices=['none','finopt','q_only','q_only_random','finopt_none','none_finopt'], help='none-standard training, finopt-optimize theta w/ optimized mu/logcov')
+parser.add_argument('-ns','--n_steps', action='store', default=200, help='Number of steps of optimization of variational parameters to perform', type=int)
 parser.add_argument('-om','--opt_method', action='store', default='adam', help='Optimization',choices=['adam'])
 
 #Setup 
@@ -86,3 +84,4 @@ for k in hmap:
             combined+=hmap[k]+'-'+str(params[k])+'-'
 params['unique_id'] = combined[:-1]+str(params['reg_type'])+str(params['reg_value'])+str(params['reg_spec'])+'-'+params['unique_id']
 params['unique_id'] = 'VAE_'+params['unique_id'].replace('.','_')
+
