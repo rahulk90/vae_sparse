@@ -14,7 +14,7 @@ def _load20news_miao():
     """
     Dataset setup from Miao et. al
     """
-    DIR = os.path.dirname(os.path.realpath(__file__)).split('inference_introspection')[0]+'inference_introspection/optvaedatasets'
+    DIR = os.path.dirname(os.path.realpath(__file__)).split('vae_sparse')[0]+'vae_sparse/optvaedatasets'
     DIR += '/20news_miao'
     h5file = DIR+'/miao.h5'
     if not os.path.exists(h5file):
