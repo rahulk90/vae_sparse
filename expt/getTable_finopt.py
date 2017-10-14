@@ -1,3 +1,6 @@
+"""
+Read saved results to obtain tables
+"""
 import glob
 from utils.misc import loadHDF5,getConfigFile, readPickle
 DIR     = './'
