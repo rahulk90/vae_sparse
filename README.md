@@ -14,7 +14,7 @@ Rahul G. Krishnan, Dawen Liang, Matthew Hoffman
 
 ## Requirements
 * python2.7
-* numpy, scipy
+* numpy, scipy, nltk, gensim
 * [theano](http://deeplearning.net/software/theano/)
 * [theanomodels](https://github.com/clinicalml/theanomodels)
 
