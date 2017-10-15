@@ -27,7 +27,7 @@ The repository is arranged as follows:
 * [`optvaemodels`](./optvaemodels)     - Code for the model 
 * [`optvaeutils`](./optvaeutils)       - Utility functions 
 
-## Dataset Format
+## Tutorial
 To run the model on your own data, you will have 
 to specify a dataset as follows. See [newsgroups.py](./optvaedatasets/newsgroups.py) for an example of
 how to setup the dataset from scratch. 
@@ -40,3 +40,5 @@ how to setup the dataset from scratch.
     dset['dim_observations'] = dset['train'].shape[1]
     dset['data_type'] = 'bow'
 ```
+
+See the ipython notebook [TrainingVAEsparse.ipynb](./expt/TrainingVAEsparse.ipynb) for more details 
