@@ -1,5 +1,6 @@
 # On the challenges of learning with inference networks on sparse, high-dimensional data
 
+
 ## Overview
 This contains code to learn DLGMs/VAEs on sparse-non negative 
 data (though it may be easily modified for other data types) while optimizing the variational 
